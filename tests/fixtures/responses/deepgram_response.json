@@ -4,14 +4,18 @@
       {
         "alternatives": [
           {
-            "transcript": "Hello, welcome to the podcast.",
+            "transcript": "Hello, welcome to the podcast. Today we discuss AI.",
             "confidence": 0.98,
             "words": [
-              {"word": "Hello", "start": 0.0, "end": 0.5, "confidence": 0.99, "speaker": 0},
-              {"word": "welcome", "start": 0.6, "end": 1.0, "confidence": 0.98, "speaker": 0},
-              {"word": "to", "start": 1.0, "end": 1.1, "confidence": 0.97, "speaker": 0},
-              {"word": "the", "start": 1.1, "end": 1.2, "confidence": 0.99, "speaker": 0},
-              {"word": "podcast", "start": 1.2, "end": 1.8, "confidence": 0.98, "speaker": 0}
+              {"word": "Hello", "start": 0.0, "end": 0.5, "confidence": 0.99, "speaker": 0, "punctuated_word": "Hello,"},
+              {"word": "welcome", "start": 0.6, "end": 1.0, "confidence": 0.98, "speaker": 0, "punctuated_word": "welcome"},
+              {"word": "to", "start": 1.0, "end": 1.1, "confidence": 0.97, "speaker": 0, "punctuated_word": "to"},
+              {"word": "the", "start": 1.1, "end": 1.2, "confidence": 0.99, "speaker": 0, "punctuated_word": "the"},
+              {"word": "podcast", "start": 1.2, "end": 1.8, "confidence": 0.98, "speaker": 0, "punctuated_word": "podcast."},
+              {"word": "Today", "start": 2.0, "end": 2.4, "confidence": 0.97, "speaker": 1, "punctuated_word": "Today"},
+              {"word": "we", "start": 2.4, "end": 2.5, "confidence": 0.99, "speaker": 1, "punctuated_word": "we"},
+              {"word": "discuss", "start": 2.5, "end": 2.9, "confidence": 0.96, "speaker": 1, "punctuated_word": "discuss"},
+              {"word": "AI", "start": 2.9, "end": 3.2, "confidence": 0.98, "speaker": 1, "punctuated_word": "AI."}
             ]
           }
         ]

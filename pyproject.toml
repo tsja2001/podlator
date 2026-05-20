@@ -1,0 +1,75 @@
+[project]
+name = "podlator"
+version = "0.1.0"
+description = "英文播客/视频 → 中文简报自动化工具"
+requires-python = ">=3.12"
+dependencies = [
+    "langgraph>=0.3",
+    "fastapi>=0.115",
+    "uvicorn[standard]",
+    "pydantic>=2.0",
+    "pydantic-settings",
+    "structlog",
+    "httpx",
+    "typer",
+    "tenacity",
+    "aiosqlite",
+    "yt-dlp",
+    "deepgram-sdk>=3.0",
+    "openai>=1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+package = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/podlator"]
+
+[project.scripts]
+podlator = "podlator.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-httpx",
+    "pytest-cov",
+    "pytest-randomly",
+    "ruff",
+    "mypy",
+    "time-machine",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "W"]
+
+[tool.ruff.format]
+quote-style = "double"
+line-ending = "lf"
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+
+[tool.coverage.run]
+source = ["src/podlator"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+fail_under = 70
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+]

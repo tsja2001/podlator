@@ -26,6 +26,7 @@ def test_get_stt_provider_deepgram(monkeypatch) -> None:
     monkeypatch.setattr(settings, "deepgram_api_key", "test-key")
     provider = get_stt_provider(settings)
     from podlator.providers.stt.deepgram import DeepgramProvider
+
     assert isinstance(provider, DeepgramProvider)
 
 
@@ -46,6 +47,7 @@ def test_get_llm_provider_deepseek() -> None:
     monkeypatch.setattr(settings, "deepseek_api_key", "test-key")
     provider = get_llm_provider("deepseek", settings)
     from podlator.providers.llm.deepseek import DeepSeekProvider
+
     assert isinstance(provider, DeepSeekProvider)
     monkeypatch.undo()
 
@@ -57,6 +59,7 @@ def test_get_llm_provider_claude() -> None:
     monkeypatch.setattr(settings, "claude_api_key", "test-key")
     provider = get_llm_provider("claude", settings)
     from podlator.providers.llm.claude import ClaudeProvider
+
     assert isinstance(provider, ClaudeProvider)
     monkeypatch.undo()
 

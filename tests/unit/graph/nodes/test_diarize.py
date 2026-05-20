@@ -2,20 +2,32 @@
 
 from __future__ import annotations
 
-import inspect
-
 import pytest
 
 from podlator.graph.nodes.diarize import run
 
 
 @pytest.mark.asyncio
-async def test_diarize_returns_dict(sample_state: dict) -> None:
-    """占位节点返回 dict。"""
-    result = await run(sample_state)
-    assert isinstance(result, dict)
+async def test_diarize_skips_when_has_diarization() -> None:
+    """已有说话人标签时跳过，返回仅含控制字段。"""
+    result = await run(
+        {
+            "task_id": "test",
+            "has_diarization": True,
+        }
+    )
+    assert result.get("current_node") == "diarize"
 
 
-def test_diarize_is_async() -> None:
-    """节点是异步函数。"""
-    assert inspect.iscoroutinefunction(run)
+@pytest.mark.asyncio
+async def test_diarize_warns_when_not_implemented() -> None:
+    """无标签时发出警告但不失败。"""
+    result = await run(
+        {
+            "task_id": "test",
+            "has_diarization": False,
+        }
+    )
+    assert result.get("current_node") == "diarize"
+    # 没有业务数据返回
+    assert "transcript_segments" not in result

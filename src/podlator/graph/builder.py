@@ -19,13 +19,17 @@ from podlator.graph.nodes import (
 from podlator.graph.state import PodlatorState
 
 
+def _should_diarize(state: PodlatorState) -> str:
+    """条件路由：是否需要说话人分离。"""
+    if state.get("has_diarization", False):
+        return "chapter_split"
+    return "diarize"
+
+
 def build_graph() -> CompiledStateGraph[
     PodlatorState, Any, PodlatorState, PodlatorState
 ]:
-    """构建完整的 podlator pipeline Graph。
-
-    M0 阶段：线性连接 8 个节点。M1 加入条件分支（has_diarization）。
-    """
+    """构建完整的 podlator pipeline Graph。"""
     workflow = StateGraph(PodlatorState)
 
     # 注册节点
@@ -38,13 +42,22 @@ def build_graph() -> CompiledStateGraph[
     workflow.add_node("polish_final", polish_final.run)
     workflow.add_node("export_markdown", export_markdown.run)
 
-    # 线性连接（M0 简化，暂不加入条件分支）
+    # 边连接
     workflow.set_entry_point("fetch_metadata")
     workflow.add_edge("fetch_metadata", "download_audio")
     workflow.add_edge("download_audio", "transcribe")
-    # M1 加入条件分支: has_diarization → skip diarize
-    workflow.add_edge("transcribe", "diarize")
+
+    # 条件分支: has_diarization → 跳过 diarize 直接 chapter_split
+    workflow.add_conditional_edges(
+        "transcribe",
+        _should_diarize,
+        {
+            "chapter_split": "chapter_split",
+            "diarize": "diarize",
+        },
+    )
     workflow.add_edge("diarize", "chapter_split")
+
     workflow.add_edge("chapter_split", "summarize_chapters")
     workflow.add_edge("summarize_chapters", "polish_final")
     workflow.add_edge("polish_final", "export_markdown")

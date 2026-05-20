@@ -1,4 +1,4 @@
-"""节点：说话人分离（如 STT 未自带）。M0 占位实现。"""
+"""节点：说话人分离（如 STT 未自带）。M1 占位 — M4 实现 pyannote。"""
 
 from __future__ import annotations
 
@@ -11,5 +11,13 @@ from podlator.graph.state import PodlatorState
 @node("diarize")
 async def run(state: PodlatorState) -> dict[str, Any]:
     log = node_logger(state, "diarize")
-    log.info("not_implemented", reason="M0 placeholder")
+
+    if state.get("has_diarization", False):
+        log.info("diarization_skipped", reason="STT already provided speaker labels")
+        return {}
+
+    log.warning(
+        "diarization_not_implemented",
+        reason="M4 will implement pyannote.audio integration",
+    )
     return {}

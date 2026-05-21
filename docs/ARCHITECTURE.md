@@ -35,7 +35,13 @@
 """src/podlator/graph/state.py"""
 from __future__ import annotations
 
-from typing import Any, TypedDict
+import operator
+from typing import Annotated, Any, TypedDict
+
+
+def _merge_dicts(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
+    """合并两个 dict，用于 LangGraph reducer。"""
+    return {**a, **b}
 
 
 class TranscriptSegment(TypedDict):
@@ -60,7 +66,12 @@ class Chapter(TypedDict):
 
 
 class PodlatorState(TypedDict, total=False):
-    """Pipeline 全局状态。节点返回 partial dict，LangGraph 自动合并。"""
+    """Pipeline 全局状态。节点返回 partial dict，LangGraph 自动合并。
+
+    字段标注 Annotated[type, reducer] 的字段使用 reducer 合并：
+    - operator.add: 数值累加（total_cost_usd）
+    - _merge_dicts: dict 浅合并（node_durations_ms）
+    """
 
     # ── 身份标识（创建时设定）──
     task_id: str                 # UUID4 字符串
@@ -104,8 +115,8 @@ class PodlatorState(TypedDict, total=False):
     current_node: str            # 当前执行到的节点名
     status: str                  # "pending" | "running" | "completed" | "failed"
     error: str | None            # 失败时的错误信息
-    node_durations_ms: dict[str, float]  # 各节点耗时（毫秒）
-    total_cost_usd: float        # 累计 API 费用（美元）
+    node_durations_ms: Annotated[dict[str, float], _merge_dicts]  # 各节点耗时（毫秒）
+    total_cost_usd: Annotated[float, operator.add]                # 累计 API 费用（美元）
     created_at: str              # 创建时间 ISO 8601
     updated_at: str              # 最后更新时间 ISO 8601
 ```
@@ -115,12 +126,12 @@ class PodlatorState(TypedDict, total=False):
 | 节点 | 读取字段 | 写入字段 |
 |---|---|---|
 | `fetch_metadata` | `source_url` | `title`, `description`, `duration_seconds`, `published_at`, `source_type`, `thumbnail_url` |
-| `download_audio` | `source_url` | `audio_path`, `audio_format`, `audio_size_bytes` |
-| `transcribe` | `audio_path` | `transcript_segments`, `transcript_text`, `stt_provider`, `has_diarization` |
+| `download_audio` | `source_url`, `task_id` | `audio_path`, `audio_format`, `audio_size_bytes` |
+| `transcribe` | `audio_path` | `transcript_segments`, `transcript_text`, `stt_provider`, `has_diarization`, `total_cost_usd` (reducer 累加) |
 | `diarize` | `transcript_segments`, `has_diarization` | `transcript_segments`（更新 speaker 字段）|
-| `chapter_split` | `transcript_text`, `transcript_segments` | `chapters` |
-| `summarize_chapters` | `chapters`, `transcript_segments` | `chapter_summaries`, `chapters`（填充 summary_zh）|
-| `polish_final` | `title`, `chapters`, `chapter_summaries` | `brief_markdown` |
+| `chapter_split` | `transcript_text`, `transcript_segments` | `chapters`, `total_cost_usd` (reducer 累加) |
+| `summarize_chapters` | `chapters`, `transcript_segments` | `chapter_summaries`, `chapters`（填充 summary_zh）, `total_cost_usd` (reducer 累加) |
+| `polish_final` | `title`, `chapters`, `chapter_summaries` | `brief_markdown`, `total_cost_usd` (reducer 累加) |
 | `export_markdown` | `brief_markdown`, `task_id`, `title` | `output_path` |
 
 ### Graph 执行流

@@ -45,7 +45,7 @@ async def run(state: PodlatorState) -> dict[str, Any]:
     chapters = _build_chapters(raw_chapters, segments)
 
     log.info("chapters_parsed", chapter_count=len(chapters))
-    return {"chapters": chapters}
+    return {"chapters": chapters, "total_cost_usd": result.cost_usd}
 
 
 def _parse_json_array(text: str) -> list[dict[str, Any]]:

@@ -5,15 +5,18 @@ from __future__ import annotations
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 
 from podlator.api.schemas import (
     HealthResponse,
+    TaskBriefResponse,
     TaskCreate,
     TaskResponse,
 )
+from podlator.logging import get_logger
 from podlator.storage.db import TaskStore
 
+logger = get_logger(__name__)
 router = APIRouter()
 
 
@@ -24,11 +27,18 @@ async def health() -> HealthResponse:
 
 
 @router.post("/tasks", status_code=201, response_model=TaskResponse)
-async def create_task(body: TaskCreate, request: Request) -> TaskResponse:
-    """创建新任务。"""
+async def create_task(
+    body: TaskCreate,
+    request: Request,
+    background_tasks: BackgroundTasks,
+) -> TaskResponse:
+    """创建新任务并触发后台 pipeline 执行。"""
     store: TaskStore = request.app.state.store
     task_id = str(uuid.uuid4())
     record = await store.create(task_id, str(body.url))
+
+    background_tasks.add_task(run_pipeline_background, task_id, str(body.url), store)
+
     return _to_response(record)
 
 
@@ -64,16 +74,106 @@ async def delete_task(task_id: str, request: Request) -> None:
         raise HTTPException(status_code=404, detail="Task not found")
 
 
-@router.post("/tasks/{task_id}/retry", status_code=501)
-async def retry_task(task_id: str) -> dict[str, str]:
-    """重试失败任务。M0 占位。"""
-    raise HTTPException(status_code=501, detail="Not implemented")
+@router.post("/tasks/{task_id}/retry", response_model=TaskResponse)
+async def retry_task(
+    task_id: str,
+    request: Request,
+    background_tasks: BackgroundTasks,
+) -> TaskResponse:
+    """重试失败任务。"""
+    store: TaskStore = request.app.state.store
+    task = await store.get(task_id)
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    if task["status"] != "failed":
+        raise HTTPException(
+            status_code=400,
+            detail=f"只能重试失败任务，当前状态: {task['status']}",
+        )
+
+    await store.update(task_id, status="pending", error_message=None, current_node=None)
+
+    background_tasks.add_task(
+        run_pipeline_background, task_id, task["source_url"], store
+    )
+
+    record = await store.get(task_id)
+    return (
+        _to_response(record)
+        if record
+        else TaskResponse(
+            task_id=task_id,
+            source_url=task["source_url"],
+            title=task.get("title"),
+            status="pending",
+            current_node=None,
+            error_message=None,
+            cost_usd=0.0,
+            created_at=task["created_at"],
+            updated_at=task["updated_at"],
+        )
+    )
 
 
-@router.get("/tasks/{task_id}/brief", status_code=501)
-async def get_task_brief(task_id: str) -> dict[str, str]:
-    """获取简报内容。M0 占位。"""
-    raise HTTPException(status_code=501, detail="Not implemented")
+@router.get("/tasks/{task_id}/brief", response_model=TaskBriefResponse)
+async def get_task_brief(task_id: str, request: Request) -> TaskBriefResponse:
+    """获取简报内容。"""
+    from pathlib import Path
+
+    store: TaskStore = request.app.state.store
+    task = await store.get(task_id)
+    if task is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    if task["status"] != "completed":
+        raise HTTPException(
+            status_code=400,
+            detail=f"任务尚未完成，当前状态: {task['status']}",
+        )
+    brief_path = task.get("brief_path")
+    if not brief_path:
+        raise HTTPException(status_code=404, detail="简报文件路径不存在")
+
+    path = Path(brief_path)
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="简报文件不存在")
+
+    markdown = path.read_text(encoding="utf-8")
+    return TaskBriefResponse(
+        task_id=task_id,
+        title=task.get("title"),
+        markdown=markdown,
+    )
+
+
+async def run_pipeline_background(task_id: str, url: str, store: TaskStore) -> None:
+    """后台执行 pipeline。"""
+    from podlator.graph.builder import build_graph
+
+    await store.update(task_id, status="running")
+    graph = build_graph()
+
+    initial_state: dict[str, Any] = {
+        "task_id": task_id,
+        "source_url": url,
+        "status": "running",
+        "current_node": "",
+        "node_durations_ms": {},
+        "total_cost_usd": 0.0,
+    }
+
+    try:
+        final_state = await graph.ainvoke(initial_state)  # type: ignore[call-overload]
+        await store.update(
+            task_id,
+            status="completed",
+            title=final_state.get("title"),
+            brief_path=final_state.get("output_path"),
+            cost_usd=final_state.get("total_cost_usd", 0.0),
+            duration_seconds=final_state.get("duration_seconds"),
+        )
+    except Exception as e:
+        logger.error("pipeline_failed", task_id=task_id, error=str(e), exc_info=True)
+        await store.update(task_id, status="failed", error_message=str(e))
 
 
 def _to_response(record: dict[str, Any]) -> TaskResponse:

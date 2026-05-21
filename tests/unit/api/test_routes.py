@@ -3,12 +3,23 @@
 from __future__ import annotations
 
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 from httpx import ASGITransport, AsyncClient
 
 from podlator.api.main import app
 from podlator.storage.db import TaskStore
+
+
+@pytest.fixture(autouse=True)
+def _mock_background_pipeline() -> None:
+    """防止后台任务在测试中触发真实 pipeline（yt-dlp 网络调用）。"""
+    with patch(
+        "podlator.api.routes.run_pipeline_background",
+        return_value=None,
+    ):
+        yield
 
 
 @pytest.fixture
@@ -18,11 +29,13 @@ async def client(tmp_path: Path) -> AsyncClient:
     store = TaskStore(db_path)
     await store.initialize()
 
-    # 注入到 app state
     app.state.store = store
     app.state.settings = type("obj", (), {"data_dir": tmp_path, "log_dir": tmp_path})()
     transport = ASGITransport(app=app)
     return AsyncClient(transport=transport, base_url="http://test")
+
+
+# ── 健康检查 ──
 
 
 @pytest.mark.asyncio
@@ -33,14 +46,18 @@ async def test_health_endpoint(client: AsyncClient) -> None:
     assert resp.json() == {"status": "ok"}
 
 
+# ── 创建任务 ──
+
+
 @pytest.mark.asyncio
 async def test_create_task(client: AsyncClient) -> None:
-    """创建任务返回 201。"""
-    resp = await client.post("/api/tasks", json={"url": "https://example.com"})
+    """创建任务返回 201，状态为 pending。"""
+    resp = await client.post("/api/tasks", json={"url": "https://a.com"})
     assert resp.status_code == 201
     data = resp.json()
     assert "task_id" in data
     assert data["status"] == "pending"
+    assert "a.com" in data["source_url"]
 
 
 @pytest.mark.asyncio
@@ -59,3 +76,150 @@ async def test_get_task_not_found(client: AsyncClient) -> None:
     """不存在的任务返回 404。"""
     resp = await client.get("/api/tasks/nonexistent")
     assert resp.status_code == 404
+
+
+# ── 删除任务 ──
+
+
+@pytest.mark.asyncio
+async def test_delete_task(client: AsyncClient) -> None:
+    """删除存在的任务返回 204。"""
+    resp = await client.post("/api/tasks", json={"url": "https://example.com"})
+    task_id = resp.json()["task_id"]
+
+    resp = await client.delete(f"/api/tasks/{task_id}")
+    assert resp.status_code == 204
+
+
+@pytest.mark.asyncio
+async def test_delete_task_not_found(client: AsyncClient) -> None:
+    """删除不存在的任务返回 404。"""
+    resp = await client.delete("/api/tasks/nonexistent")
+    assert resp.status_code == 404
+
+
+# ── 重试任务 ──
+
+
+@pytest.mark.asyncio
+async def test_retry_failed_task(client: AsyncClient) -> None:
+    """重试失败任务应将状态重置为 pending。"""
+    # 手动创建一个 failed 状态的任务
+    store: TaskStore = app.state.store
+    await store.create("task-001", "https://example.com")
+    await store.update("task-001", status="failed", error_message="test error")
+
+    resp = await client.post("/api/tasks/task-001/retry")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["status"] == "pending"
+    assert data.get("error_message") is None
+
+
+@pytest.mark.asyncio
+async def test_retry_non_failed_task(client: AsyncClient) -> None:
+    """重试非 failed 状态的任务返回 400。"""
+    store: TaskStore = app.state.store
+    await store.create("task-002", "https://example.com")
+
+    resp = await client.post("/api/tasks/task-002/retry")
+    assert resp.status_code == 400
+    assert "只能重试失败任务" in resp.json()["detail"]
+
+
+@pytest.mark.asyncio
+async def test_retry_task_not_found(client: AsyncClient) -> None:
+    """重试不存在的任务返回 404。"""
+    resp = await client.post("/api/tasks/nonexistent/retry")
+    assert resp.status_code == 404
+
+
+# ── 获取简报 ──
+
+
+@pytest.mark.asyncio
+async def test_get_brief_success(client: AsyncClient, tmp_path: Path) -> None:
+    """获取已完成任务的简报。"""
+    store: TaskStore = app.state.store
+    await store.create("task-003", "https://example.com")
+
+    # 写入简报文件
+    brief_path = tmp_path / "brief.md"
+    brief_path.write_text("# Test Brief\n\n中文内容。", encoding="utf-8")
+
+    await store.update(
+        "task-003",
+        status="completed",
+        brief_path=str(brief_path),
+        title="Test",
+    )
+
+    resp = await client.get("/api/tasks/task-003/brief")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["task_id"] == "task-003"
+    assert data["title"] == "Test"
+    assert "中文内容" in data["markdown"]
+
+
+@pytest.mark.asyncio
+async def test_get_brief_not_completed(client: AsyncClient) -> None:
+    """未完成任务获取简报返回 400。"""
+    store: TaskStore = app.state.store
+    await store.create("task-004", "https://example.com")
+
+    resp = await client.get("/api/tasks/task-004/brief")
+    assert resp.status_code == 400
+    assert "尚未完成" in resp.json()["detail"]
+
+
+@pytest.mark.asyncio
+async def test_get_brief_task_not_found(client: AsyncClient) -> None:
+    """获取不存在任务的简报返回 404。"""
+    resp = await client.get("/api/tasks/nonexistent/brief")
+    assert resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_get_brief_file_missing(client: AsyncClient) -> None:
+    """简报文件缺失时返回 404。"""
+    store: TaskStore = app.state.store
+    await store.create("task-005", "https://example.com")
+    await store.update(
+        "task-005",
+        status="completed",
+        brief_path="/nonexistent/path.md",
+    )
+
+    resp = await client.get("/api/tasks/task-005/brief")
+    assert resp.status_code == 404
+
+
+# ── 分页与过滤 ──
+
+
+@pytest.mark.asyncio
+async def test_list_tasks_with_status_filter(client: AsyncClient) -> None:
+    """按状态过滤任务列表。"""
+    store: TaskStore = app.state.store
+    await store.create("t1", "https://a.com")
+    await store.create("t2", "https://b.com")
+    await store.update("t1", status="completed")
+
+    resp = await client.get("/api/tasks?status=completed")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert len(data) == 1
+    assert data[0]["task_id"] == "t1"
+
+
+@pytest.mark.asyncio
+async def test_list_tasks_pagination(client: AsyncClient) -> None:
+    """分页参数正确生效。"""
+    store: TaskStore = app.state.store
+    for i in range(3):
+        await store.create(f"t{i}", f"https://example.com/{i}")
+
+    resp = await client.get("/api/tasks?limit=2&offset=0")
+    assert resp.status_code == 200
+    assert len(resp.json()) == 2

@@ -28,7 +28,7 @@ async def run(state: PodlatorState) -> dict[str, Any]:
 
     sem = asyncio.Semaphore(5)
 
-    async def summarize_one(ch: Chapter) -> tuple[int, str]:
+    async def summarize_one(ch: Chapter) -> tuple[int, str, float]:
         async with sem:
             chapter_text = _get_chapter_text(segments, ch)
             user = user_template.format(
@@ -38,7 +38,7 @@ async def run(state: PodlatorState) -> dict[str, Any]:
                 chapter_text=chapter_text,
             )
             result = await provider.complete(prompt=user, system=system)
-            return ch["index"], result.content
+            return ch["index"], result.content, result.cost_usd
 
     tasks = [summarize_one(ch) for ch in chapters]
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -51,9 +51,10 @@ async def run(state: PodlatorState) -> dict[str, Any]:
         if isinstance(r, Exception):
             log.warning("chapter_summary_failed", chapter_index=i, error_msg=str(r))
         elif isinstance(r, tuple):
-            idx, content = r
+            idx, content, cost = r
             chapters[idx]["summary_zh"] = content
             summaries[idx] = content
+            total_cost += cost
             success_count += 1
 
     log.info(
@@ -65,6 +66,7 @@ async def run(state: PodlatorState) -> dict[str, Any]:
     return {
         "chapters": chapters,
         "chapter_summaries": summaries,
+        "total_cost_usd": total_cost,
     }
 
 

@@ -40,4 +40,5 @@ async def run(state: PodlatorState) -> dict[str, Any]:
         "transcript_text": full_text,
         "stt_provider": result.provider_name,
         "has_diarization": result.has_diarization,
+        "total_cost_usd": result.cost_usd,
     }

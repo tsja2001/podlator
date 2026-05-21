@@ -2,7 +2,13 @@
 
 from __future__ import annotations
 
-from typing import TypedDict
+import operator
+from typing import Annotated, Any, TypedDict
+
+
+def _merge_dicts(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
+    """合并两个 dict，用于 LangGraph reducer。"""
+    return {**a, **b}
 
 
 class TranscriptSegment(TypedDict):
@@ -27,7 +33,13 @@ class Chapter(TypedDict):
 
 
 class PodlatorState(TypedDict, total=False):
-    """Pipeline 全局状态。节点返回 partial dict，LangGraph 自动合并。"""
+    """Pipeline 全局状态。节点返回 partial dict，LangGraph 自动合并。
+
+    字段标注 Annotated[type, reducer] 的字段使用 reducer 合并，
+    而非默认的"后写覆盖"语义：
+    - operator.add: 数值累加（total_cost_usd）
+    - _merge_dicts: dict 浅合并（node_durations_ms）
+    """
 
     # ── 身份标识（创建时设定）──
     task_id: str
@@ -68,7 +80,7 @@ class PodlatorState(TypedDict, total=False):
     current_node: str
     status: str
     error: str | None
-    node_durations_ms: dict[str, float]
-    total_cost_usd: float
+    node_durations_ms: Annotated[dict[str, float], _merge_dicts]
+    total_cost_usd: Annotated[float, operator.add]
     created_at: str
     updated_at: str

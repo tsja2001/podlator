@@ -1,4 +1,4 @@
-"""Graph 集成测试。M1.2 模拟完整 pipeline，mock 所有 Provider。"""
+"""集成测试：完整 pipeline（mock 所有外部 API）。"""
 
 from __future__ import annotations
 
@@ -13,18 +13,10 @@ from podlator.providers.llm.base import LLMResult
 from podlator.providers.stt.base import STTResult
 
 
-@pytest.mark.asyncio
-async def test_graph_can_invoke_with_initial_state() -> None:
-    """Graph 能用 mock Provider 从头走到尾。"""
-    g = build_graph()
-    initial = {
-        "task_id": "integration-test-001",
-        "source_url": "https://www.youtube.com/watch?v=test",
-    }
-
-    # Mock downloader
-    mock_dl = AsyncMock()
-    mock_dl.fetch_metadata.return_value = MediaMetadata(
+def _make_mock_downloader() -> AsyncMock:
+    """创建 mock downloader。"""
+    mock = AsyncMock()
+    mock.fetch_metadata.return_value = MediaMetadata(
         title="Test Episode",
         description="Desc",
         duration_seconds=120.0,
@@ -32,16 +24,19 @@ async def test_graph_can_invoke_with_initial_state() -> None:
         source_type="youtube",
         thumbnail_url="",
     )
-    mock_dl.download.return_value = DownloadResult(
+    mock.download.return_value = DownloadResult(
         file_path=Path("/tmp/test.mp3"),
         format="mp3",
         size_bytes=100,
         duration_seconds=120.0,
     )
+    return mock
 
-    # Mock STT provider
-    mock_stt = AsyncMock()
-    mock_stt.transcribe.return_value = STTResult(
+
+def _make_mock_stt() -> AsyncMock:
+    """创建 mock STT provider。"""
+    mock = AsyncMock()
+    mock.transcribe.return_value = STTResult(
         segments=[
             {
                 "text": "hello world this is a test transcript " * 5,
@@ -57,10 +52,13 @@ async def test_graph_can_invoke_with_initial_state() -> None:
         duration_ms=100.0,
         cost_usd=0.001,
     )
+    return mock
 
-    # Mock LLM provider (used by chapter_split + summarize_chapters + polish_final)
-    mock_llm = AsyncMock()
-    mock_llm.complete.side_effect = [
+
+def _make_mock_llm() -> AsyncMock:
+    """创建 mock LLM provider，按调用顺序返回结果。"""
+    mock = AsyncMock()
+    mock.complete.side_effect = [
         # chapter_split: returns JSON chapters
         LLMResult(
             content=(
@@ -111,6 +109,21 @@ async def test_graph_can_invoke_with_initial_state() -> None:
             cost_usd=0.01,
         ),
     ]
+    return mock
+
+
+@pytest.mark.asyncio
+async def test_full_pipeline_mock() -> None:
+    """完整 pipeline 从 URL 到 Markdown 文件。"""
+    g = build_graph()
+    mock_dl = _make_mock_downloader()
+    mock_stt = _make_mock_stt()
+    mock_llm = _make_mock_llm()
+
+    initial = {
+        "task_id": "integration-test-001",
+        "source_url": "https://www.youtube.com/watch?v=test",
+    }
 
     with (
         patch(
@@ -147,3 +160,54 @@ async def test_graph_can_invoke_with_initial_state() -> None:
     assert result.get("brief_markdown")
     assert "Test Episode" in result["brief_markdown"]
     assert len(result.get("chapters", [])) == 2
+    assert result.get("output_path") != ""
+    assert Path(result["output_path"]).exists()
+
+
+@pytest.mark.asyncio
+async def test_pipeline_tracks_costs() -> None:
+    """验证 pipeline 正确累计 API 费用。"""
+    g = build_graph()
+    mock_dl = _make_mock_downloader()
+    mock_stt = _make_mock_stt()
+    mock_llm = _make_mock_llm()
+
+    initial = {
+        "task_id": "cost-test-001",
+        "source_url": "https://www.youtube.com/watch?v=test",
+    }
+
+    with (
+        patch(
+            "podlator.graph.nodes.fetch_metadata.get_downloader",
+            return_value=mock_dl,
+        ),
+        patch(
+            "podlator.graph.nodes.download_audio.get_downloader",
+            return_value=mock_dl,
+        ),
+        patch(
+            "podlator.graph.nodes.transcribe.get_stt_provider",
+            return_value=mock_stt,
+        ),
+        patch(
+            "podlator.graph.nodes.chapter_split.get_llm_provider",
+            return_value=mock_llm,
+        ),
+        patch(
+            "podlator.graph.nodes.summarize_chapters.get_llm_provider",
+            return_value=mock_llm,
+        ),
+        patch(
+            "podlator.graph.nodes.polish_final.get_llm_provider",
+            return_value=mock_llm,
+        ),
+    ):
+        result = await g.ainvoke(initial)
+
+    # total_cost_usd = STT(0.001) + chapter_split(0.001)
+    #                  + summarize(0.002) + polish(0.01)
+    assert result.get("total_cost_usd", 0.0) == pytest.approx(0.014)
+    # node_durations_ms 应该包含所有已执行节点
+    durations = result.get("node_durations_ms", {})
+    assert len(durations) >= 5  # 至少 5 个节点有耗时记录

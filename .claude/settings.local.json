@@ -3,7 +3,9 @@
     "allow": [
       "Bash(grep -v \"^\\\\.$\")",
       "Bash(ls -la /Users/yangzhuoran/program/podlator/.claude/ && echo \"---\" && ls -la /Users/yangzhuoran/.claude/ 2>/dev/null || echo \"No global .claude dir\")",
-      "Bash(mkdir -p /Users/yangzhuoran/.claude/skills/ai-delegation)"
+      "Bash(mkdir -p /Users/yangzhuoran/.claude/skills/ai-delegation)",
+      "Bash(uv run *)",
+      "Bash(git add *)"
     ]
   }
 }

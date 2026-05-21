@@ -54,4 +54,4 @@ async def run(state: PodlatorState) -> dict[str, Any]:
         "{date}", date_str
     )
 
-    return {"brief_markdown": brief}
+    return {"brief_markdown": brief, "total_cost_usd": result.cost_usd}

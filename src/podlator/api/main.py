@@ -9,9 +9,11 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from podlator.api.log_hub import LogHub
 from podlator.api.routes import router as api_router
 from podlator.api.ws import router as ws_router
 from podlator.config import Settings
+from podlator.logging import set_log_hub
 from podlator.storage.db import TaskStore
 
 
@@ -28,7 +30,14 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await store.initialize()
     app.state.store = store
     app.state.settings = settings
+
+    log_hub = LogHub()
+    app.state.log_hub = log_hub
+    set_log_hub(log_hub)
+
     yield
+
+    set_log_hub(None)
     await store.close()
 
 

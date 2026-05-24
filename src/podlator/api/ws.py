@@ -1,17 +1,29 @@
-"""WebSocket 日志推送。M0 占位。"""
+"""WebSocket 日志推送。"""
 
 from __future__ import annotations
 
-from fastapi import APIRouter, WebSocket
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+from podlator.api.log_hub import LogHub
+from podlator.logging import get_logger
+
+logger = get_logger(__name__)
 router = APIRouter()
 
 
 @router.websocket("/ws/tasks/{task_id}/logs")
 async def task_logs(websocket: WebSocket, task_id: str) -> None:
-    """订阅任务实时日志。M0 占位：接受连接后发送一条测试消息。"""
+    """订阅任务实时日志。"""
     await websocket.accept()
-    await websocket.send_json(
-        {"event": "connected", "task_id": task_id, "message": "M0 placeholder"}
-    )
-    await websocket.close()
+
+    hub: LogHub = websocket.app.state.log_hub
+    await websocket.send_json({"event": "connected", "task_id": task_id})
+    logger.info("websocket_connected", task_id=task_id)
+
+    try:
+        async with hub.subscribe(task_id) as queue:
+            while True:
+                event = await queue.get()
+                await websocket.send_json(event)
+    except WebSocketDisconnect:
+        logger.info("websocket_disconnected", task_id=task_id)

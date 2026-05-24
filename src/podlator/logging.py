@@ -2,13 +2,25 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import UTC
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import structlog
 from structlog.typing import EventDict, WrappedLogger
+
+if TYPE_CHECKING:
+    from podlator.api.log_hub import LogHub
+
+_log_hub: LogHub | None = None
+
+
+def set_log_hub(hub: LogHub | None) -> None:
+    """设置 LogHub 用于 WebSocket 日志广播。传 None 清除。"""
+    global _log_hub
+    _log_hub = hub
 
 
 def _add_timestamp(
@@ -18,6 +30,22 @@ def _add_timestamp(
     from datetime import datetime
 
     event_dict["timestamp"] = datetime.now(UTC).isoformat()
+    return event_dict
+
+
+def _broadcast_to_log_hub(
+    _logger: WrappedLogger,
+    _method_name: str,
+    event_dict: EventDict,
+) -> EventDict:
+    """把带 task_id 的日志事件异步发送到 WebSocket LogHub。"""
+    if _log_hub is None or not isinstance(event_dict.get("task_id"), str):
+        return event_dict
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return event_dict
+    loop.create_task(_log_hub.publish(dict(event_dict)))
     return event_dict
 
 
@@ -45,6 +73,7 @@ def setup_logging(
         structlog.processors.format_exc_info,
         structlog.processors.UnicodeDecoder(),
         _add_timestamp,
+        _broadcast_to_log_hub,
     ]
 
     renderers: list[Any] = []

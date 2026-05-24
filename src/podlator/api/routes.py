@@ -7,6 +7,7 @@ from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 
+from podlator.api.pipeline import run_pipeline_background
 from podlator.api.schemas import (
     HealthResponse,
     TaskBriefResponse,
@@ -87,7 +88,7 @@ async def retry_task(
         raise HTTPException(status_code=404, detail="Task not found")
     if task["status"] != "failed":
         raise HTTPException(
-            status_code=400,
+            status_code=409,
             detail=f"只能重试失败任务，当前状态: {task['status']}",
         )
 
@@ -143,37 +144,6 @@ async def get_task_brief(task_id: str, request: Request) -> TaskBriefResponse:
         title=task.get("title"),
         markdown=markdown,
     )
-
-
-async def run_pipeline_background(task_id: str, url: str, store: TaskStore) -> None:
-    """后台执行 pipeline。"""
-    from podlator.graph.builder import build_graph
-
-    await store.update(task_id, status="running")
-    graph = build_graph()
-
-    initial_state: dict[str, Any] = {
-        "task_id": task_id,
-        "source_url": url,
-        "status": "running",
-        "current_node": "",
-        "node_durations_ms": {},
-        "total_cost_usd": 0.0,
-    }
-
-    try:
-        final_state = await graph.ainvoke(initial_state)  # type: ignore[call-overload]
-        await store.update(
-            task_id,
-            status="completed",
-            title=final_state.get("title"),
-            brief_path=final_state.get("output_path"),
-            cost_usd=final_state.get("total_cost_usd", 0.0),
-            duration_seconds=final_state.get("duration_seconds"),
-        )
-    except Exception as e:
-        logger.error("pipeline_failed", task_id=task_id, error=str(e), exc_info=True)
-        await store.update(task_id, status="failed", error_message=str(e))
 
 
 def _to_response(record: dict[str, Any]) -> TaskResponse:

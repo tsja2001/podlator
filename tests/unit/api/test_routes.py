@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -12,14 +12,21 @@ from podlator.api.main import app
 from podlator.storage.db import TaskStore
 
 
-@pytest.fixture(autouse=True)
-def _mock_background_pipeline() -> None:
-    """防止后台任务在测试中触发真实 pipeline（yt-dlp 网络调用）。"""
+@pytest.fixture
+def mock_pipeline() -> AsyncMock:
+    """返回 run_pipeline_background 的 AsyncMock 供验证调用。"""
     with patch(
         "podlator.api.routes.run_pipeline_background",
-        return_value=None,
-    ):
-        yield
+        new_callable=AsyncMock,
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture(autouse=True)
+def _mock_background_pipeline(mock_pipeline: AsyncMock) -> None:
+    """自动 mock 后台 pipeline，防止测试触发真实 pipeline。"""
+    # mock_pipeline fixture 已经完成 patch，此 fixture 只做 autouse 触发
+    pass
 
 
 @pytest.fixture
@@ -58,6 +65,24 @@ async def test_create_task(client: AsyncClient) -> None:
     assert "task_id" in data
     assert data["status"] == "pending"
     assert "a.com" in data["source_url"]
+
+
+@pytest.mark.asyncio
+async def test_create_task_schedules_background_pipeline(
+    client: AsyncClient, mock_pipeline: AsyncMock
+) -> None:
+    """创建任务后将 pipeline 加入后台任务。"""
+    resp = await client.post("/api/tasks", json={"url": "https://example.com"})
+    assert resp.status_code == 201
+    task_id = resp.json()["task_id"]
+    # 等一小会儿让后台任务执行
+    import asyncio
+
+    await asyncio.sleep(0.05)
+    mock_pipeline.assert_called_once()
+    call_args = mock_pipeline.call_args
+    assert call_args.args[0] == task_id
+    assert "example.com" in call_args.args[1]
 
 
 @pytest.mark.asyncio
@@ -117,13 +142,13 @@ async def test_retry_failed_task(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_retry_non_failed_task(client: AsyncClient) -> None:
-    """重试非 failed 状态的任务返回 400。"""
+async def test_retry_non_failed_task_returns_409(client: AsyncClient) -> None:
+    """重试非 failed 状态的任务返回 409。"""
     store: TaskStore = app.state.store
     await store.create("task-002", "https://example.com")
 
     resp = await client.post("/api/tasks/task-002/retry")
-    assert resp.status_code == 400
+    assert resp.status_code == 409
     assert "只能重试失败任务" in resp.json()["detail"]
 
 
@@ -132,6 +157,26 @@ async def test_retry_task_not_found(client: AsyncClient) -> None:
     """重试不存在的任务返回 404。"""
     resp = await client.post("/api/tasks/nonexistent/retry")
     assert resp.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_retry_failed_task_schedules_pipeline(
+    client: AsyncClient, mock_pipeline: AsyncMock
+) -> None:
+    """重试失败任务应将 pipeline 加入后台任务。"""
+    import asyncio
+
+    store: TaskStore = app.state.store
+    await store.create("task-retry-schedule", "https://example.com")
+    await store.update("task-retry-schedule", status="failed", error_message="err")
+
+    mock_pipeline.reset_mock()
+    resp = await client.post("/api/tasks/task-retry-schedule/retry")
+    assert resp.status_code == 200
+
+    await asyncio.sleep(0.05)
+    mock_pipeline.assert_called_once()
+    assert mock_pipeline.call_args.args[0] == "task-retry-schedule"
 
 
 # ── 获取简报 ──

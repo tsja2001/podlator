@@ -28,6 +28,7 @@
 - Vite + React 前端骨架
 
 ### Changed
+- `polish_final` 节点在 Claude 可重试失败时自动降级到 DeepSeek，避免最后润色阶段网络超时导致整条 pipeline 失败。
 - `PodlatorState` 中 `total_cost_usd` 和 `node_durations_ms` 使用 `Annotated` + reducer 实现累加语义
 - 各节点返回 `total_cost_usd` 以支持费用累积
 - CLI 命令从占位实现替换为真实逻辑

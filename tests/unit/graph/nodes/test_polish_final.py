@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
+from podlator.errors import ProviderError
 from podlator.graph.nodes.polish_final import run
 from podlator.graph.state import Chapter
 from podlator.providers.llm.base import LLMResult
@@ -64,6 +65,43 @@ async def test_polish_final_success(state: dict) -> None:
 
     assert result["brief_markdown"]
     assert "Test Episode" in result["brief_markdown"]
+
+
+@pytest.mark.asyncio
+async def test_polish_final_falls_back_to_deepseek_on_retryable_claude_error(
+    state: dict,
+) -> None:
+    """Claude 可重试失败时，使用 DeepSeek 兜底完成润色。"""
+    claude = AsyncMock()
+    claude.complete.side_effect = ProviderError(
+        "claude",
+        "Request timed out.",
+        retryable=True,
+    )
+    deepseek = AsyncMock()
+    deepseek.complete.return_value = LLMResult(
+        content="# Test Episode\n\nDeepSeek fallback brief",
+        model="deepseek-v4-flash",
+        provider_name="deepseek",
+        tokens_in=180,
+        tokens_out=120,
+        duration_ms=800.0,
+        cost_usd=0.003,
+    )
+
+    def provider_factory(provider_name: str, _settings: object) -> AsyncMock:
+        return deepseek if provider_name == "deepseek" else claude
+
+    with patch(
+        "podlator.graph.nodes.polish_final.get_llm_provider",
+        side_effect=provider_factory,
+    ):
+        result = await run(state)
+
+    claude.complete.assert_awaited_once()
+    deepseek.complete.assert_awaited_once()
+    assert result["brief_markdown"] == "# Test Episode\n\nDeepSeek fallback brief"
+    assert result["total_cost_usd"] == 0.003
 
 
 @pytest.mark.asyncio

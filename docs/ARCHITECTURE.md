@@ -523,6 +523,17 @@ data/                                    # 运行时数据（.gitignore）
 ├── briefs/
 │   └── {task_id}/
 │       └── {title_slug}.md              # 输出简报
+├── artifacts/
+│   └── {task_id}/
+│       ├── 00_pipeline.log.jsonl        # 节点完成/失败事件与产物清单
+│       ├── 01_source.json               # 原始链接与任务信息
+│       ├── 02_metadata.json             # 标题、时长、发布时间等
+│       ├── 03_audio.* / 03_audio.json   # 音频副本与音频路径/大小
+│       ├── 04_transcript.*              # 转写文本与分段 JSON
+│       ├── 05_chapters.*                # 章节切分结果
+│       ├── 06_chapter_summaries.*       # 章节摘要结果
+│       ├── 07_polished_brief.md         # 润色后的最终简报内容
+│       └── 08_export.json               # 导出文件路径
 └── logs/
     └── podlator.log                     # JSON 日志（追加写）
 ```

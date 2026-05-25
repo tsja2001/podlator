@@ -7,6 +7,7 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any
 
+from podlator.artifacts import record_node_artifacts, record_node_failure_artifact
 from podlator.errors import NodeError
 from podlator.logging import get_logger
 
@@ -41,15 +42,29 @@ def node(node_name: str) -> Callable[..., Any]:
             start = time.monotonic()
             try:
                 result = await func(state)
-            except NodeError:
+            except NodeError as e:
+                duration_ms = (time.monotonic() - start) * 1000
+                record_node_failure_artifact(
+                    node_name=node_name,
+                    state=state,
+                    error=e,
+                    duration_ms=duration_ms,
+                )
                 raise
             except Exception as e:
+                duration_ms = (time.monotonic() - start) * 1000
                 log.error(
                     "node_failed",
                     error_type=type(e).__name__,
                     error_msg=str(e),
                     retryable=False,
                     exc_info=True,
+                )
+                record_node_failure_artifact(
+                    node_name=node_name,
+                    state=state,
+                    error=e,
+                    duration_ms=duration_ms,
                 )
                 raise NodeError(node_name, str(e), retryable=False) from e
 
@@ -62,6 +77,12 @@ def node(node_name: str) -> Callable[..., Any]:
 
             if isinstance(result, dict):
                 patch.update(result)
+                record_node_artifacts(
+                    node_name=node_name,
+                    state=state,
+                    patch=result,
+                    duration_ms=duration_ms,
+                )
 
             log.info(
                 "node_completed",

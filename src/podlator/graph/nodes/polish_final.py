@@ -6,10 +6,14 @@ from datetime import UTC, datetime
 from typing import Any
 
 from podlator.config import Settings
+from podlator.errors import ProviderError
 from podlator.graph.nodes._base import node, node_logger
 from podlator.graph.state import PodlatorState
 from podlator.prompts import load_prompt
 from podlator.providers.llm import get_llm_provider
+from podlator.providers.llm.base import LLMResult
+
+POLISH_FALLBACK_PROVIDER = "deepseek"
 
 
 @node("polish_final")
@@ -29,7 +33,6 @@ async def run(state: PodlatorState) -> dict[str, Any]:
         chapters_content += f"### {ch['title']}\n\n{ch.get('summary_zh', '')}\n\n"
 
     settings = Settings()
-    provider = get_llm_provider(settings.llm_provider_polish, settings)
     system, user_template = load_prompt("polish_final")
 
     user = user_template.format(
@@ -38,7 +41,12 @@ async def run(state: PodlatorState) -> dict[str, Any]:
         chapters_content=chapters_content,
     )
 
-    result = await provider.complete(prompt=user, system=system)
+    result = await _complete_with_fallback(
+        settings=settings,
+        prompt=user,
+        system=system,
+        log=log,
+    )
     log.info(
         "polish_completed",
         tokens_in=result.tokens_in,
@@ -55,3 +63,34 @@ async def run(state: PodlatorState) -> dict[str, Any]:
     )
 
     return {"brief_markdown": brief, "total_cost_usd": result.cost_usd}
+
+
+async def _complete_with_fallback(
+    *,
+    settings: Settings,
+    prompt: str,
+    system: str,
+    log: Any,
+) -> LLMResult:
+    """优先使用配置的润色模型；网络/限流类错误时降级到 DeepSeek。
+
+    这里的降级只覆盖可重试的 ProviderError，避免把 API key 错误、权限错误等
+    配置问题静默吞掉。类似 JS 里的 catch 里只处理特定错误类型，其余继续 throw。
+    """
+    primary_provider_name = settings.llm_provider_polish
+    provider = get_llm_provider(primary_provider_name, settings)
+    try:
+        return await provider.complete(prompt=prompt, system=system)
+    except ProviderError as error:
+        if not error.retryable or primary_provider_name == POLISH_FALLBACK_PROVIDER:
+            raise
+
+        log.warning(
+            "polish_fallback_triggered",
+            from_provider=primary_provider_name,
+            to_provider=POLISH_FALLBACK_PROVIDER,
+            error_msg=str(error),
+            retryable=error.retryable,
+        )
+        fallback_provider = get_llm_provider(POLISH_FALLBACK_PROVIDER, settings)
+        return await fallback_provider.complete(prompt=prompt, system=system)

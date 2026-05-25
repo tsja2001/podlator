@@ -29,6 +29,12 @@ Podlator 的可观察性靠三层：
 │  - 节点状态可视化                                    │
 │  - 命令：浏览器打开 http://localhost:5173            │
 └─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│  第 4 层：任务 artifacts（中间产物排查）              │
+│  - data/artifacts/{task_id}/                         │
+│  - 按 01/02/... 保存链接、音频、转写、章节、摘要       │
+│  - 00_pipeline.log.jsonl 串起每个节点写了哪些文件     │
+└─────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -116,6 +122,15 @@ cat data/logs/podlator.log | jq 'select(.task_id == "abc-123") | {ts: .timestamp
 
 ```bash
 cat data/logs/podlator.log | jq 'select(.event == "task_failed")' | tail -20
+```
+
+**看某任务的中间产物**：
+
+```bash
+ls -la data/artifacts/abc-123
+cat data/artifacts/abc-123/00_pipeline.log.jsonl | jq .
+sed -n '1,120p' data/artifacts/abc-123/04_transcript.txt
+cat data/artifacts/abc-123/05_chapters.json | jq .
 ```
 
 **统计某节点的平均耗时**：

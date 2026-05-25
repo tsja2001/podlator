@@ -5,6 +5,7 @@
 ## [Unreleased]
 
 ### Added
+- Pipeline artifacts 归档：每个任务在 `data/artifacts/{task_id}/` 下按 `01/02/...` 写入链接、元数据、音频副本、转写文本、章节、摘要、最终简报和节点日志，方便排查中间产物截断问题。
 - M2 Web UI MVP 开发计划文档，覆盖后端 WebSocket 日志、任务执行、前端页面与测试验证。
 - M1.3 CLI 集成 + 端到端测试
   - `podlator run` 真实 pipeline 执行（异步 LangGraph）
@@ -28,6 +29,7 @@
 - Vite + React 前端骨架
 
 ### Changed
+- `polish_final` 节点在 Claude 可重试失败时自动降级到 DeepSeek，避免最后润色阶段网络超时导致整条 pipeline 失败。
 - `PodlatorState` 中 `total_cost_usd` 和 `node_durations_ms` 使用 `Annotated` + reducer 实现累加语义
 - 各节点返回 `total_cost_usd` 以支持费用累积
 - CLI 命令从占位实现替换为真实逻辑

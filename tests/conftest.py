@@ -8,11 +8,12 @@ import pytest
 
 
 @pytest.fixture(autouse=True)
-def _clean_env(monkeypatch: pytest.MonkeyPatch) -> None:
+def _clean_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     """确保测试不受真实 .env 影响。"""
     monkeypatch.delenv("DEEPGRAM_API_KEY", raising=False)
     monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
     monkeypatch.delenv("CLAUDE_API_KEY", raising=False)
+    monkeypatch.setenv("DATA_DIR", str(tmp_path / "data"))
 
 
 @pytest.fixture

@@ -18,8 +18,8 @@ class LogHub:
 
     def __init__(self, max_queue_size: int = 500) -> None:
         self.max_queue_size = max_queue_size
-        self._subscribers: dict[str, set[asyncio.Queue[dict[str, Any]]]] = (
-            defaultdict(set)
+        self._subscribers: dict[str, set[asyncio.Queue[dict[str, Any]]]] = defaultdict(
+            set
         )
 
     @asynccontextmanager

@@ -5,6 +5,7 @@
 ## [Unreleased]
 
 ### Added
+- Pipeline artifacts 归档：每个任务在 `data/artifacts/{task_id}/` 下按 `01/02/...` 写入链接、元数据、音频副本、转写文本、章节、摘要、最终简报和节点日志，方便排查中间产物截断问题。
 - M2 Web UI MVP 开发计划文档，覆盖后端 WebSocket 日志、任务执行、前端页面与测试验证。
 - M1.3 CLI 集成 + 端到端测试
   - `podlator run` 真实 pipeline 执行（异步 LangGraph）

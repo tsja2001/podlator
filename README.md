@@ -132,6 +132,7 @@ podlator/
 │   ├── checkpoints.sqlite       # LangGraph checkpoint
 │   ├── audio/                   # 下载的音频
 │   ├── briefs/                  # 输出的 Markdown 简报
+│   ├── artifacts/               # 按 task_id 归档的中间产物与排查日志
 │   └── logs/                    # JSON 日志文件
 ├── docs/                        # 设计文档
 │   ├── ROADMAP.md

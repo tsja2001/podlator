@@ -73,16 +73,15 @@ def test_websocket_receives_published_event(ws_test_client: TestClient) -> None:
 def test_websocket_no_cross_talk(ws_test_client: TestClient) -> None:
     """另一 task_id 的事件不串流到本连接。"""
     hub: LogHub = app.state.log_hub
-    with ws_test_client.websocket_connect("/ws/tasks/task-a/logs") as ws_a, ws_test_client.websocket_connect(
-        "/ws/tasks/task-b/logs"
-    ) as ws_b:
+    with (
+        ws_test_client.websocket_connect("/ws/tasks/task-a/logs") as ws_a,
+        ws_test_client.websocket_connect("/ws/tasks/task-b/logs") as ws_b,
+    ):
         # 跳过 connected 帧
         ws_a.receive_json()
         ws_b.receive_json()
 
-        _run_async(
-            hub.publish({"task_id": "task-a", "event": "only_for_a"})
-        )
+        _run_async(hub.publish({"task_id": "task-a", "event": "only_for_a"}))
 
         event_a = ws_a.receive_json()
         assert event_a["event"] == "only_for_a"

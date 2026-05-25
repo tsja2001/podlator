@@ -30,6 +30,23 @@ def test_get_stt_provider_deepgram(monkeypatch) -> None:
     assert isinstance(provider, DeepgramProvider)
 
 
+def test_get_stt_provider_tencent_cloud(monkeypatch) -> None:
+    """stt_provider=tencent_cloud 返回 TencentCloudProvider。"""
+    settings = Settings()
+    monkeypatch.setattr(settings, "stt_provider", "tencent_cloud")
+    monkeypatch.setattr(settings, "tencent_secret_id", "test-asr-id")
+    monkeypatch.setattr(settings, "tencent_secret_key", "test-asr-key")
+    monkeypatch.setattr(settings, "tencent_cos_bucket", "bucket-123")
+    monkeypatch.setattr(settings, "tencent_cos_region", "ap-beijing")
+    monkeypatch.setattr(settings, "tencent_cos_secret_id", "test-cos-id")
+    monkeypatch.setattr(settings, "tencent_cos_secret_key", "test-cos-key")
+
+    provider = get_stt_provider(settings)
+    from podlator.providers.stt.tencent_cloud import TencentCloudProvider
+
+    assert isinstance(provider, TencentCloudProvider)
+
+
 def test_get_stt_provider_unknown() -> None:
     """未知 STT provider 抛出 ConfigError。"""
     settings = Settings()

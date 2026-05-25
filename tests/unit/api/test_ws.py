@@ -26,8 +26,10 @@ def _run_async(coro):
 def ws_test_client(tmp_path: Path) -> TestClient:
     """创建带 LogHub 的测试客户端（同步 TestClient）。"""
     db_path = str(tmp_path / "test.db")
+    store: TaskStore | None = None
 
     async def _init() -> None:
+        nonlocal store
         store = TaskStore(db_path)
         await store.initialize()
         app.state.store = store
@@ -37,7 +39,11 @@ def ws_test_client(tmp_path: Path) -> TestClient:
         app.state.log_hub = LogHub()
 
     _run_async(_init())
-    return TestClient(app)
+    client = TestClient(app)
+    yield client
+    client.close()
+    if store is not None:
+        _run_async(store.close())
 
 
 def test_websocket_receives_connected(ws_test_client: TestClient) -> None:

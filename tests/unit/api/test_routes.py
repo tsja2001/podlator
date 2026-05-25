@@ -39,7 +39,9 @@ async def client(tmp_path: Path) -> AsyncClient:
     app.state.store = store
     app.state.settings = type("obj", (), {"data_dir": tmp_path, "log_dir": tmp_path})()
     transport = ASGITransport(app=app)
-    return AsyncClient(transport=transport, base_url="http://test")
+    async with AsyncClient(transport=transport, base_url="http://test") as test_client:
+        yield test_client
+    await store.close()
 
 
 # ── 健康检查 ──

@@ -35,47 +35,50 @@ async def _run_pipeline(url: str, output_dir: str | None) -> None:
     store = TaskStore(settings.database_path)
     await store.initialize()
 
-    task_id = str(uuid.uuid4())
-    await store.create(task_id, url)
-
-    typer.echo(f"任务创建: {task_id}")
-    typer.echo(f"处理 URL: {url}")
-
-    # 2. 构建并执行 Graph
-    graph = build_graph()
-
-    initial_state: dict[str, Any] = {
-        "task_id": task_id,
-        "source_url": url,
-        "status": "running",
-        "current_node": "",
-        "node_durations_ms": {},
-        "total_cost_usd": 0.0,
-    }
-
     try:
-        final_state = await graph.ainvoke(initial_state)  # type: ignore[call-overload]
+        task_id = str(uuid.uuid4())
+        await store.create(task_id, url)
 
-        await store.update(
-            task_id,
-            status="completed",
-            title=final_state.get("title"),
-            brief_path=final_state.get("output_path"),
-            cost_usd=final_state.get("total_cost_usd", 0.0),
-            duration_seconds=final_state.get("duration_seconds"),
-        )
+        typer.echo(f"任务创建: {task_id}")
+        typer.echo(f"处理 URL: {url}")
 
-        output_path = final_state.get("output_path", "unknown")
-        cost = final_state.get("total_cost_usd", 0.0)
+        # 2. 构建并执行 Graph
+        graph = build_graph()
 
-        typer.echo("\n✅ 处理完成!")
-        typer.echo(f"   简报: {output_path}")
-        typer.echo(f"   费用: ${cost:.4f}")
+        initial_state: dict[str, Any] = {
+            "task_id": task_id,
+            "source_url": url,
+            "status": "running",
+            "current_node": "",
+            "node_durations_ms": {},
+            "total_cost_usd": 0.0,
+        }
 
-    except Exception as e:
-        await store.update(task_id, status="failed", error_message=str(e))
-        typer.echo(f"\n❌ 处理失败: {e}", err=True)
-        raise typer.Exit(code=1) from e
+        try:
+            final_state = await graph.ainvoke(initial_state)  # type: ignore[call-overload]
+
+            await store.update(
+                task_id,
+                status="completed",
+                title=final_state.get("title"),
+                brief_path=final_state.get("output_path"),
+                cost_usd=final_state.get("total_cost_usd", 0.0),
+                duration_seconds=final_state.get("duration_seconds"),
+            )
+
+            output_path = final_state.get("output_path", "unknown")
+            cost = final_state.get("total_cost_usd", 0.0)
+
+            typer.echo("\n✅ 处理完成!")
+            typer.echo(f"   简报: {output_path}")
+            typer.echo(f"   费用: ${cost:.4f}")
+
+        except Exception as e:
+            await store.update(task_id, status="failed", error_message=str(e))
+            typer.echo(f"\n❌ 处理失败: {e}", err=True)
+            raise typer.Exit(code=1) from e
+    finally:
+        await store.close()
 
 
 @app.command()
@@ -95,18 +98,21 @@ async def _show_status(task_id: str | None) -> None:
     store = TaskStore(settings.database_path)
     await store.initialize()
 
-    if task_id:
-        task = await store.get(task_id)
-        if not task:
-            typer.echo(f"任务不存在: {task_id}", err=True)
-            raise typer.Exit(code=1)
-        _print_task(task)
-    else:
-        tasks = await store.list_tasks(limit=1)
-        if not tasks:
-            typer.echo("暂无任务")
+    try:
+        if task_id:
+            task = await store.get(task_id)
+            if not task:
+                typer.echo(f"任务不存在: {task_id}", err=True)
+                raise typer.Exit(code=1)
+            _print_task(task)
         else:
-            _print_task(tasks[0])
+            tasks = await store.list_tasks(limit=1)
+            if not tasks:
+                typer.echo("暂无任务")
+            else:
+                _print_task(tasks[0])
+    finally:
+        await store.close()
 
 
 def _print_task(task: dict[str, Any]) -> None:
@@ -141,14 +147,17 @@ async def _list_tasks(status_filter: str | None, limit: int) -> None:
     store = TaskStore(settings.database_path)
     await store.initialize()
 
-    tasks = await store.list_tasks(status=status_filter, limit=limit)
-    if not tasks:
-        typer.echo("暂无任务")
-        return
+    try:
+        tasks = await store.list_tasks(status=status_filter, limit=limit)
+        if not tasks:
+            typer.echo("暂无任务")
+            return
 
-    for task in tasks:
-        _print_task(task)
-        typer.echo("---")
+        for task in tasks:
+            _print_task(task)
+            typer.echo("---")
+    finally:
+        await store.close()
 
 
 @app.command()

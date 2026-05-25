@@ -5,6 +5,9 @@
 ## [Unreleased]
 
 ### Added
+- 腾讯云 ASR 大模型版 STT Provider，使用 COS 临时上传音频并生成预签名 URL 提交录音文件识别任务。
+- Tencent COS 音频暂存封装，支持上传、GET 预签名和识别后清理。
+- 腾讯云 ASR/COS 单元测试和 gated smoke 测试。
 - Pipeline artifacts 归档：每个任务在 `data/artifacts/{task_id}/` 下按 `01/02/...` 写入链接、元数据、音频副本、转写文本、章节、摘要、最终简报和节点日志，方便排查中间产物截断问题。
 - M2 Web UI MVP 开发计划文档，覆盖后端 WebSocket 日志、任务执行、前端页面与测试验证。
 - M1.3 CLI 集成 + 端到端测试

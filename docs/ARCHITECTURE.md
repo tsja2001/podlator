@@ -93,7 +93,7 @@ class PodlatorState(TypedDict, total=False):
     # ── 转写（transcribe 产出）──
     transcript_segments: list[TranscriptSegment]
     transcript_text: str         # 全文拼接（便于 LLM 处理）
-    stt_provider: str            # "deepgram" | "mlx_whisper"
+    stt_provider: str            # "deepgram" | "tencent_cloud" | "mlx_whisper"
     has_diarization: bool        # STT 是否已带说话人标签
 
     # ── 说话人分离（diarize 产出，可选）──
@@ -192,6 +192,7 @@ class STTProvider(ABC):
 
 **M0**: 只有 base.py，不写具体实现。
 **M1**: 实现 `DeepgramProvider`。
+**腾讯云扩展**: 实现 `TencentCloudProvider`，通过 COS 暂存音频并以预签名 URL 调用录音文件识别。
 **M4**: 实现 `MLXWhisperProvider`。
 
 ### 3.2 LLMProvider

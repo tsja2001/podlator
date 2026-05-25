@@ -13,6 +13,7 @@ def _clean_env(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.delenv("DEEPGRAM_API_KEY", raising=False)
     monkeypatch.delenv("DEEPSEEK_API_KEY", raising=False)
     monkeypatch.delenv("CLAUDE_API_KEY", raising=False)
+    monkeypatch.setenv("STT_PROVIDER", "deepgram")
     monkeypatch.setenv("DATA_DIR", str(tmp_path / "data"))
 
 

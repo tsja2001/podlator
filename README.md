@@ -49,7 +49,7 @@ Podlator 是一个自用工具，解决一个具体问题：**英文播客和长
 
 | 用途 | 主力 | 备选 |
 |---|---|---|
-| STT 转写 | Deepgram Nova-3（云）| mlx-whisper（本地，Milestone 4） |
+| STT 转写 | Deepgram Nova-3（云） / 腾讯云 ASR 大模型版（COS URL）| mlx-whisper（本地，Milestone 4） |
 | 章节切分 + 翻译 | DeepSeek V4-Flash（1M 上下文）| — |
 | 全局润色 | Claude Opus 4.7（第三方平台）| DeepSeek（fallback） |
 | TTS（未来）| 火山引擎 | IndexTTS（本地） |
@@ -78,6 +78,7 @@ cd web && pnpm install && cd ..
 # 配置
 cp .env.example .env
 # 编辑 .env 填入 DEEPGRAM_API_KEY / DEEPSEEK_API_KEY / CLAUDE_API_KEY
+# 如使用腾讯云 ASR，把 STT_PROVIDER 设为 tencent_cloud 并填入 TENCENT_* 配置
 ```
 
 ### 运行单次任务（CLI）
@@ -154,7 +155,7 @@ podlator/
 |---|---|---|---|
 | `fetch_metadata` | URL | 标题、时长、发布时间 | yt-dlp / feedparser |
 | `download_audio` | URL | 本地音频路径 | yt-dlp |
-| `transcribe` | 音频路径 | 带时间戳的转写片段 | Deepgram / mlx-whisper |
+| `transcribe` | 音频路径 | 带时间戳的转写片段 | Deepgram / 腾讯云 ASR / mlx-whisper |
 | `diarize` | 转写片段 | 说话人标签（如未自带） | pyannote.audio |
 | `chapter_split` | 转写全文 | 章节切片 | DeepSeek |
 | `summarize_chapters` | 章节切片 | 各章节中文摘要 | DeepSeek（并发）|

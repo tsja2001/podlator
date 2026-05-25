@@ -17,6 +17,8 @@ dependencies = [
     "yt-dlp",
     "deepgram-sdk>=3.0",
     "openai>=1.0",
+    "tencentcloud-sdk-python>=3.1.101",
+    "cos-python-sdk-v5>=1.9.43",
 ]
 
 [build-system]

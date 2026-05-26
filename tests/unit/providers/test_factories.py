@@ -53,14 +53,16 @@ def test_get_llm_provider_deepseek() -> None:
 
 
 def test_get_llm_provider_claude() -> None:
-    """provider_name=claude 返回 ClaudeProvider。"""
+    """provider_name=claude 返回 ClaudeProvider，并使用配置里的模型名。"""
     settings = Settings()
     monkeypatch = pytest.MonkeyPatch()
     monkeypatch.setattr(settings, "claude_api_key", "test-key")
+    monkeypatch.setattr(settings, "claude_model", "claude-opus-custom")
     provider = get_llm_provider("claude", settings)
     from podlator.providers.llm.claude import ClaudeProvider
 
     assert isinstance(provider, ClaudeProvider)
+    assert provider.model == "claude-opus-custom"
     monkeypatch.undo()
 
 

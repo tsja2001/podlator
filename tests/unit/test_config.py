@@ -20,3 +20,10 @@ def test_settings_env_override(monkeypatch) -> None:
     s = Settings()
     assert s.log_level == "DEBUG"
     assert s.api_port == 9000
+
+
+def test_settings_claude_model_env_override(monkeypatch) -> None:
+    """CLAUDE_MODEL 可覆盖 Claude 的模型名。"""
+    monkeypatch.setenv("CLAUDE_MODEL", "claude-opus-custom")
+    s = Settings()
+    assert s.claude_model == "claude-opus-custom"

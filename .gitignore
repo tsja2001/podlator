@@ -22,6 +22,8 @@ build/
 
 # Runtime data
 data/
+project/**/*.mp3
+project/**/*.mp4
 
 # OS
 .DS_Store

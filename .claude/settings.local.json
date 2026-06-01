@@ -6,7 +6,8 @@
       "Bash(mkdir -p /Users/yangzhuoran/.claude/skills/ai-delegation)",
       "Bash(uv run *)",
       "Bash(git add *)",
-      "Bash(grep -v \"^$\")"
+      "Bash(grep -v \"^$\")",
+      "Bash(git pull *)"
     ]
   }
 }

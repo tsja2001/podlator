@@ -87,6 +87,37 @@ cp .env.example .env
 uv run podlator run "https://www.youtube.com/watch?v=XXXXX"
 ```
 
+### 单步文件转换 CLI
+
+完整 pipeline 之外，每一步都可以独立调试：
+
+```bash
+# 下载音频
+uv run podlator download "https://www.youtube.com/watch?v=XXXXX" -o episode.mp3 --metadata metadata.json
+
+# 语音转文字
+uv run podlator transcribe episode.mp3 -o transcript.json
+
+# 字幕转 Transcript JSON
+uv run podlator parse-srt subtitles.srt -o transcript.json
+
+# 字幕转录 + LLM 说话人推断
+uv run podlator parse-srt subtitles.srt -o transcript.speakers.json --assign-speakers
+
+# 纯说话人推断
+uv run podlator assign-speakers transcript.json -o transcript.speakers.json
+
+# 章节切分
+uv run podlator split transcript.json -o chapters.json
+
+# 渲染输出（精简摘要 / 全文翻译）
+uv run podlator render transcript.json --chapters chapters.json --mode summary -o summary.md
+uv run podlator render transcript.json --chapters chapters.json --mode full -o full-translation.md
+
+# 润色草稿
+uv run podlator polish summary.md -o brief.md
+```
+
 ### 启动 Web UI
 
 ```bash
@@ -116,6 +147,7 @@ podlator/
 │   │   ├── llm/                 # LLMProvider 接口 + 实现
 │   │   └── downloader/          # yt-dlp / RSS
 │   ├── storage/                 # SQLite + 文件路径管理
+│   ├── steps/                   # 文件转换型业务能力（CLI + Graph 共享）
 │   ├── api/                     # FastAPI 路由 + WebSocket
 │   ├── prompts/                 # Prompt 模板（Markdown 文件）
 │   └── cli.py                   # Typer CLI 入口
@@ -155,7 +187,7 @@ podlator/
 |---|---|---|---|
 | `fetch_metadata` | URL | 标题、时长、发布时间 | yt-dlp / feedparser |
 | `download_audio` | URL | 本地音频路径 | yt-dlp |
-| `transcribe` | 音频路径 | 带时间戳的转写片段 | Deepgram / 腾讯云 ASR / mlx-whisper |
+| `transcribe` | 音频路径 | 带时间戳的转写片段 | speech-transcriber CLI（腾讯云 ASR / Deepgram / mlx-whisper）|
 | `diarize` | 转写片段 | 说话人标签（如未自带） | pyannote.audio |
 | `chapter_split` | 转写全文 | 章节切片 | DeepSeek |
 | `summarize_chapters` | 章节切片 | 各章节中文摘要 | DeepSeek（并发）|

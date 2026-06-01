@@ -79,3 +79,9 @@ class Settings(BaseSettings):
     tencent_cos_scheme: str = "https"
     tencent_cos_presigned_expires_seconds: int = 21600
     tencent_cos_delete_after_transcribe: bool = True
+
+    # ── Speech Transcriber（外部 CLI 工具）──
+    speech_transcriber_project_dir: str = (
+        "/Users/mac/Project_Personal/speech-transcriber"
+    )
+    speech_transcriber_provider: str = "tencent_cloud"

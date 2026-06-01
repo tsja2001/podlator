@@ -4,11 +4,29 @@ from __future__ import annotations
 
 import asyncio
 import uuid
-from typing import Any
+from pathlib import Path
+from typing import Annotated, Any
 
 import typer
 
 app = typer.Typer(help="Podlator — 英文播客/视频 → 中文简报")
+
+# ── 全局共享选项 ──
+
+
+def _resolve_output(input_path: Path, output: Path | None, suffix: str) -> Path:
+    """如果 -o 是目录则自动生成文件名，否则用 -o 值。"""
+    if output is None:
+        raise typer.BadParameter("必须指定 -o/--output 输出路径")
+    if output.is_dir() or (output.suffix == "" and not output.exists()):
+        # 目录或看起来像目录的路径
+        output.mkdir(parents=True, exist_ok=True)
+        return output / f"{input_path.stem}{suffix}"
+    output.parent.mkdir(parents=True, exist_ok=True)
+    return output
+
+
+# ── run（保留原有完整 pipeline）──
 
 
 @app.command()
@@ -31,7 +49,6 @@ async def _run_pipeline(url: str, output_dir: str | None) -> None:
     log_dir = settings.log_dir if output_dir is None else None
     setup_logging(settings.log_level, settings.log_json_enabled, log_dir=log_dir)
 
-    # 1. 创建任务记录
     store = TaskStore(settings.database_path)
     await store.initialize()
 
@@ -42,7 +59,6 @@ async def _run_pipeline(url: str, output_dir: str | None) -> None:
         typer.echo(f"任务创建: {task_id}")
         typer.echo(f"处理 URL: {url}")
 
-        # 2. 构建并执行 Graph
         graph = build_graph()
 
         initial_state: dict[str, Any] = {
@@ -81,6 +97,9 @@ async def _run_pipeline(url: str, output_dir: str | None) -> None:
         await store.close()
 
 
+# ── status / list / version（保留）──
+
+
 @app.command()
 def status(
     task_id: str | None = typer.Argument(None, help="任务 ID（不指定则显示最近任务）"),
@@ -90,7 +109,6 @@ def status(
 
 
 async def _show_status(task_id: str | None) -> None:
-    """查询任务状态。"""
     from podlator.config import Settings
     from podlator.storage.db import TaskStore
 
@@ -116,7 +134,6 @@ async def _show_status(task_id: str | None) -> None:
 
 
 def _print_task(task: dict[str, Any]) -> None:
-    """格式化输出任务信息。"""
     typer.echo(f"ID:     {task['id']}")
     typer.echo(f"标题:   {task.get('title', '(未知)')}")
     typer.echo(f"状态:   {task['status']}")
@@ -139,7 +156,6 @@ def list(
 
 
 async def _list_tasks(status_filter: str | None, limit: int) -> None:
-    """查询任务列表。"""
     from podlator.config import Settings
     from podlator.storage.db import TaskStore
 
@@ -166,3 +182,413 @@ def version() -> None:
     from podlator import __version__
 
     typer.echo(f"podlator {__version__}")
+
+
+# ── 文件转换型 Step CLI ──
+
+
+@app.command()
+def download(
+    url: str = typer.Argument(..., help="YouTube 或播客 URL"),
+    output: Annotated[
+        Path | None,
+        typer.Option("-o", "--output", help="输出音频文件路径"),
+    ] = None,
+    metadata: Annotated[
+        Path | None,
+        typer.Option("--metadata", help="输出 metadata JSON 路径（可选）"),
+    ] = None,
+) -> None:
+    """下载音频：URL → 音频文件 + 可选 metadata JSON。"""
+    asyncio.run(_download_cmd(url, output, metadata))
+
+
+async def _download_cmd(url: str, output: Path | None, metadata: Path | None) -> None:
+    from podlator.steps.download import download_audio
+
+    typer.echo(f"下载: {url}")
+
+    result, meta = await download_audio(url)
+
+    if output:
+        out = _resolve_output(Path("audio"), output, ".mp3")
+        import shutil
+
+        shutil.copy2(Path(result.file_path), out)
+        typer.echo(f"音频: {out}")
+    else:
+        typer.echo(f"音频: {Path(result.file_path)}")
+
+    if metadata:
+        import json
+
+        meta_dict = {
+            "title": meta.title,
+            "description": meta.description,
+            "duration_seconds": meta.duration_seconds,
+            "published_at": meta.published_at,
+            "source_type": meta.source_type,
+            "thumbnail_url": meta.thumbnail_url,
+        }
+        metadata.parent.mkdir(parents=True, exist_ok=True)
+        metadata.write_text(
+            json.dumps(meta_dict, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        typer.echo(f"元数据: {metadata}")
+
+
+@app.command()
+def transcribe(
+    audio: Annotated[Path, typer.Argument(help="音频文件路径 (.mp3/.m4a/.wav)")],
+    output: Annotated[
+        Path | None,
+        typer.Option("-o", "--output", help="输出 Transcript JSON 路径"),
+    ] = None,
+    provider: Annotated[
+        str | None,
+        typer.Option("--provider", help="Provider 名称（默认从配置读取）"),
+    ] = None,
+    speech_transcriber_dir: Annotated[
+        str | None,
+        typer.Option(
+            "--speech-transcriber-dir",
+            help="speech-transcriber 项目目录路径",
+        ),
+    ] = None,
+) -> None:
+    """语音转文字：音频文件 → Transcript JSON。
+
+    通过外部 speech-transcriber CLI 完成转写。
+    """
+    asyncio.run(_transcribe_cmd(audio, output, provider, speech_transcriber_dir))
+
+
+async def _transcribe_cmd(
+    audio: Path,
+    output: Path | None,
+    provider: str | None,
+    speech_transcriber_dir: str | None,
+) -> None:
+    from podlator.config import Settings
+    from podlator.steps.transcribe import transcribe_to_file
+
+    if not audio.exists():
+        typer.echo(f"音频文件不存在: {audio}", err=True)
+        raise typer.Exit(code=1)
+
+    settings = Settings()
+    provider_name = provider or settings.speech_transcriber_provider
+    project_dir = speech_transcriber_dir or settings.speech_transcriber_project_dir
+
+    if output is None:
+        output = audio.parent / f"{audio.stem}.transcript.json"
+
+    try:
+        doc = await transcribe_to_file(
+            audio,
+            output,
+            provider_name=provider_name,
+            speech_transcriber_project_dir=project_dir,
+        )
+        typer.echo(f"转录完成: {output}")
+        typer.echo(f"  时长: {doc.source.duration_seconds:.0f}s")
+        typer.echo(f"  片段: {len(doc.segments)}")
+        typer.echo(f"  字数: {len(doc.text)}")
+    except (FileNotFoundError, ValueError, RuntimeError) as e:
+        typer.echo(f"转录失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+
+@app.command(name="parse-srt")
+def parse_srt(
+    srt: Annotated[Path, typer.Argument(help="SRT 字幕文件路径", exists=True)],
+    output: Annotated[
+        Path,
+        typer.Option("-o", "--output", help="输出 Transcript JSON 路径"),
+    ] = ...,  # type: ignore[assignment]  # required
+    assign_speakers: Annotated[
+        bool,
+        typer.Option(
+            "--assign-speakers",
+            help="解析后继续调用 LLM 推断说话人标签",
+        ),
+    ] = False,
+    source_url: Annotated[
+        str | None,
+        typer.Option("--source-url", help="来源 URL（可选）"),
+    ] = None,
+    title: Annotated[
+        str | None,
+        typer.Option("--title", help="节目标题（可选）"),
+    ] = None,
+    llm_provider: Annotated[
+        str | None,
+        typer.Option(
+            "--llm-provider", help="LLM provider（配合 --assign-speakers 使用）"
+        ),
+    ] = None,
+) -> None:
+    """解析字幕：SRT 文件 → Transcript JSON。
+
+    默认不调用 LLM。使用 --assign-speakers 启用说话人推断。
+    """
+    from podlator.steps.parse_srt import parse_srt_to_file
+
+    try:
+        doc = parse_srt_to_file(srt, output, source_url=source_url, title=title)
+    except (FileNotFoundError, ValueError) as e:
+        typer.echo(f"解析失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    typer.echo(f"字幕解析完成: {output}")
+    typer.echo(f"  片段: {len(doc.segments)}")
+
+    if assign_speakers:
+        asyncio.run(_assign_speakers_after_parse(output, output, llm_provider))
+
+
+async def _assign_speakers_after_parse(
+    input_path: Path, output_path: Path, provider: str | None
+) -> None:
+    """parse-srt 后继续做说话人推断。"""
+    from podlator.config import Settings
+    from podlator.steps.assign_speakers import assign_speakers
+    from podlator.steps.io import read_transcript, write_transcript
+
+    settings = Settings()
+    provider_name = provider or settings.llm_provider_summarize
+
+    try:
+        transcript = read_transcript(input_path)
+        result = await assign_speakers(
+            transcript, provider_name=provider_name, settings=settings
+        )
+        write_transcript(output_path, result)
+        typer.echo(f"说话人推断完成: {output_path}")
+    except Exception as e:
+        typer.echo(f"说话人推断失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+
+@app.command(name="assign-speakers")
+def assign_speakers_cmd(
+    transcript: Annotated[
+        Path, typer.Argument(help="Transcript JSON 路径", exists=True)
+    ],
+    output: Annotated[
+        Path,
+        typer.Option("-o", "--output", help="输出 Transcript JSON 路径"),
+    ] = ...,  # type: ignore[assignment]
+    provider: Annotated[
+        str | None,
+        typer.Option("--provider", help="LLM provider 名称"),
+    ] = None,
+) -> None:
+    """推断说话人：Transcript JSON → 带 speaker 的 Transcript JSON。
+
+    只修改 speaker 字段，不改写正文和时间戳。
+    """
+    asyncio.run(_assign_speakers_cmd(transcript, output, provider))
+
+
+async def _assign_speakers_cmd(
+    transcript_path: Path, output: Path, provider: str | None
+) -> None:
+    from podlator.config import Settings
+    from podlator.steps.assign_speakers import assign_speakers
+    from podlator.steps.io import read_transcript, write_transcript
+
+    settings = Settings()
+    provider_name = provider or settings.llm_provider_summarize
+
+    try:
+        doc = read_transcript(transcript_path)
+    except (FileNotFoundError, ValueError) as e:
+        typer.echo(f"读取 Transcript 失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    try:
+        result = await assign_speakers(
+            doc, provider_name=provider_name, settings=settings
+        )
+        write_transcript(output, result)
+    except Exception as e:
+        typer.echo(f"说话人推断失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    changed = sum(
+        1 for s, r in zip(doc.segments, result.segments) if s.speaker != r.speaker
+    )
+    typer.echo(f"说话人推断完成: {output}")
+    typer.echo(f"  修改了 {changed}/{len(doc.segments)} 个片段的 speaker 标签")
+
+
+@app.command()
+def split(
+    transcript: Annotated[
+        Path, typer.Argument(help="Transcript JSON 路径", exists=True)
+    ],
+    output: Annotated[
+        Path,
+        typer.Option("-o", "--output", help="输出 Chapters JSON 路径"),
+    ] = ...,  # type: ignore[assignment]
+    provider: Annotated[
+        str | None,
+        typer.Option("--provider", help="LLM provider 名称"),
+    ] = None,
+) -> None:
+    """切分章节：Transcript JSON → Chapters JSON。
+
+    只输出章节结构（start/end + title），不翻译、不摘要、不润色正文。
+    """
+    asyncio.run(_split_cmd(transcript, output, provider))
+
+
+async def _split_cmd(transcript_path: Path, output: Path, provider: str | None) -> None:
+    from podlator.config import Settings
+    from podlator.steps.io import read_transcript, write_chapters
+    from podlator.steps.split_chapters import split_transcript
+
+    settings = Settings()
+    provider_name = provider or settings.llm_provider_summarize
+
+    try:
+        doc = read_transcript(transcript_path)
+    except (FileNotFoundError, ValueError) as e:
+        typer.echo(f"读取 Transcript 失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    try:
+        chapters_doc = await split_transcript(
+            doc, provider_name=provider_name, settings=settings
+        )
+        write_chapters(output, chapters_doc)
+    except ValueError as e:
+        typer.echo(f"章节切分失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    typer.echo(f"章节切分完成: {output}")
+    typer.echo(f"  章节数: {len(chapters_doc.chapters)}")
+    for ch in chapters_doc.chapters:
+        typer.echo(f"  [{ch.start:.0f}s - {ch.end:.0f}s] {ch.title}")
+
+
+@app.command()
+def render(
+    transcript: Annotated[
+        Path, typer.Argument(help="Transcript JSON 路径", exists=True)
+    ],
+    chapters: Annotated[
+        Path,
+        typer.Option("--chapters", help="Chapters JSON 路径", exists=True),
+    ] = ...,  # type: ignore[assignment]  # required
+    output: Annotated[
+        Path,
+        typer.Option("-o", "--output", help="输出 Markdown 路径"),
+    ] = ...,  # type: ignore[assignment]
+    mode: Annotated[
+        str,
+        typer.Option("--mode", help="输出模式：summary（精简摘要）或 full（全文翻译）"),
+    ] = "summary",
+    provider: Annotated[
+        str | None,
+        typer.Option("--provider", help="LLM provider 名称"),
+    ] = None,
+) -> None:
+    """渲染输出：Transcript + Chapters → Markdown。
+
+    支持 summary（精简摘要）和 full（全文翻译）两种模式。
+    """
+    asyncio.run(_render_cmd(transcript, chapters, output, mode, provider))
+
+
+async def _render_cmd(
+    transcript_path: Path,
+    chapters_path: Path,
+    output: Path,
+    mode: str,
+    provider: str | None,
+) -> None:
+    from podlator.config import Settings
+    from podlator.steps.io import read_chapters, read_transcript, write_markdown
+    from podlator.steps.render_chinese import render_chinese
+
+    if mode not in ("summary", "full"):
+        typer.echo(f"不支持的模式: {mode}（仅支持 summary / full）", err=True)
+        raise typer.Exit(code=1)
+
+    settings = Settings()
+    provider_name = provider or settings.llm_provider_summarize
+
+    try:
+        transcript_doc = read_transcript(transcript_path)
+        chapters_doc = read_chapters(chapters_path)
+    except (FileNotFoundError, ValueError) as e:
+        typer.echo(f"读取文件失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    try:
+        md = await render_chinese(
+            transcript_doc,
+            chapters_doc,
+            mode=mode,  # type: ignore[arg-type]
+            provider_name=provider_name,
+            settings=settings,
+        )
+        write_markdown(output, md)
+    except ValueError as e:
+        typer.echo(f"渲染失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    typer.echo(f"渲染完成 ({mode}): {output}")
+    typer.echo(f"  字数: {len(md)}")
+
+
+@app.command()
+def polish(
+    draft: Annotated[Path, typer.Argument(help="Markdown 草稿路径", exists=True)],
+    output: Annotated[
+        Path,
+        typer.Option("-o", "--output", help="输出 Markdown 路径"),
+    ] = ...,  # type: ignore[assignment]
+    title: Annotated[
+        str | None,
+        typer.Option("--title", help="节目标题（可选）"),
+    ] = None,
+    provider: Annotated[
+        str | None,
+        typer.Option("--provider", help="LLM provider 名称"),
+    ] = None,
+) -> None:
+    """润色：Markdown 草稿 → 润色后的 Markdown。"""
+    asyncio.run(_polish_cmd(draft, output, title, provider))
+
+
+async def _polish_cmd(
+    draft_path: Path, output: Path, title: str | None, provider: str | None
+) -> None:
+    from podlator.config import Settings
+    from podlator.steps.io import read_markdown, write_markdown
+    from podlator.steps.polish import polish_markdown
+
+    settings = Settings()
+    provider_name = provider or settings.llm_provider_polish
+
+    try:
+        md = read_markdown(draft_path)
+    except FileNotFoundError as e:
+        typer.echo(f"读取草稿失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    try:
+        polished = await polish_markdown(
+            md, title=title, provider_name=provider_name, settings=settings
+        )
+        write_markdown(output, polished)
+    except Exception as e:
+        typer.echo(f"润色失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    typer.echo(f"润色完成: {output}")
+    typer.echo(f"  字数: {len(polished)}")

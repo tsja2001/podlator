@@ -5,6 +5,7 @@
 ## [Unreleased]
 
 ### Added
+- M1.4 文件转换型 Step CLI + 可组合 LangGraph Workflow 方案文档，覆盖调用独立 `speech-transcriber` CLI、SRT 字幕解析、LLM 说话人推断、render 模式扩展、动态 workflow 预留和章节切分时间戳修正。
 - 腾讯云 ASR 大模型版 STT Provider，使用 COS 临时上传音频并生成预签名 URL 提交录音文件识别任务。
 - Tencent COS 音频暂存封装，支持上传、GET 预签名和识别后清理。
 - 腾讯云 ASR/COS 单元测试和 gated smoke 测试。

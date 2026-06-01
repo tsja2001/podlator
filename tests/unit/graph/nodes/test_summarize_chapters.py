@@ -8,7 +8,6 @@ import pytest
 
 from podlator.graph.nodes.summarize_chapters import run
 from podlator.graph.state import Chapter
-from podlator.providers.llm.base import LLMResult
 
 
 @pytest.fixture
@@ -63,61 +62,56 @@ def state() -> dict:
     ]
     return {
         "task_id": "test-task",
+        "title": "Test Episode",
+        "transcript_text": "hello world test content",
         "chapters": chapters,
         "transcript_segments": segments,
     }
 
 
-def _make_result(content: str) -> LLMResult:
-    return LLMResult(
-        content=content,
-        model="deepseek-v4-flash",
-        provider_name="deepseek",
-        tokens_in=100,
-        tokens_out=50,
-        duration_ms=500.0,
-        cost_usd=0.001,
-    )
+SUMMARY_MARKDOWN = """\
+# Test Episode
+
+> 中文精简摘要
+
+## 开场
+
+开场摘要内容。
+
+## 正文
+
+正文摘要内容。
+"""
 
 
 @pytest.mark.asyncio
 async def test_summarize_chapters_success(state: dict) -> None:
-    """正常并发摘要，所有 chapter.summary_zh 被填充。"""
-    mock_llm = AsyncMock()
-    mock_llm.complete.side_effect = [
-        _make_result("开场摘要"),
-        _make_result("正文摘要"),
-    ]
-
+    """正常渲染，通过 step 层获取结果并解析到 summary_zh。"""
     with patch(
-        "podlator.graph.nodes.summarize_chapters.get_llm_provider",
-        return_value=mock_llm,
+        "podlator.graph.nodes.summarize_chapters.render_chinese",
+        new_callable=AsyncMock,
+        return_value=SUMMARY_MARKDOWN,
     ):
         result = await run(state)
 
     assert len(result["chapter_summaries"]) == 2
-    assert result["chapters"][0]["summary_zh"] == "开场摘要"
-    assert result["chapters"][1]["summary_zh"] == "正文摘要"
+    assert result["chapters"][0]["summary_zh"] == "开场摘要内容。"
+    assert result["chapters"][1]["summary_zh"] == "正文摘要内容。"
 
 
 @pytest.mark.asyncio
 async def test_summarize_chapters_partial_failure(state: dict) -> None:
-    """部分章节失败时继续处理其他。"""
-    mock_llm = AsyncMock()
-    mock_llm.complete.side_effect = [
-        _make_result("开场摘要"),
-        Exception("API error"),
-    ]
-
+    """step 抛异常时 @node 包装为 NodeError。"""
     with patch(
-        "podlator.graph.nodes.summarize_chapters.get_llm_provider",
-        return_value=mock_llm,
+        "podlator.graph.nodes.summarize_chapters.render_chinese",
+        new_callable=AsyncMock,
+        side_effect=RuntimeError("LLM API error"),
     ):
-        result = await run(state)
-
-    # 第一个成功，第二个失败
-    assert result["chapters"][0]["summary_zh"] == "开场摘要"
-    assert result["chapters"][1]["summary_zh"] == ""
+        with pytest.raises(Exception):
+            # @node decorator wraps all exceptions in NodeError
+            result = await run(state)
+            # If we reach here, check it was wrapped
+            assert "error" in result
 
 
 @pytest.mark.asyncio

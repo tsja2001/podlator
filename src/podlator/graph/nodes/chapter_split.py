@@ -1,16 +1,22 @@
-"""节点：按主题切分章节。使用 DeepSeek V4-Flash。"""
+"""节点：按主题切分章节。
+
+通过 steps/split_chapters.py 调用 LLM，prompt 包含时间戳。
+"""
 
 from __future__ import annotations
 
-import json
-import re
 from typing import Any
 
 from podlator.config import Settings
 from podlator.graph.nodes._base import node, node_logger
-from podlator.graph.state import Chapter, PodlatorState
-from podlator.prompts import load_prompt
-from podlator.providers.llm import get_llm_provider
+from podlator.graph.state import PodlatorState
+from podlator.steps.models import (
+    TranscriptDocument,
+    TranscriptProviderMeta,
+    TranscriptSegmentModel,
+    TranscriptSource,
+)
+from podlator.steps.split_chapters import split_transcript
 
 
 @node("chapter_split")
@@ -18,73 +24,53 @@ async def run(state: PodlatorState) -> dict[str, Any]:
     log = node_logger(state, "chapter_split")
 
     transcript_text = state.get("transcript_text", "")
-    if not transcript_text:
+    segments_raw = state.get("transcript_segments", [])
+    if not transcript_text or not segments_raw:
         log.warning("empty_transcript")
         return {"chapters": []}
 
-    duration = state.get("duration_seconds", 0)
+    # 构建 TranscriptDocument
+    segments = [
+        TranscriptSegmentModel(
+            index=i,
+            start=s.get("start", 0.0),
+            end=s.get("end", 0.0),
+            text=s.get("text", ""),
+            speaker=s.get("speaker"),
+            confidence=s.get("confidence"),
+        )
+        for i, s in enumerate(segments_raw)
+    ]
+
+    transcript = TranscriptDocument(
+        source=TranscriptSource(
+            title=state.get("title"),
+            duration_seconds=state.get("duration_seconds"),
+        ),
+        provider=TranscriptProviderMeta(name=state.get("stt_provider", "unknown")),
+        text=transcript_text,
+        segments=segments,
+    )
+
     settings = Settings()
-    provider = get_llm_provider(settings.llm_provider_summarize, settings)
-
-    system, user_template = load_prompt("chapter_split")
-    user = user_template.format(
-        duration_seconds=duration,
-        transcript_text=transcript_text,
+    chapters_doc = await split_transcript(
+        transcript,
+        provider_name=settings.llm_provider_summarize,
+        settings=settings,
     )
 
-    result = await provider.complete(prompt=user, system=system)
-    log.info(
-        "chapter_split_completed",
-        tokens_in=result.tokens_in,
-        tokens_out=result.tokens_out,
-        cost_usd=result.cost_usd,
-    )
-
-    raw_chapters = _parse_json_array(result.content)
-    segments = state.get("transcript_segments", [])
-    chapters = _build_chapters(raw_chapters, segments)
+    # 映射 ChapterDocument → PodlatorState (list[Chapter])
+    chapters = [
+        {
+            "index": ch.index,
+            "title": ch.title,
+            "start": ch.start,
+            "end": ch.end,
+            "segment_indices": ch.segment_indices,
+            "summary_zh": "",
+        }
+        for ch in chapters_doc.chapters
+    ]
 
     log.info("chapters_parsed", chapter_count=len(chapters))
-    return {"chapters": chapters, "total_cost_usd": result.cost_usd}
-
-
-def _parse_json_array(text: str) -> list[dict[str, Any]]:
-    """从 LLM 输出中提取 JSON 数组，容忍前后有其他文字。"""
-    match = re.search(r"\[.*\]", text, re.DOTALL)
-    if not match:
-        raise ValueError("No JSON array found in LLM output")
-    return json.loads(match.group())  # type: ignore[no-any-return]
-
-
-def _build_chapters(
-    raw: list[dict[str, Any]],
-    segments: list[Any],
-) -> list[Chapter]:
-    """将 LLM 返回的章节 JSON 转为 Chapter 列表，并计算 segment_indices。"""
-    chapters: list[Chapter] = []
-    for i, ch in enumerate(raw):
-        start = float(ch.get("start", 0))
-        end = float(ch.get("end", 0))
-        indices = _find_segment_indices(segments, start, end)
-        chapters.append(
-            {
-                "index": i,
-                "title": ch.get("title", f"Chapter {i + 1}"),
-                "start": start,
-                "end": end,
-                "segment_indices": indices,
-                "summary_zh": "",
-            }
-        )
-    return chapters
-
-
-def _find_segment_indices(segments: list[Any], start: float, end: float) -> list[int]:
-    """找到时间窗口内的 segment 索引。"""
-    indices = []
-    for i, seg in enumerate(segments):
-        seg_start = seg.get("start", 0)
-        seg_end = seg.get("end", 0)
-        if seg_end > start and seg_start < end:
-            indices.append(i)
-    return indices
+    return {"chapters": chapters}

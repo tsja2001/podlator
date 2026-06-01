@@ -6,10 +6,14 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from podlator.errors import NodeError, ProviderError
+from podlator.errors import NodeError
 from podlator.graph.nodes.transcribe import run
-from podlator.graph.state import TranscriptSegment
-from podlator.providers.stt.base import STTResult
+from podlator.steps.models import (
+    TranscriptDocument,
+    TranscriptProviderMeta,
+    TranscriptSegmentModel,
+    TranscriptSource,
+)
 
 
 @pytest.fixture
@@ -20,60 +24,47 @@ def state() -> dict:
     }
 
 
-@pytest.fixture
-def fake_segments() -> list[TranscriptSegment]:
-    return [
-        {
-            "text": "Hello world",
-            "start": 0.0,
-            "end": 1.0,
-            "speaker": "SPEAKER_0",
-            "confidence": 0.99,
-        },
-    ]
-
-
-@pytest.fixture
-def fake_result(fake_segments: list[TranscriptSegment]) -> STTResult:
-    return STTResult(
-        segments=fake_segments,
-        full_text="Hello world",
-        has_diarization=True,
-        provider_name="deepgram",
-        duration_ms=500.0,
-        cost_usd=0.01,
+def _fake_doc() -> TranscriptDocument:
+    return TranscriptDocument(
+        source=TranscriptSource(audio_path="/tmp/test.mp3", duration_seconds=10.0),
+        provider=TranscriptProviderMeta(name="tencent_cloud", cost_usd=0.01),
+        text="Hello world",
+        segments=[
+            TranscriptSegmentModel(
+                index=0,
+                start=0.0,
+                end=1.0,
+                text="Hello world",
+                speaker="SPEAKER_0",
+                confidence=0.99,
+            ),
+        ],
     )
 
 
 @pytest.mark.asyncio
-async def test_transcribe_success(state: dict, fake_result: STTResult) -> None:
-    """正常转写，返回 transcript_segments 等字段。"""
-    mock_stt = AsyncMock()
-    mock_stt.transcribe.return_value = fake_result
-
+async def test_transcribe_success(state: dict) -> None:
+    """正常转写，通过 step 层获取结果并映射到 state。"""
     with patch(
-        "podlator.graph.nodes.transcribe.get_stt_provider",
-        return_value=mock_stt,
+        "podlator.graph.nodes.transcribe.transcribe_audio",
+        new_callable=AsyncMock,
+        return_value=_fake_doc(),
     ):
         result = await run(state)
 
     assert result["transcript_text"] == "Hello world"
     assert len(result["transcript_segments"]) == 1
-    assert result["stt_provider"] == "deepgram"
-    assert result["has_diarization"] is True
+    assert result["stt_provider"] == "tencent_cloud"
+    assert result["total_cost_usd"] == 0.01
 
 
 @pytest.mark.asyncio
 async def test_transcribe_provider_error(state: dict) -> None:
-    """Provider 失败抛出 NodeError。"""
-    mock_stt = AsyncMock()
-    mock_stt.transcribe.side_effect = ProviderError(
-        "deepgram", "API error", retryable=True
-    )
-
+    """step 抛异常时 @node 装饰器包装为 NodeError。"""
     with patch(
-        "podlator.graph.nodes.transcribe.get_stt_provider",
-        return_value=mock_stt,
+        "podlator.graph.nodes.transcribe.transcribe_audio",
+        new_callable=AsyncMock,
+        side_effect=RuntimeError("speech-transcriber failed"),
     ):
         with pytest.raises(NodeError, match=r"\[transcribe\]"):
             await run(state)

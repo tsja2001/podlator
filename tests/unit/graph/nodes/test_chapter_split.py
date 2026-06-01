@@ -8,7 +8,7 @@ import pytest
 
 from podlator.errors import NodeError
 from podlator.graph.nodes.chapter_split import run
-from podlator.providers.llm.base import LLMResult
+from podlator.steps.models import ChapterDocument, ChapterModel
 
 
 @pytest.fixture
@@ -17,6 +17,7 @@ def state() -> dict:
         "task_id": "test-task",
         "transcript_text": "Hello world. This is a test transcript. " * 20,
         "duration_seconds": 120.0,
+        "stt_provider": "deepgram",
         "transcript_segments": [
             {
                 "text": "hello",
@@ -36,31 +37,26 @@ def state() -> dict:
     }
 
 
-@pytest.fixture
-def mock_llm_result() -> LLMResult:
-    return LLMResult(
-        content=(
-            '[{"title": "开场", "start": 0.0, "end": 60.0},'
-            ' {"title": "正文", "start": 60.0, "end": 120.0}]'
-        ),
-        model="deepseek-v4-flash",
-        provider_name="deepseek",
-        tokens_in=100,
-        tokens_out=50,
-        duration_ms=500.0,
-        cost_usd=0.001,
+def _fake_chapters_doc() -> ChapterDocument:
+    return ChapterDocument(
+        chapters=[
+            ChapterModel(
+                index=0, title="开场", start=0.0, end=60.0, segment_indices=[0]
+            ),
+            ChapterModel(
+                index=1, title="正文", start=60.0, end=120.0, segment_indices=[1]
+            ),
+        ]
     )
 
 
 @pytest.mark.asyncio
-async def test_chapter_split_success(state: dict, mock_llm_result: LLMResult) -> None:
-    """正常切分章节。"""
-    mock_llm = AsyncMock()
-    mock_llm.complete.return_value = mock_llm_result
-
+async def test_chapter_split_success(state: dict) -> None:
+    """正常切分章节，通过 step 层获取结果并映射到 state。"""
     with patch(
-        "podlator.graph.nodes.chapter_split.get_llm_provider",
-        return_value=mock_llm,
+        "podlator.graph.nodes.chapter_split.split_transcript",
+        new_callable=AsyncMock,
+        return_value=_fake_chapters_doc(),
     ):
         result = await run(state)
 
@@ -71,22 +67,12 @@ async def test_chapter_split_success(state: dict, mock_llm_result: LLMResult) ->
 
 
 @pytest.mark.asyncio
-async def test_chapter_split_invalid_json(state: dict) -> None:
-    """LLM 返回无法解析的内容。"""
-    mock_llm = AsyncMock()
-    mock_llm.complete.return_value = LLMResult(
-        content="This is not JSON at all",
-        model="deepseek-v4-flash",
-        provider_name="deepseek",
-        tokens_in=100,
-        tokens_out=10,
-        duration_ms=100.0,
-        cost_usd=0.001,
-    )
-
+async def test_chapter_split_error_wraps_to_node_error(state: dict) -> None:
+    """step 抛异常时 @node 包装为 NodeError。"""
     with patch(
-        "podlator.graph.nodes.chapter_split.get_llm_provider",
-        return_value=mock_llm,
+        "podlator.graph.nodes.chapter_split.split_transcript",
+        new_callable=AsyncMock,
+        side_effect=ValueError("LLM 章节切分返回非法 JSON"),
     ):
         with pytest.raises(NodeError, match=r"\[chapter_split\]"):
             await run(state)

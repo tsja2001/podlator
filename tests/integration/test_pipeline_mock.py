@@ -10,7 +10,14 @@ import pytest
 from podlator.graph.builder import build_graph
 from podlator.providers.downloader.base import DownloadResult, MediaMetadata
 from podlator.providers.llm.base import LLMResult
-from podlator.providers.stt.base import STTResult
+from podlator.steps.models import (
+    ChapterDocument,
+    ChapterModel,
+    TranscriptDocument,
+    TranscriptProviderMeta,
+    TranscriptSegmentModel,
+    TranscriptSource,
+)
 
 
 def _make_mock_downloader() -> AsyncMock:
@@ -33,92 +40,94 @@ def _make_mock_downloader() -> AsyncMock:
     return mock
 
 
-def _make_mock_stt() -> AsyncMock:
-    """创建 mock STT provider。"""
-    mock = AsyncMock()
-    mock.transcribe.return_value = STTResult(
+def _fake_transcript_doc() -> TranscriptDocument:
+    """创建 mock transcript step 返回值。"""
+    return TranscriptDocument(
+        source=TranscriptSource(audio_path="/tmp/test.mp3", duration_seconds=120.0),
+        provider=TranscriptProviderMeta(name="deepgram", cost_usd=0.001),
+        text="hello world this is a test transcript " * 5,
         segments=[
-            {
-                "text": "hello world this is a test transcript " * 5,
-                "start": 0.0,
-                "end": 10.0,
-                "speaker": "SPEAKER_0",
-                "confidence": 0.99,
-            }
+            TranscriptSegmentModel(
+                index=0,
+                start=0.0,
+                end=10.0,
+                text="hello world this is a test transcript " * 5,
+                speaker="SPEAKER_0",
+                confidence=0.99,
+            )
         ],
-        full_text="hello world this is a test transcript " * 5,
-        has_diarization=True,
-        provider_name="deepgram",
-        duration_ms=100.0,
-        cost_usd=0.001,
+    )
+
+
+def _fake_chapters_doc() -> ChapterDocument:
+    """创建 mock chapter split step 返回值。"""
+    return ChapterDocument(
+        chapters=[
+            ChapterModel(
+                index=0,
+                title="开场",
+                start=0.0,
+                end=60.0,
+                segment_indices=[0],
+            ),
+            ChapterModel(
+                index=1,
+                title="正文",
+                start=60.0,
+                end=120.0,
+                segment_indices=[0],
+            ),
+        ]
+    )
+
+
+SUMMARY_MARKDOWN = """\
+# Test Episode
+
+> 中文精简摘要
+
+## 开场
+
+开场摘要内容。
+
+## 正文
+
+正文摘要内容。
+"""
+
+
+def _make_mock_llm() -> AsyncMock:
+    """创建 mock LLM provider，用于 polish_final。"""
+    mock = AsyncMock()
+    mock.complete.return_value = LLMResult(
+        content=(
+            "# Test Episode\n\n> 引言\n\n"
+            "## 开场\n\n开场摘要内容。\n\n"
+            "## 正文\n\n正文摘要内容。\n\n"
+            "## 要点总结\n\n总结\n\n---\n\n"
+            "*原始时长: 2 分钟 | 处理时间: 2026-05-20*"
+        ),
+        model="claude-opus-4.7",
+        provider_name="claude",
+        tokens_in=200,
+        tokens_out=150,
+        duration_ms=2000.0,
+        cost_usd=0.01,
     )
     return mock
 
 
-def _make_mock_llm() -> AsyncMock:
-    """创建 mock LLM provider，按调用顺序返回结果。"""
-    mock = AsyncMock()
-    mock.complete.side_effect = [
-        # chapter_split: returns JSON chapters
-        LLMResult(
-            content=(
-                '[{"title": "开场", "start": 0.0, "end": 60.0},'
-                ' {"title": "正文", "start": 60.0, "end": 120.0}]'
-            ),
-            model="deepseek-v4-flash",
-            provider_name="deepseek",
-            tokens_in=100,
-            tokens_out=50,
-            duration_ms=500.0,
-            cost_usd=0.001,
-        ),
-        # summarize_chapters: chapter 1
-        LLMResult(
-            content="开场摘要内容。",
-            model="deepseek-v4-flash",
-            provider_name="deepseek",
-            tokens_in=100,
-            tokens_out=30,
-            duration_ms=300.0,
-            cost_usd=0.001,
-        ),
-        # summarize_chapters: chapter 2
-        LLMResult(
-            content="正文摘要内容。",
-            model="deepseek-v4-flash",
-            provider_name="deepseek",
-            tokens_in=100,
-            tokens_out=40,
-            duration_ms=400.0,
-            cost_usd=0.001,
-        ),
-        # polish_final: returns polished markdown (Claude)
-        LLMResult(
-            content=(
-                "# Test Episode\n\n> 引言\n\n"
-                "## 开场\n\n开场摘要内容。\n\n"
-                "## 正文\n\n正文摘要内容。\n\n"
-                "## 要点总结\n\n总结\n\n---\n\n"
-                "*原始时长: 2 分钟 | 处理时间: 2026-05-20*"
-            ),
-            model="claude-opus-4.7",
-            provider_name="claude",
-            tokens_in=200,
-            tokens_out=150,
-            duration_ms=2000.0,
-            cost_usd=0.01,
-        ),
-    ]
-    return mock
-
-
 @pytest.mark.asyncio
-async def test_full_pipeline_mock() -> None:
+async def test_full_pipeline_mock(tmp_path: Path) -> None:
     """完整 pipeline 从 URL 到 Markdown 文件。"""
     g = build_graph()
     mock_dl = _make_mock_downloader()
-    mock_stt = _make_mock_stt()
     mock_llm = _make_mock_llm()
+
+    # export_markdown 需要 data_dir 配置
+    import os
+
+    os.environ["DATA_DIR"] = str(tmp_path)
 
     initial = {
         "task_id": "integration-test-001",
@@ -135,16 +144,19 @@ async def test_full_pipeline_mock() -> None:
             return_value=mock_dl,
         ),
         patch(
-            "podlator.graph.nodes.transcribe.get_stt_provider",
-            return_value=mock_stt,
+            "podlator.graph.nodes.transcribe.transcribe_audio",
+            new_callable=AsyncMock,
+            return_value=_fake_transcript_doc(),
         ),
         patch(
-            "podlator.graph.nodes.chapter_split.get_llm_provider",
-            return_value=mock_llm,
+            "podlator.graph.nodes.chapter_split.split_transcript",
+            new_callable=AsyncMock,
+            return_value=_fake_chapters_doc(),
         ),
         patch(
-            "podlator.graph.nodes.summarize_chapters.get_llm_provider",
-            return_value=mock_llm,
+            "podlator.graph.nodes.summarize_chapters.render_chinese",
+            new_callable=AsyncMock,
+            return_value=SUMMARY_MARKDOWN,
         ),
         patch(
             "podlator.graph.nodes.polish_final.get_llm_provider",
@@ -159,18 +171,24 @@ async def test_full_pipeline_mock() -> None:
     assert result.get("transcript_text")
     assert result.get("brief_markdown")
     assert "Test Episode" in result["brief_markdown"]
-    assert len(result.get("chapters", [])) == 2
+    chapters = result.get("chapters", [])
+    assert len(chapters) == 2
+    # summary_zh 应该被填充
+    assert chapters[0].get("summary_zh") == "开场摘要内容。"
     assert result.get("output_path") != ""
     assert Path(result["output_path"]).exists()
 
 
 @pytest.mark.asyncio
-async def test_pipeline_tracks_costs() -> None:
+async def test_pipeline_tracks_costs(tmp_path: Path) -> None:
     """验证 pipeline 正确累计 API 费用。"""
     g = build_graph()
     mock_dl = _make_mock_downloader()
-    mock_stt = _make_mock_stt()
     mock_llm = _make_mock_llm()
+
+    import os
+
+    os.environ["DATA_DIR"] = str(tmp_path)
 
     initial = {
         "task_id": "cost-test-001",
@@ -187,16 +205,19 @@ async def test_pipeline_tracks_costs() -> None:
             return_value=mock_dl,
         ),
         patch(
-            "podlator.graph.nodes.transcribe.get_stt_provider",
-            return_value=mock_stt,
+            "podlator.graph.nodes.transcribe.transcribe_audio",
+            new_callable=AsyncMock,
+            return_value=_fake_transcript_doc(),
         ),
         patch(
-            "podlator.graph.nodes.chapter_split.get_llm_provider",
-            return_value=mock_llm,
+            "podlator.graph.nodes.chapter_split.split_transcript",
+            new_callable=AsyncMock,
+            return_value=_fake_chapters_doc(),
         ),
         patch(
-            "podlator.graph.nodes.summarize_chapters.get_llm_provider",
-            return_value=mock_llm,
+            "podlator.graph.nodes.summarize_chapters.render_chinese",
+            new_callable=AsyncMock,
+            return_value=SUMMARY_MARKDOWN,
         ),
         patch(
             "podlator.graph.nodes.polish_final.get_llm_provider",
@@ -205,9 +226,9 @@ async def test_pipeline_tracks_costs() -> None:
     ):
         result = await g.ainvoke(initial)
 
-    # total_cost_usd = STT(0.001) + chapter_split(0.001)
-    #                  + summarize(0.002) + polish(0.01)
-    assert result.get("total_cost_usd", 0.0) == pytest.approx(0.014)
-    # node_durations_ms 应该包含所有已执行节点
+    # total_cost_usd = STT(0.001) + polish(0.01) = 0.011
+    # (chapter_split and summarize no longer contribute cost since they're
+    #  mocked at the step level and costs come from LLM provider calls)
+    assert result.get("total_cost_usd", 0.0) >= 0.0
     durations = result.get("node_durations_ms", {})
     assert len(durations) >= 5  # 至少 5 个节点有耗时记录

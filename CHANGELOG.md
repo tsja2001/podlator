@@ -12,6 +12,7 @@
 - Step 文件格式层：`TranscriptDocument`、`ChapterDocument` 等 Pydantic 模型，JSON 读写层。
 - Step Registry：为后续 Workflow YAML 配置化预留接口。
 - M1.4 文件转换型 Step CLI + 可组合 LangGraph Workflow 方案文档。
+- README 新增详细 CLI 步骤文档：每个命令的参数表、输入/输出文件说明、中间文件格式、典型工作流示例。
 - 腾讯云 ASR 大模型版 STT Provider，使用 COS 临时上传音频并生成预签名 URL 提交录音文件识别任务。
 - Tencent COS 音频暂存封装，支持上传、GET 预签名和识别后清理。
 

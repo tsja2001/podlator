@@ -89,33 +89,278 @@ uv run podlator run "https://www.youtube.com/watch?v=XXXXX"
 
 ### 单步文件转换 CLI
 
-完整 pipeline 之外，每一步都可以独立调试：
+除了 `podlator run <url>` 一键跑完整 pipeline，每一步也可以**作为独立的文件转换命令**单独调用。
+每个命令接受一个或多个输入文件，产出明确的输出文件，彼此不依赖任务状态或数据库。
+
+设计理念：**每一步 = 明确的文件转换能力**，方便调试、复用和自由组合。
+
+#### Pipeline 流程
+
+```
+URL ──→ download ──→ audio.mp3 ──→ transcribe ──→ transcript.json
+                                         │
+                           SRT 字幕 ──→ parse-srt ──→ transcript.json
+                                                          │
+                              assign-speakers ←──────────┘
+                                    │
+                                    ├──→ transcript.speakers.json
+                                    │
+                              split │
+                                    ↓
+                              chapters.json
+                                    │
+         ┌──────────────────────────┤
+         │                          │
+    render --mode summary      render --mode full
+         │                          │
+         ↓                          ↓
+    summary.md                full-translation.md
+         │
+      polish
+         │
+         ↓
+     brief.md
+```
+
+#### 命令概览
+
+| 命令 | 输入 | 输出 | 需要 LLM | 需要外部服务 |
+|---|---|---|---|---|
+| `download` | URL | `.mp3` + `metadata.json` | — | yt-dlp |
+| `transcribe` | `.mp3` | `transcript.json` | — | speech-transcriber CLI |
+| `parse-srt` | `.srt` | `transcript.json` | — | — |
+| `assign-speakers` | `transcript.json` | `transcript.json`（含 speaker） | ✅ | — |
+| `split` | `transcript.json` | `chapters.json` | ✅ | — |
+| `render` | `transcript.json` + `chapters.json` | `.md` | ✅ | — |
+| `polish` | `.md` | `.md` | ✅ | — |
+
+---
+
+##### `download` — 下载音频
+
+```
+uv run podlator download <URL> -o <音频路径> [--metadata <JSON路径>]
+```
+
+| 参数 | 必需 | 说明 |
+|---|---|---|
+| `URL` | 是 | YouTube 或播客 RSS URL |
+| `-o, --output` | 否 | 输出音频文件路径；省略则使用 yt-dlp 默认路径 |
+| `--metadata` | 否 | 输出 metadata JSON 的路径，包含标题、时长、发布日期等 |
+
+**输入**：一个 URL。
+
+**生成文件**：
+- **音频文件**（`.mp3` / `.m4a`）：下载的播客/视频音频
+- **metadata JSON**（可选）：`title`、`description`、`duration_seconds`、`published_at`、`source_type`、`thumbnail_url`
+
+> 示例：`uv run podlator download "https://www.youtube.com/watch?v=XXXXX" -o episode.mp3 --metadata meta.json`
+
+---
+
+##### `transcribe` — 语音转文字
+
+```
+uv run podlator transcribe <音频文件> -o <JSON路径> [--provider <名称>] [--speech-transcriber-dir <目录>]
+```
+
+| 参数 | 必需 | 说明 |
+|---|---|---|
+| `AUDIO` | 是 | 音频文件路径（`.mp3` / `.m4a` / `.wav`） |
+| `-o, --output` | 是 | 输出 Transcript JSON 路径 |
+| `--provider` | 否 | Provider 名称，默认用 `SPEECH_TRANSCRIBER_PROVIDER` 配置 |
+| `--speech-transcriber-dir` | 否 | speech-transcriber 项目目录，默认用 `SPEECH_TRANSCRIBER_PROJECT_DIR` 配置 |
+
+**输入**：音频文件。**生成文件**：`transcript.json`（TranscriptDocument 格式，见下方）。
+
+转写通过调用外部项目 `speech-transcriber` 的 CLI 完成，Podlator 本身不直接调用 ASR SDK。
+
+> 示例：`uv run podlator transcribe episode.mp3 -o transcript.json --provider tencent_cloud`
+
+---
+
+##### `parse-srt` — 解析字幕文件
+
+```
+uv run podlator parse-srt <SRT文件> -o <JSON路径> [--assign-speakers] [--source-url <URL>] [--title <标题>] [--llm-provider <名称>]
+```
+
+| 参数 | 必需 | 说明 |
+|---|---|---|
+| `SRT` | 是 | SRT 字幕文件路径 |
+| `-o, --output` | 是 | 输出 Transcript JSON 路径 |
+| `--assign-speakers` | 否 | 解析后继续调用 LLM 推断说话人标签 |
+| `--source-url` | 否 | 写入 Transcript 的 `source.source_url` 字段 |
+| `--title` | 否 | 写入 Transcript 的 `source.title` 字段 |
+| `--llm-provider` | 否 | 配合 `--assign-speakers` 使用，指定 LLM |
+
+**输入**：标准 SRT 字幕文件。**生成文件**：`transcript.json`（TranscriptDocument 格式）。
+
+默认**不调用任何 LLM**，只做纯文本解析。传 `--assign-speakers` 时，解析完成后自动调用 LLM 推断说话人。
+
+> 示例：
+> ```bash
+> uv run podlator parse-srt subtitles.srt -o transcript.json
+> uv run podlator parse-srt subtitles.srt -o transcript.speakers.json --assign-speakers
+> ```
+
+---
+
+##### `assign-speakers` — 推断说话人
+
+```
+uv run podlator assign-speakers <Transcript JSON> -o <JSON路径> [--provider <名称>]
+```
+
+| 参数 | 必需 | 说明 |
+|---|---|---|
+| `TRANSCRIPT` | 是 | 输入的 Transcript JSON 路径 |
+| `-o, --output` | 是 | 输出 Transcript JSON 路径 |
+| `--provider` | 否 | LLM provider，默认用 `LLM_PROVIDER_SUMMARIZE` 配置 |
+
+**输入**：`transcript.json`（TranscriptDocument 格式）。**生成文件**：`transcript.json`（同一格式，segments 的 `speaker` 字段被填充）。
+
+行为约束：**只修改 `speaker` 字段**，不改写正文、时间戳或置信度。LLM 通过上下文线索推断说话人（非声纹级分离，结果应视为辅助标注）。
+
+> 示例：`uv run podlator assign-speakers transcript.json -o transcript.speakers.json`
+
+---
+
+##### `split` — 切分章节
+
+```
+uv run podlator split <Transcript JSON> -o <JSON路径> [--provider <名称>]
+```
+
+| 参数 | 必需 | 说明 |
+|---|---|---|
+| `TRANSCRIPT` | 是 | 输入的 Transcript JSON 路径 |
+| `-o, --output` | 是 | 输出 Chapters JSON 路径 |
+| `--provider` | 否 | LLM provider，默认用 `LLM_PROVIDER_SUMMARIZE` 配置 |
+
+**输入**：`transcript.json`（TranscriptDocument 格式）。**生成文件**：`chapters.json`（ChapterDocument 格式，`start/end + title`）。
+
+行为约束：**只输出章节结构**，不翻译、不摘要、不润色正文。Prompt 使用 segments 中带时间戳的文本（`[0.00 - 5.25] speaker: text`），保证章节边界精确。
+
+> 示例：`uv run podlator split transcript.json -o chapters.json`
+
+---
+
+##### `render` — 渲染输出
+
+```
+uv run podlator render <Transcript JSON> --chapters <Chapters JSON> --mode <summary|full> -o <MD路径> [--provider <名称>]
+```
+
+| 参数 | 必需 | 说明 |
+|---|---|---|
+| `TRANSCRIPT` | 是 | 输入的 Transcript JSON 路径 |
+| `--chapters` | 是 | Chapters JSON 路径 |
+| `--mode` | 是 | 输出模式：`summary`（精简摘要）或 `full`（全文翻译） |
+| `-o, --output` | 是 | 输出 Markdown 路径 |
+| `--provider` | 否 | LLM provider，默认用 `LLM_PROVIDER_SUMMARIZE` 配置 |
+
+**输入**：`transcript.json` + `chapters.json`。**生成文件**：Markdown 文件。
+
+两种模式：
+- **`summary`**：按章节生成中文精简摘要，压缩信息密度，适合快速浏览
+- **`full`**：按章节输出完整中文翻译，不压缩信息，保留原文表达
+
+> 示例：
+> ```bash
+> uv run podlator render transcript.json --chapters chapters.json --mode summary -o summary.md
+> uv run podlator render transcript.json --chapters chapters.json --mode full -o full.md
+> ```
+
+---
+
+##### `polish` — 润色草稿
+
+```
+uv run podlator polish <Markdown草稿> -o <MD路径> [--title <标题>] [--provider <名称>]
+```
+
+| 参数 | 必需 | 说明 |
+|---|---|---|
+| `DRAFT` | 是 | 输入的 Markdown 草稿路径 |
+| `-o, --output` | 是 | 输出 Markdown 路径 |
+| `--title` | 否 | 节目标题，用于生成引言/结论 |
+| `--provider` | 否 | LLM provider，默认用 `LLM_PROVIDER_POLISH` 配置 |
+
+**输入**：Markdown 草稿（通常是 `render --mode summary` 的输出）。**生成文件**：润色后的 Markdown。
+
+负责全局润色：修正翻译腔、统一术语、生成引言和结论。不改变章节结构。
+
+> 示例：`uv run podlator polish summary.md -o brief.md --title "Ep.42 — The Future of AI"`
+
+---
+
+#### 中间文件格式
+
+所有 step 之间通过两个标准 JSON 格式交互。
+
+**Transcript JSON** (`transcript.json`)：
+
+```json
+{
+  "schema_version": 1,
+  "source": {
+    "audio_path": "episode.mp3",
+    "source_url": "https://www.youtube.com/watch?v=XXXXX",
+    "title": "Episode Title",
+    "duration_seconds": 1234.5
+  },
+  "provider": { "name": "tencent_cloud", "cost_usd": 0.01 },
+  "text": "Full transcript text...",
+  "segments": [
+    {
+      "index": 0,
+      "start": 0.0,
+      "end": 5.25,
+      "speaker": "SPEAKER_0",
+      "text": "Welcome to the show.",
+      "confidence": 0.98
+    }
+  ]
+}
+```
+
+**Chapters JSON** (`chapters.json`)：
+
+```json
+{
+  "schema_version": 1,
+  "source_transcript": "transcript.json",
+  "chapters": [
+    {
+      "index": 0,
+      "title": "开场与主题介绍",
+      "start": 0.0,
+      "end": 120.5,
+      "segment_indices": [0, 1, 2, 3]
+    }
+  ]
+}
+```
+
+#### 典型工作流
 
 ```bash
-# 下载音频
-uv run podlator download "https://www.youtube.com/watch?v=XXXXX" -o episode.mp3 --metadata metadata.json
+# 场景 1：从 YouTube 到简报（全自动）
+uv run podlator run "https://www.youtube.com/watch?v=XXXXX"
 
-# 语音转文字
+# 场景 2：从 URL 开始，逐步调试
+uv run podlator download "https://www.youtube.com/watch?v=XXXXX" -o episode.mp3 --metadata meta.json
 uv run podlator transcribe episode.mp3 -o transcript.json
-
-# 字幕转 Transcript JSON
-uv run podlator parse-srt subtitles.srt -o transcript.json
-
-# 字幕转录 + LLM 说话人推断
-uv run podlator parse-srt subtitles.srt -o transcript.speakers.json --assign-speakers
-
-# 纯说话人推断
-uv run podlator assign-speakers transcript.json -o transcript.speakers.json
-
-# 章节切分
 uv run podlator split transcript.json -o chapters.json
-
-# 渲染输出（精简摘要 / 全文翻译）
 uv run podlator render transcript.json --chapters chapters.json --mode summary -o summary.md
-uv run podlator render transcript.json --chapters chapters.json --mode full -o full-translation.md
+uv run podlator polish summary.md -o brief.md --title "From meta.json"
 
-# 润色草稿
-uv run podlator polish summary.md -o brief.md
+# 场景 3：从已有的 SRT 字幕出发
+uv run podlator parse-srt subtitles.srt -o transcript.json
+uv run podlator assign-speakers transcript.json -o transcript.sp.json
+uv run podlator split transcript.sp.json -o chapters.json
+uv run podlator render transcript.sp.json --chapters chapters.json --mode full -o full.md
 ```
 
 ### 启动 Web UI

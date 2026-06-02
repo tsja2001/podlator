@@ -10,7 +10,10 @@
       "Bash(git pull *)",
       "Bash(git fetch *)",
       "Bash(git merge *)",
-      "Bash(git commit -m 'docs: 补全 CLI 单步命令的 README 文档，含参数表和文件格式说明 *)"
+      "Bash(git commit -m 'docs: 补全 CLI 单步命令的 README 文档，含参数表和文件格式说明 *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'docs: 丰富 CLI 步骤文档 — 每个命令加中文注释，扩展为 6 个典型工作流场景 *)",
+      "Bash(ffmpeg *)"
     ]
   }
 }

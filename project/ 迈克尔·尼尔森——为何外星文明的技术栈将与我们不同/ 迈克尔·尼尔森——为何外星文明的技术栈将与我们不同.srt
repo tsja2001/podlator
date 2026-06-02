@@ -1,0 +1,2547 @@
+1
+00:00:00,240 --> 00:00:08,320
+Today, I'm speaking with Michael Nielsen. You have done many things. You're one of the pioneers of quantum computing, wrote the main textbook in the field of the open science movement.
+
+2
+00:00:08,320 --> 00:00:15,760
+You wrote a book about deep learning that Chris Olah and Greg Brockman credit with getting them into the field. More recently, you're a research fellow
+
+3
+00:00:15,760 --> 00:00:25,120
+at the Astera Institute and writing a book about religion, science, and technology. I'm going to ask you about none of those things. The conversation I want to have today is,
+
+4
+00:00:25,120 --> 00:00:35,120
+how do we recognize scientific progress? It's especially relevant for AI because people are trying to close the RL verification loop on scientific discovery.
+
+5
+00:00:35,120 --> 00:00:46,400
+What does it mean to close that loop? But in preparing for this interview, I've realized that it's a more mysterious and elusive force, even in the history of human science, than I understood.
+
+6
+00:00:46,400 --> 00:00:58,800
+I think a good place to start will be Michelson-Morley and how special relativity is discovered, if it's different from the story that you get off of YouTube videos.
+
+7
+00:00:58,800 --> 00:01:09,920
+I will prompt you that way, and then we'll go in there. Michelson-Morley is the famous result often presented as this experiment that was done in
+
+8
+00:01:09,920 --> 00:01:21,760
+the 1880s that helped Einstein come up with the special theory of relativity a little bit later, changing the way we think about space and time and our fundamental conception of those things.
+
+9
+00:01:21,760 --> 00:01:32,000
+And there's a big gap, I think, between the way Michelson and Morley and other people at the time thought about the experiment and certainly the way in which Einstein thought
+
+10
+00:01:32,000 --> 00:01:42,880
+or did not think about the experiment. In actual fact, he stated later in his life he wasn't even sure whether he was aware of the paper at the time.
+
+11
+00:01:42,880 --> 00:01:55,840
+There's a lot of evidence that he probably was aware of the paper at the time, but it actually wasn't dispositive for his thinking at all. Something else completely was going on.
+
+12
+00:01:55,840 --> 00:02:05,280
+What Michelson and Morley thought they were doing was testing different theories of what was called the ether. If you go back to the 1600s,
+
+13
+00:02:05,280 --> 00:02:16,480
+Robert Boyle introduced the idea of the ether. We know that sound is vibrations in the air. Boyle and other people got interested in the question of
+
+14
+00:02:16,480 --> 00:02:24,480
+whether light is vibrations in something, and they couldn't figure out what it was. Boyle did an experiment where he tested whether you could propagate
+
+15
+00:02:24,480 --> 00:02:32,400
+light through a vacuum. He found that you could. You couldn't do it with sound. He introduced this idea of the ether, and for the next two hundred or so years,
+
+16
+00:02:32,400 --> 00:02:44,640
+people had all these conversations about what the ether was and what its nature was. The Michelson and Morley experiment was really an experiment to test different theories of the ether
+
+17
+00:02:44,640 --> 00:02:55,760
+against one another, in particular to find out whether or not there was a so-called ether wind. The idea was that the Earth is maybe passing through this ether wind.
+
+18
+00:02:55,760 --> 00:03:08,000
+And if it is passing through the ether wind and you shoot a light beam parallel to the direction the ether wind is going in, it'll get accelerated a little bit.
+
+19
+00:03:08,000 --> 00:03:16,400
+If it's being passed back in the opposite direction, it'll get slowed down a little bit, and you should be able to see this in the results of interference experiments.
+
+20
+00:03:16,400 --> 00:03:26,720
+What they found, much to their surprise, was that in fact there was no ether wind. That ruled out some theories of the ether, but not all, and Michelson
+
+21
+00:03:26,720 --> 00:03:36,960
+certainly continued to believe in the ether. This is what was a shocking part of reading this story from the biography of Einstein that you recommended by... what was his first name?
+
+22
+00:03:36,960 --> 00:03:45,280
+Abraham Pais. Abraham Pais. Subtle is the Lord. Also from Imre Lakatos, The Methodology of Scientific Research Programmes.
+
+23
+00:03:45,280 --> 00:03:56,560
+The way it's told is that Michelson-Morley proved that the ether did not exist. Therefore, it created a crisis in physics that Einstein solved with special relativity.
+
+24
+00:03:56,560 --> 00:04:02,080
+What you're pointing out is he actually was trying to distinguish between many different theories of ether. If you're in space or if you're on Earth,
+
+25
+00:04:02,080 --> 00:04:08,960
+it's the same direction of ether, or maybe the ether wind is being carried around by the Earth, and so you can't really experience it on Earth. But if you go to a high enough altitude,
+
+26
+00:04:08,960 --> 00:04:17,360
+you might be able to experience it. In fact, Michelson's experiments, the famous one is 1887, but he conducted these experiments for basically two decades.
+
+27
+00:04:17,360 --> 00:04:26,720
+For longer than that. He conducted the first one in 1881, I think, but he continued to believe until he died. He died, I think it was 1929 or so. It was the
+
+28
+00:04:26,720 --> 00:04:38,080
+late twenties. He was still doing experiments in the 1920s about whether or not the ether existed. So he continued to believe in the ether to the end of his life.
+
+29
+00:04:38,080 --> 00:04:48,080
+I think the last public statement he made was a year or two before he died, and he basically still believed it at that point. In fact, there was another physicist, Miller,
+
+30
+00:04:48,080 --> 00:04:57,520
+who kept doing these experiments in the 1920s. He thought that if he went to a high enough altitude, Mount Wilson in California… "Oh, I'm high enough that the ether
+
+31
+00:04:57,520 --> 00:05:06,160
+winds are not being dragged by the Earth. And I've measured the effect of the ether." Einstein hears about this and he says, and this is where you get the famous quote,
+
+32
+00:05:06,160 --> 00:05:16,880
+"Subtle is the Lord, but malicious He is not." Anyways, I think the reason the story is interesting is for many different reasons. One of the ways in which the real history of
+
+33
+00:05:16,880 --> 00:05:29,040
+science is different from this idea you get of the scientific method is that you really can't apply falsification as easily as you might think. It's not clear what is being falsified.
+
+34
+00:05:29,040 --> 00:05:36,960
+Is it just another version of the theory of the ether that's being falsified? Certainly you can't induce the theory of special relativity from the fact
+
+35
+00:05:36,960 --> 00:05:47,600
+that one version of the ether seems to be disconfirmed by these experiments. It certainly doesn't show that ideas about falsification are wrong or falsified,
+
+36
+00:05:47,600 --> 00:05:58,720
+but it does show that the most naive ideas… Things are often much more complicated than you think. Michelson did this experiment in 1881. He was a very young man, and then other people,
+
+37
+00:05:58,720 --> 00:06:08,400
+I think Rayleigh was one of them, pointed out that there were some problems with the way he did it, so they had to redo it in 1887. At that point, a lot of the leading
+
+38
+00:06:08,400 --> 00:06:23,200
+physicists of the day basically accepted this result, that there was no ether wind. But what to do about this? Sure, maybe you falsified some theories of the ether. There are others that you
+
+39
+00:06:23,200 --> 00:06:34,160
+haven't falsified at all at this point, and people set to work on developing those. It is funny, people will phrase it as showing that the ether didn't exist.
+
+40
+00:06:34,160 --> 00:06:45,600
+Even just the word "the" there is a misnomer. You actually had a ton of different theories and a couple of leading contenders. So yes, there's some version of
+
+41
+00:06:45,600 --> 00:06:59,600
+falsification going on, but how you respond to this new experiment is very complicated. Certainly the leading physicists of the day responded by saying, "Okay, this gives us a
+
+42
+00:06:59,600 --> 00:07:10,240
+lot of information about what the ether must be, but it doesn't tell us that there is no ether." In fact, Lorentz at the end of the 19th century, before Einstein,
+
+43
+00:07:10,240 --> 00:07:20,640
+figures out the math of how you convert from one reference frame to another reference frame, and comes up with the Lorentz transformations, which is the basis of special relativity.
+
+44
+00:07:20,640 --> 00:07:30,560
+But his interpretation is that you are converting from the ether reference frame to these non-privileged other reference frames if you're moving relative to the ether.
+
+45
+00:07:30,560 --> 00:07:43,760
+His interpretation of length contraction and time dilation is that this is the effect of moving through the ether, and you have this pressure. This pressure is warping clocks. It's warping
+
+46
+00:07:43,760 --> 00:08:00,240
+measures of length. The interesting thing here is that experimentally you cannot distinguish Lorentz's interpretation from special relativity. I think that's a strong statement.
+
+47
+00:08:00,240 --> 00:08:11,680
+Lorentz introduces this quantity called local time, which he regards as... My understanding is he's not trying to give a physical interpretation of this,
+
+48
+00:08:11,680 --> 00:08:20,480
+but it's what Einstein would later just recognize as time in another inertial reference frame. He's not trying to attribute much physical meaning to it.
+
+49
+00:08:20,480 --> 00:08:35,120
+I think Poincaré gets much closer later on to realizing that this is the time that's registered by clocks. About forty-odd years later, people start
+
+50
+00:08:35,120 --> 00:08:45,760
+doing these muon experiments where they see cosmic rays hit the top of the atmosphere. They produce a shower of muons, and you can look to see at different heights in the atmosphere how
+
+51
+00:08:45,760 --> 00:08:57,520
+many of those muons remain. They decay over time, and a very strange thing happens, which is that they're decaying way too slow.
+
+52
+00:08:57,520 --> 00:09:10,240
+You expect they shouldn't be able to last the whole way through the atmosphere at all. Their decay rate is too quick, if you were in a classical theory.
+
+53
+00:09:10,240 --> 00:09:21,200
+But if in fact their time really has slowed down, it's okay. In fact, the measured decay rates in 1940—and there have since been more
+
+54
+00:09:21,200 --> 00:09:34,000
+accurate experiments done—match exactly what you expect from special relativity. That's the kind of thing where if Lorentz had been alive—he'd been dead ten or so years at that
+
+55
+00:09:34,000 --> 00:09:50,880
+point—it seems quite likely that he would have tried to save his theory by patching it up yet again, but it would have been a massive setback. It starts to just look like time—this
+
+56
+00:09:50,880 --> 00:09:58,560
+thing that Lorentz introduced as a mathematical convenience—that's actually what time is, for the muons at least. Then there's a whole bunch of other experiments
+
+57
+00:09:58,560 --> 00:10:05,440
+that show this very similar phenomenon. When was that experiment done? That was, I think, 1940. It might have been published in 1941.
+
+58
+00:10:05,440 --> 00:10:17,520
+Maybe to rephrase and change my claim: it's not that you could not have distinguished them, but the scientific community adopted what we in retrospect consider the more correct
+
+59
+00:10:17,520 --> 00:10:29,520
+interpretation before it was actually experimentally shown to be preferred. So there's clearly some process that human science does which can distinguish different theories.
+
+60
+00:10:29,520 --> 00:10:43,280
+Can I just interrupt? You used the word process, and it's interesting to think about that term. Process carries connotations of something set in advance.
+
+61
+00:10:43,280 --> 00:10:57,760
+It's much more complicated in practice. You have people like Lorentz, who Einstein absolutely and utterly admired, and Poincaré, one of the greatest scientists who ever lived,
+
+62
+00:10:57,760 --> 00:11:08,240
+and Michelson, another truly outstanding scientist, who never reconciled themselves. It's not as though there's some standard procedure that we're all using to reconcile these things.
+
+63
+00:11:08,240 --> 00:11:18,000
+Great scientists can remain wrong for a very long time after the scientific community has broadly changed its opinion. But there's no centralized
+
+64
+00:11:18,000 --> 00:11:30,160
+authority or centralized method. That is the interesting thing. There's progress even though it is hard to articulate the process by which it happens, the heuristics that
+
+65
+00:11:30,160 --> 00:11:44,160
+are used. You mentioned Poincaré. Lorentz has the math right, but the interpretation wrong. It seems like Poincaré had the opposite, where he understood that it's hard to define simultaneity
+
+66
+00:11:44,160 --> 00:11:56,960
+because it requires a circular definition with time, or velocity of something that might arrive at a midpoint together, but velocity is defined in terms of time. I find this interesting. There are
+
+67
+00:11:56,960 --> 00:12:07,040
+a couple of other examples we could call on. There is this phenomenon in the history of science where somebody asks the right question, but then they don't clinch it.
+
+68
+00:12:07,040 --> 00:12:18,800
+I'm curious what you think is happening in those cases. You actually do want to go case by case and try to understand. It's not necessarily clear that they're doing the same thing wrong in all of the
+
+69
+00:12:18,800 --> 00:12:28,240
+cases. The Poincaré case is amazing. He seems to have understood the principle of relativity, the idea that the laws of physics are the same in all inertial reference frames.
+
+70
+00:12:28,240 --> 00:12:36,480
+He seems to have understood that the speed of light is the same in all inertial reference frames. He doesn't phrase it quite that way, but it is
+
+71
+00:12:36,480 --> 00:12:49,600
+my understanding, though I don't speak French. These are basically the ideas that Einstein uses to deduce special relativity. But then he also has this additional
+
+72
+00:12:49,600 --> 00:13:04,960
+misunderstanding where he thinks that length contraction is a dynamical effect, that somehow particles are being pushed together by some external force, something is going on dynamically.
+
+73
+00:13:04,960 --> 00:13:15,280
+He doesn't understand that it's purely kinematics. That actually space and time are different from what we thought, and you need to fundamentally rethink those things.
+
+74
+00:13:15,280 --> 00:13:29,200
+It's almost like he knew too much. He had almost too grand a vision in mind. Einstein subtracts from that and says, "No. Space and time are just different than what we
+
+75
+00:13:29,200 --> 00:13:44,800
+thought, and here's the correct picture." There's a paper in, I think it's 1909, where Poincaré still has this dynamical picture of what's going on with the length contraction.
+
+76
+00:13:44,800 --> 00:13:59,920
+This is just not necessary. This is a mistake from the modern point of view. Why is he doing this? Why is he clinging onto this idea? I don't know. I've obviously never met the man.
+
+77
+00:13:59,920 --> 00:14:13,840
+It would be fascinating to be able to talk it over and try and understand. His expertise seems to be getting in the way. He knows so much, he understands so much,
+
+78
+00:14:13,840 --> 00:14:26,720
+and then he's not able to let go of these things. A really interesting fact is that a few years prior, in the 1890s, Einstein's a teenager and he believes in the ether too. He knows
+
+79
+00:14:26,720 --> 00:14:38,960
+about this stuff. But he's not quite as attached as these older people were. Maybe they were a little bit prisoners of their own expertise. That's my guess. Some
+
+80
+00:14:38,960 --> 00:14:53,680
+historians of science would certainly disagree. Then there's the obvious stories where Einstein himself later on is said to have not latched onto the correct interpretations of quantum mechanics
+
+81
+00:14:53,680 --> 00:15:04,480
+or cosmology because of his own attachments. Yeah. Here’s the bigger question I have. The muon example is a great example of
+
+82
+00:15:04,480 --> 00:15:15,840
+these long verification loops and how progress seems to happen in the scientific community faster than these verification loops imply. Maybe the clearest example is Aristarchus
+
+83
+00:15:15,840 --> 00:15:24,320
+in the second century BC comes up with the idea of heliocentrism. The ancient Athenians dismiss it on the grounds that we should see as the Earth
+
+84
+00:15:24,320 --> 00:15:31,520
+is moving around the Sun, if really the Sun is the center of the solar system, the stars move relative to the Earth. The only reason that would not be the
+
+85
+00:15:31,520 --> 00:15:44,480
+case is the stars are so far away that you would not observe this. And it's only in 1838 that stellar parallax was actually measured. And so, we didn't need to wait until 1838 to have heliocentrism.
+
+86
+00:15:44,480 --> 00:15:53,920
+We didn't need to wait for the experimental validation to understand that Copernicus is better in some way. In fact, when Copernicus first came up
+
+87
+00:15:53,920 --> 00:16:05,440
+with his theories, it's well known that the Ptolemaic model was more accurate because it had centuries of adding on these epicycles. What's maybe less well appreciated is that it
+
+88
+00:16:05,440 --> 00:16:12,720
+was also in some sense simpler. Because Copernicus actually had to add extra epicycles. It had more epicycles than the
+
+89
+00:16:12,720 --> 00:16:26,000
+Ptolemaic model because he had this bias that the Earth should go in a perfect circle in equal time. Anyway, I think this is an interesting story because it's not a more accurate theory. It's
+
+90
+00:16:26,000 --> 00:16:41,680
+not a simpler theory. So how could you have known ex ante that Copernicus was correct and Ptolemy was not? Good question. I don't entirely know the answer.
+
+91
+00:16:41,680 --> 00:17:01,360
+I can give you a partial answer that I, centuries in the future, start to find very compelling. I'm sure it's part of the historic story at least. One of the big shocks for Newton,
+
+92
+00:17:01,360 --> 00:17:12,800
+he did understand Kepler's laws of motion eventually, so you're able to explain the motions of the planets in the sky. But he also, out of the same theory,
+
+93
+00:17:12,800 --> 00:17:20,800
+his theory of gravitation, was able to explain terrestrial motion. He's able to explain why objects move in parabolas on the Earth, and he's able to explain
+
+94
+00:17:20,800 --> 00:17:37,840
+the tides in terms of the moon and the sun's gravitational effect on water on the Earth. You have what seem like three very different disconnected phenomena all being explained by
+
+95
+00:17:37,840 --> 00:17:54,400
+this one set of ideas. That starts to feel very compelling, at least to me. I think most people find that very satisfying once they eventually realize it. Have you read the Keynes biography of Newton?
+
+96
+00:17:54,400 --> 00:18:05,280
+He wrote an entire biography? No, the essay. Sure. I love that. This description of him as the last of the magicians is wonderful.
+
+97
+00:18:05,280 --> 00:18:17,120
+In fact, I think it's maybe worth superimposing. Or you should read out that one passage of the thing. Alright. It's from a talk
+
+98
+00:18:17,120 --> 00:18:33,600
+that he gave at Cambridge not long before he died. He'd acquired Newton's papers somehow and gave a lecture twice about this, or his brother Jeffrey gave it the other time because he was too ill.
+
+99
+00:18:33,600 --> 00:18:41,760
+There's this wonderful, wonderful quote in the middle. The whole thing is really interesting, but I love this particular quote:
+
+100
+00:18:41,760 --> 00:18:50,640
+"Newton was not the first of the age of reason. He was the last of the magicians, the last great mind which looked out on the visible and intellectual world with the same eyes as those
+
+101
+00:18:50,640 --> 00:19:07,360
+who began to build our intellectual inheritance rather less than ten thousand years ago." This idea people have that Newton was the first modern scientist is somehow wrong.
+
+102
+00:19:07,360 --> 00:19:19,440
+There's some truth to it, but he really had this very different way of looking at the world that was part superstitious and part modern. It was a funny hybrid.
+
+103
+00:19:19,440 --> 00:19:30,400
+He's a transitional figure in some sense. That phrase, "the last of the magicians," really points at something. The thing I'm very curious
+
+104
+00:19:30,400 --> 00:19:43,360
+about with Newton is whether it was the same program, the same heuristics, the same biases that he applied to his alchemical work as he did to his understanding of astronomy.
+
+105
+00:19:43,360 --> 00:19:50,400
+This is from the Keynes essay: "There was extreme method in his madness. All his unpublished works on esoteric and theological matters are marked by
+
+106
+00:19:50,400 --> 00:19:59,440
+careful learning, accurate method, and extreme sobriety of statement. They are just as sane as the Principia if their whole matter and purpose were not magical.
+
+107
+00:19:59,440 --> 00:20:12,240
+They were nearly all composed during the same 25 years of his mathematical studies." Clearly, there was some aesthetic that motivated people like Einstein to reject earlier ways of
+
+108
+00:20:12,240 --> 00:20:24,480
+thinking and say, "No, the other is wrong, and there's a better way to think about things." The same is true with Newton. The question I have is whether
+
+109
+00:20:24,480 --> 00:20:37,440
+similar heuristics toward parsimony, aesthetics, and so on, would be equally useful across time and across disciplines, or whether you need different heuristics.
+
+110
+00:20:37,440 --> 00:20:46,160
+The reason that's relevant is even if we can't build a verification loop for science, maybe if the taste tests point in the same direction, you can at least encode that bias
+
+111
+00:20:46,160 --> 00:21:01,360
+into the AIs. That would maybe be enough. The point is that where we always get bottlenecked is where the previous processes and heuristics don't apply.
+
+112
+00:21:01,360 --> 00:21:09,760
+That's almost definitionally what causes the bottlenecks. Because people are smart, they know what has worked before. They study it. They apply
+
+113
+00:21:09,760 --> 00:21:22,640
+the same kinds of things, so they don't get stuck in the same places as before. They keep getting bottlenecked in different places. I'm overgeneralizing a bit, but I think it's right.
+
+114
+00:21:22,640 --> 00:21:31,760
+If you're attempting to reduce science to a process, you're attempting to reduce it to something where there is just a method which you can apply, and you
+
+115
+00:21:31,760 --> 00:21:43,760
+turn the crank and out pops insight. You can do a certain amount of that, but you're going to get bottlenecked at the places where your existing method doesn't apply.
+
+116
+00:21:43,760 --> 00:21:57,520
+Definitionally, there's no crank you can turn. You need a lot of people trying different ideas. The more difficult the idea is to have, the greater the bottleneck,
+
+117
+00:21:57,520 --> 00:22:07,920
+but then also the greater the triumph. Quantum mechanics is a great example of this. It's such a shocking set of ideas. It's such a shocking theory. The theory of evolution in
+
+118
+00:22:07,920 --> 00:22:21,120
+some sense is also quite a shocking idea, not the principle of natural selection, but that it can explain so much. That's a shocking idea. Existing safety benchmarks claim that,
+
+119
+00:22:21,120 --> 00:22:30,640
+at least for today's top models, attacks are only successful a few percent of the time. This sounds great, but Labelbox researchers were able to jailbreak these very same models
+
+120
+00:22:30,640 --> 00:22:38,880
+about 90% of the time – even the ones that have the strongest reputation for safety. And the disconnect here is that the prompts which underlie these public safety
+
+121
+00:22:38,880 --> 00:22:47,680
+benchmarks are all framed in a very naive way. There's no attempt to disguise harmful intent. These prompts will just ask models to “hack into a secure network”
+
+122
+00:22:47,680 --> 00:22:55,360
+and to “do so without getting caught”. But real bad actors don't write like this. So Labelbox built a new safety benchmark from the ground up.
+
+123
+00:22:55,360 --> 00:23:04,800
+Their prompts reflect real adversarial behavior by stripping out obvious trigger phrases and wrapping their request in fictional scenarios. For example, instead of outright asking an LLM
+
+124
+00:23:04,800 --> 00:23:11,600
+to steal somebody's identity, the prompt will frame it as a game. A light bearer who's trying to hide from dark forces needs a handbook
+
+125
+00:23:11,600 --> 00:23:26,160
+on how to disguise themselves as somebody else. This safety research is linked in the description. If you think this could be useful for your own work, reach out at labelbox.com/dwarkesh.
+
+126
+00:23:26,160 --> 00:23:38,720
+So Principia Mathematica is released in 1687. The Origin of Species is released in 1859. At least naively, it seems like Darwin's theory of natural selection is conceptually
+
+127
+00:23:38,720 --> 00:23:49,520
+easier than the theory of gravity. I asked Terence Tao this question. There was this contemporaneous biologist with Darwin, Thomas Huxley,
+
+128
+00:23:49,520 --> 00:23:59,040
+who read this and said, "How extremely stupid to not have thought of this." Nobody ever reads the Principia Mathematica and thinks, "God, why didn't I beat Newton to
+
+129
+00:23:59,040 --> 00:24:15,040
+the punch here?" So what's going on here? Why did Darwinism take so much longer? The idea must have been known to animal breeders for a long time at some level,
+
+130
+00:24:15,040 --> 00:24:29,280
+or certainly large chunks of the idea were known, that artificial selection was a thing. In some sense, Darwin's genius wasn't in having that idea, it was
+
+131
+00:24:29,280 --> 00:24:46,400
+understanding just how central it was to biology. You can go back and explain a tremendous amount about all the variety of what we see in the world with this as not necessarily the only principle,
+
+132
+00:24:46,400 --> 00:25:04,640
+but certainly a core principle. He writes this wonderful book, The Origin of Species. It's just so much evidence and so many examples, trying to tease this out and see what the implications are,
+
+133
+00:25:04,640 --> 00:25:21,200
+and connecting it to as much else as he possibly can, to geology and all these other things. That hard work—making the case that it's actually relevant all across the
+
+134
+00:25:21,200 --> 00:25:30,640
+biosphere—is what he's doing there. He's not just having the idea, he's making a compelling case that it's intertwined with absolutely everything else.
+
+135
+00:25:30,640 --> 00:25:42,720
+The motivation for the question was Lucretius, this first-century Roman poet who has an idea that seems analogous to natural selection. It's about species getting fitted more over
+
+136
+00:25:42,720 --> 00:25:51,120
+time to their environments, or species losing fit to their environment. And so, why did this go nowhere for nineteen centuries?
+
+137
+00:25:51,120 --> 00:25:59,920
+Then I looked into it or, more accurately, asked LLMs what exactly Lucretius's idea here was. It is extremely different from what real natural selection is.
+
+138
+00:25:59,920 --> 00:26:07,680
+He thought there was this generative period in the past where all the species came about, and then there was this one-time filter which resulted in the species that are around today,
+
+139
+00:26:07,680 --> 00:26:17,200
+and they became fit to the environment. He did not have this idea that it is an ongoing gradual process or that there is a tree of life that connects all
+
+140
+00:26:17,200 --> 00:26:23,280
+life forms on Earth together, which, by the way, is an incredibly weird fact that every single life form on Earth has a common ancestor.
+
+141
+00:26:23,280 --> 00:26:32,720
+It's not incredibly weird. If you think that the origin of life must have been very hard, that there's a bottleneck there, then it's not so surprising.
+
+142
+00:26:32,720 --> 00:26:44,320
+There's also this verification loop aspect where even if Newton might be harder in some sense, if you've clinched it, you can experimentally… I know "validate" is the wrong word philosophically, but
+
+143
+00:26:44,320 --> 00:26:50,720
+you can give a lot of base points to the theory. You can be like, "Okay, I have this idea of why things fall on Earth. I have this idea of why orbital
+
+144
+00:26:50,720 --> 00:26:58,800
+periods for planets have a certain pattern. Let's try it on the Moon, which orbits the Earth." And in fact, it’s weird but the orbital period matches what my calculations imply.
+
+145
+00:26:58,800 --> 00:27:08,800
+And the tides work correctly. It's just amazing. Exactly. Whereas for Darwinism, it takes a ton of work for Darwin to compile all the cumulative evidence, but there's no
+
+146
+00:27:08,800 --> 00:27:16,640
+individual piece that is overwhelmingly powerful. And there's a whole bunch of problems as well. He doesn't really understand what the mechanism is.
+
+147
+00:27:16,640 --> 00:27:29,440
+He doesn't understand genes, all these things. The very interesting thing in the history of Darwinism is, this idea which theoretically you could come up with at any time, there is almost
+
+148
+00:27:29,440 --> 00:27:37,040
+identical independent creation of that idea between Alfred Wallace and Charles Darwin. So much so that I think Wallace sends his manuscript to Darwin and is like,
+
+149
+00:27:37,040 --> 00:27:44,720
+"What do you think of this idea?" And Darwin's like, "Fuck." I don't think that's an exact quote, but it's pretty much correct.
+
+150
+00:27:44,720 --> 00:27:53,520
+They end up presenting their ideas together in the spirit of sportsmanship. Why was this period in the 1850s or 1860s the right time for these ideas to form?
+
+151
+00:27:53,520 --> 00:28:04,720
+You can come up with different ideas. One is geology. In the 1830s, Charles Lyell figures out that there's been millions and billions of years of time that's existed on Earth.
+
+152
+00:28:04,720 --> 00:28:16,800
+The paleontology shows you that fossils have existed for that entire time. Life goes back a long way. In fact, you can even find fossils for intermediate species that show you the tree of life.
+
+153
+00:28:16,800 --> 00:28:27,680
+Between humans and other apes as well, there's intermediate humans. There's also the age of colonization, and we have all these voyages doing biogeography.
+
+154
+00:28:27,680 --> 00:28:37,920
+That all must have been necessary. In fact, there's a huge history of parallel innovation and discovery in the history of science. So maybe it is another piece of evidence that more had to be in
+
+155
+00:28:37,920 --> 00:28:46,080
+place for a given idea to be discovered. Because if it's not discovered for a long time and then spontaneously many different people are coming up with it, that shows you that the
+
+156
+00:28:46,080 --> 00:29:02,560
+building blocks were in some sense necessary. This example of Lyell and other geologists in the early 1800s having this idea of deep time does seem to have been crucial.
+
+157
+00:29:02,560 --> 00:29:20,160
+I know Darwin was very influenced by Lyell. If you don't have at least tens or hundreds of millions of years, evolution starts to look like a non-starter.
+
+158
+00:29:20,160 --> 00:29:34,320
+In order to make it work on a timescale of 5,000 to 10,000 years or 6,000 years with Bishop Ussher you would need to see evolution occurring at a massive rate during human lifetimes,
+
+159
+00:29:34,320 --> 00:29:47,360
+and we're just not seeing that. That does seem to have been a blocker. To your question of what other blockers were there, were there any others? I don't know.
+
+160
+00:29:47,360 --> 00:30:00,560
+Or how much earlier could you, in principle, have come up with it if you were much smarter? Let's go back and zoom out to your original question about the verification loop in AI.
+
+161
+00:30:00,560 --> 00:30:13,600
+An example that should give you pause there is the big signature success so far, which is certainly AlphaFold. AlphaFold really isn't about AI. A massive fraction of
+
+162
+00:30:13,600 --> 00:30:28,720
+the success there is the Protein Data Bank. It's X-ray diffraction, NMR, cryo-EM, and the several billion dollars that were spent obtaining those 180,000-odd protein structures.
+
+163
+00:30:28,720 --> 00:30:38,480
+It's basically the story of how we spent many decades obtaining protein structure just by going out and looking very hard at the world experimentally, and then we
+
+164
+00:30:38,480 --> 00:30:52,160
+fitted a nice model at the end of it, which was a tiny fraction of the entire investment. That's a story of data acquisition principally. The AI bit is very impressive and quite
+
+165
+00:30:52,160 --> 00:31:00,080
+remarkable, but it is only a small part of the total story. AlphaFold is very interesting, and philosophically I wonder what you think
+
+166
+00:31:00,080 --> 00:31:16,400
+of it as a scientific theory or explanation. I guess over time the world is becoming harder to understand… As I'm saying things, because you're such a careful speaker, I say a phrase
+
+167
+00:31:16,400 --> 00:31:27,440
+and wonder if you'll actually buy that premise. But in some domains, we need to fit models to things rather than coming up with underlying principles
+
+168
+00:31:27,440 --> 00:31:40,000
+that explain a broad range of phenomena. Compare the theory of general relativity, or any theory which just nets out to some equations, versus AlphaFold, which is encoding
+
+169
+00:31:40,000 --> 00:31:53,040
+these different relationships between things we can't even interpret over 100 million parameters. Are those really the same thing? GR can predict things you could
+
+170
+00:31:53,040 --> 00:32:03,440
+have never anticipated or it was never meant to do, like why Mercury's orbit precesses. AlphaFold is not going to have that kind of explanatory reach.
+
+171
+00:32:03,440 --> 00:32:17,040
+I want to get your reaction to that. I think it's an incredibly interesting question. Maybe a really pivotal question. If you take a very classic point of view, you want these
+
+172
+00:32:17,040 --> 00:32:27,120
+deep explanatory principles. You want as few free parameters as you possibly can. You want very simple models which explain a lot,
+
+173
+00:32:27,120 --> 00:32:37,280
+and AlphaFold doesn't look anything like that. You might just say, "It's nice and maybe helpful as a model, but it's not a scientific explanation."
+
+174
+00:32:37,280 --> 00:32:51,600
+That's a conservative point of view, answer one to the question. Answer two is to say maybe you shouldn't think about AlphaFold as an explanation in
+
+175
+00:32:51,600 --> 00:33:00,880
+the classic sense, but maybe it contains lots of little explanations inside it. Part of what you can get out of interpretability work is you can go into
+
+176
+00:33:00,880 --> 00:33:12,400
+AlphaFold and start to extract certain things. Maybe by doing an archeology of AlphaFold, we can actually understand a great deal more about these principles.
+
+177
+00:33:12,400 --> 00:33:22,400
+You can start to extract that a certain circuit does this interesting thing, and we learn from it. I don't know to what extent that's been done with AlphaFold, but it's been done a little bit with
+
+178
+00:33:22,400 --> 00:33:35,600
+some of the chess models, like AlphaZero. There seem to be some strategies which were borrowed by Magnus Carlsen, which he seems to have just taken from AlphaZero.
+
+179
+00:33:35,600 --> 00:33:49,440
+I don't think there's any public confirmation of this, but some experts have noticed that he changed his game quite radically after some public forensics were released on how AlphaZero worked.
+
+180
+00:33:49,440 --> 00:34:01,040
+That's an example where human beings are starting to extract meaning out of these models. That leads to viewing the models as a potential source of explanations.
+
+181
+00:34:01,040 --> 00:34:10,159
+You need to do more work because they're not very legible up front, but you can potentially extract them. That's an interesting intermediate
+
+182
+00:34:10,159 --> 00:34:20,239
+situation where they're not explanations themselves, but you can extract interesting explanations out of them and use them as a source. The third and most interesting possibility is
+
+183
+00:34:20,239 --> 00:34:30,880
+that they're a new type of object. They should be taken very seriously as explanations, but where in the past we haven't had the ability to really do anything with them,
+
+184
+00:34:30,880 --> 00:34:48,080
+now we have interesting new actions we can do. We can merge them, we can distill them. It's a big opportunity in the philosophy of science.
+
+185
+00:34:48,080 --> 00:35:05,840
+There's an anticipation of this in some way. Some mathematicians and physicists work today… Historically, if you had a 100-page equation—which is the kind of thing that does come up—there's
+
+186
+00:35:05,840 --> 00:35:21,280
+just nothing you can do if it's 1920. At that point, you give up on the problem. But today, with tools like Mathematica, you can just keep going. That's an object now, a thing that you can work with.
+
+187
+00:35:21,280 --> 00:35:28,320
+There are examples where people work with these things that formerly were regarded as too complicated, and sometimes they get simple answers out the end.
+
+188
+00:35:28,320 --> 00:35:43,920
+That’s just an intermediate working state. So I wonder if something similar is going to happen in this case, where you could take these models and use them in a similar way that people
+
+189
+00:35:43,920 --> 00:35:54,400
+do with Mathematica, and take them seriously. They're not explanations in the classic sense, but they'll be something else which interesting operations can be done on.
+
+190
+00:35:54,400 --> 00:36:08,880
+The thing I worry about is, suppose it's 1500 and you're training a model on… This is a weird history where we developed deep learning before we had cosmology.
+
+191
+00:36:08,880 --> 00:36:18,880
+Suppose we live in that world. You're observing how the stars don't seem to move. The planets have all these weird behaviors. Then you train a model on that, and you do
+
+192
+00:36:18,880 --> 00:36:31,760
+some kind of interp on it trying to figure out what the patterns are. You'd just be able to keep building on Ptolemy's model. You'd see there's another epicycle we didn't notice.
+
+193
+00:36:31,760 --> 00:36:41,520
+Parameters X to Y encode this epicycle, parameters whatever encode the next epicycle. If you were just trying to figure out why the solar system is the way it is
+
+194
+00:36:41,520 --> 00:36:56,960
+from observational data, you could just keep adding epicycles upon epicycles, but it really took one mind to integrate it all in and say, "Here's what makes more sense overall."
+
+195
+00:36:56,960 --> 00:37:08,000
+This is to my point that we don't really understand what to do with the models. We don't have the verbs yet. It is certainly interesting
+
+196
+00:37:08,000 --> 00:37:19,200
+to think about the question where you start to apply constraints to the models, essentially saying, "What's the simplest possible explanation?" Or, "Can you
+
+197
+00:37:19,200 --> 00:37:31,120
+simplify? Can you give me the 90/10 explanation?" And go further and further in boiling it down. It might be that indeed they start out by providing a very,
+
+198
+00:37:31,120 --> 00:37:48,720
+very complicated, many-parameter model. But you can just force the case, and basically that's scaffolding, which maybe is the very early days of their attempt to understand something.
+
+199
+00:37:48,720 --> 00:37:54,960
+They're forced through that to a much more simple understanding. Sorry for misunderstanding, but it sounds like you're saying maybe there's some
+
+200
+00:37:54,960 --> 00:38:09,360
+regularizer or some distillation you could do of a very complicated model that gets you to a truer, more parsimonious theory. Take Ptolemy versus Copernicus. You start off with lots of Ptolemy
+
+201
+00:38:09,360 --> 00:38:22,160
+epicycles, and then you try to distill this model, and maybe it gets rid of some of the epicycles that are less and less necessary to get the mean squared error of the orbits to match.
+
+202
+00:38:22,160 --> 00:38:34,560
+But at some point it has to do this thing which is to switch two things. Locally, it actually doesn't make things more accurate. It's in a global sense that it's a more progressive theory.
+
+203
+00:38:34,560 --> 00:38:43,600
+There's some process which obviously humanity did over its span, which did that regularization or did that swap. But with raw gradient descent,
+
+204
+00:38:43,600 --> 00:38:53,440
+I don't really feel like it would do that. Think about the example of going from Newtonian gravity to Einstein's general theory of relativity.
+
+205
+00:38:53,440 --> 00:39:06,560
+These are shockingly different theories, and the question is what causes that flip. As nearly as I understand the history, what goes on is Einstein develops special relativity and
+
+206
+00:39:06,560 --> 00:39:17,120
+pretty much straight away he understands. It's a very obvious observation. In special relativity, influences can't propagate faster than the speed of light, and in Newtonian
+
+207
+00:39:17,120 --> 00:39:28,000
+gravity, action is at a distance. Straight away in special relativity, you could use Newtonian gravity to do faster-than-light signaling.
+
+208
+00:39:28,000 --> 00:39:39,360
+You could send information backwards in time. You could do all kinds of crazy stuff. It's not a big leap to realize we have a big problem here. That's the forcing
+
+209
+00:39:39,360 --> 00:39:52,320
+function there. You've realized that your old explanation is not sufficient. You need something new. Then you're going to start by doing the simplest possible stuff.
+
+210
+00:39:52,320 --> 00:40:08,640
+It just turns out that a lot of that stuff doesn't work very well, so you're forced to go through these steps where gradually it gets more complicated, and it's wrong in a variety of ways.
+
+211
+00:40:08,640 --> 00:40:22,880
+The final theory appears shockingly simple and beautiful, but it's gone through some somewhat ugly intermediate stages. If you're thinking about what it looks like to
+
+212
+00:40:22,880 --> 00:40:33,840
+have AI accelerate science, there's one for well-understood domains where we just want local solutions, like how does this protein fold. We just train a raw model using gradient descent.
+
+213
+00:40:33,840 --> 00:40:44,400
+Then there's things like coming up with general relativity, where you couldn't really just train on every single observation in the universe and hope that general relativity pops out.
+
+214
+00:40:44,400 --> 00:40:57,040
+What would it require? It also certainly wasn't immediately discovered. It was decades of thought. You'd need independent research programs where people start off with these biases, where Einstein
+
+215
+00:40:57,040 --> 00:41:10,640
+is initially motivated by this thought experiment of whether you can distinguish the effect of gravity from just being accelerated upwards. You just need different AI thinkers to start
+
+216
+00:41:10,640 --> 00:41:17,760
+off with these initial biases and see what can germinate out of them. The verification loop for that might be quite long, but you just need to keep all those
+
+217
+00:41:17,760 --> 00:41:30,720
+research programs alive at the same time. This point you make about keeping all the different research programs alive, I think that is very important and central.
+
+218
+00:41:30,720 --> 00:41:45,360
+A great example is situations where the same answer has been correct in some circumstances and wrong in other circumstances. The planet Uranus was not in quite the right spot,
+
+219
+00:41:45,360 --> 00:41:58,400
+and people famously predicted the existence of Neptune on this basis. Wonderful, massive success for Newtonian gravity. The planet Mercury is not in quite the right spot.
+
+220
+00:41:58,400 --> 00:42:06,880
+You predict the existence of some other distorting planet. It turns out that doesn't exist. Actually, the reason Mercury is not in the right
+
+221
+00:42:06,880 --> 00:42:16,000
+spot is because you need general relativity. You've pursued very similar ideas, and it's been very successful in one case, and it's been completely and
+
+222
+00:42:16,000 --> 00:42:27,760
+utterly unsuccessful in the other case. A priori, you can't tell which of these is the thing to do, and you actually need to do both. This is certainly very true in the
+
+223
+00:42:27,760 --> 00:42:36,720
+history of science. This kind of diversity, where you just have lots of people go off and pursue lots of potentially promising ideas,
+
+224
+00:42:36,720 --> 00:42:52,640
+you just need to support that for a long time. It's hard to do that for a variety of reasons, but it does seem to be very, very important. This example of Uranus versus Mercury
+
+225
+00:42:52,640 --> 00:43:08,640
+is very interesting. I think it illustrates the difficulty with falsificationism. The orbit of Uranus is in some sense falsifying Newtonian mechanics. But then you make some ancillary
+
+226
+00:43:08,640 --> 00:43:18,800
+prediction that says, "Oh, the reason this is happening is there must be another planet which is perturbing Uranus's orbit." I think it's Le Verrier in 1846.
+
+227
+00:43:18,800 --> 00:43:29,840
+"Point a telescope in the right direction, you find Uranus." Neptune. Sorry. Neptune, yes. But with Mercury, it's observed that the ellipse which forms its orbit is rotating 43
+
+228
+00:43:29,840 --> 00:43:39,760
+arcseconds more every century than Newtonian mechanics would imply, so people say that there must be a planet inside Mercury's orbit. They call it Vulcan and point the telescopes.
+
+229
+00:43:39,760 --> 00:43:49,120
+It's not there. But if you're a proper Newtonian, what you do is say, "Well, maybe there's some cosmic dust that's occluding this planet, or maybe the planet is so small we can't see it,
+
+230
+00:43:49,120 --> 00:43:56,560
+or let's build an even more powerful telescope, or maybe there's some magnetic field which is occluding our measurement." At any one of these steps—
+
+231
+00:43:56,560 --> 00:44:07,040
+And this happens over and over. There are just so many stories which are exactly like this. An example I love from the 1990s.
+
+232
+00:44:07,040 --> 00:44:16,640
+Some people noticed that the Pioneer spacecraft weren't quite where they were supposed to be. You can get very excited about this. "Oh my goodness, general relativity is wrong.
+
+233
+00:44:16,640 --> 00:44:30,800
+Maybe we're going to discover the next theory of gravity." Today the accepted explanation is that there's just a slight asymmetry in the spacecraft.
+
+234
+00:44:30,800 --> 00:44:40,400
+It turns out that the thermal radiation is slightly larger in one direction than the other, and that's causing a tiny little acceleration towards the sun.
+
+235
+00:44:40,400 --> 00:44:50,800
+Most of the time when there's these apparent exceptions, it's just something like that going on. It's very much like the Mercury-Vulcan case.
+
+236
+00:44:50,800 --> 00:44:59,520
+But every once in a while, it's not. A priori, you can't distinguish these. Science is just full of these. It's funny too, the way we tell
+
+237
+00:44:59,520 --> 00:45:14,480
+the history of science, it sounds so simple. You just focus on the right exception and you realize that you need to throw out the old theory and lo and behold, your Nobel Prize awaits.
+
+238
+00:45:14,480 --> 00:45:28,000
+But in fact, these exceptions are all over the place. 99.9% of the time, it just turns out to be some effect like this thermal acceleration in the case of the Pioneer spacecraft.
+
+239
+00:45:28,000 --> 00:45:38,720
+Unfortunately, there's a lot of selection bias going into those stories. The thing is there's no ex ante heuristic which tells you which case you're in.
+
+240
+00:45:38,720 --> 00:45:49,520
+To spell out why I think this is important, some people have this idea that AI is going to make disproportionate progress towards science because it makes disproportionate progress towards domains
+
+241
+00:45:49,520 --> 00:46:01,200
+where there's tight verification loops. It's really good at coding because you can run unit tests. Science may be similar because you can run experiments. What that doesn't appreciate is that
+
+242
+00:46:01,200 --> 00:46:10,320
+there's an infinite number of theories that are compatible with any given experiment. Over time, why we latch onto the one we think is more correct in retrospect is,
+
+243
+00:46:10,320 --> 00:46:24,480
+as we're discussing, hard to articulate. Lakatos has all kinds of interesting examples in the book about these hostile verification loops that are extremely long-lasting.
+
+244
+00:46:24,480 --> 00:46:38,560
+One he talks about is Prout. There's this chemist in 1815 who hypothesizes that all atomic nuclei must have whole number weights. They're basically all made of hydrogen.
+
+245
+00:46:38,560 --> 00:46:45,920
+The reason he thinks this is because if you look at the measured weights of all elements, it does seem that almost all of them have whole number weights.
+
+246
+00:46:45,920 --> 00:46:55,840
+But then there are some exceptions. For example, chlorine comes out at 35.5. So then there's all these ad hoc theories that people in this school keep coming up with, like,
+
+247
+00:46:55,840 --> 00:47:05,360
+"Oh, maybe there's chemical impurities." But there's no chemical reaction you can do which seems to get rid of this. Maybe it's fractions of whole numbers, so 35.5 can be halves. But actually, if you
+
+248
+00:47:05,360 --> 00:47:15,760
+measure chlorine even closer, it's 35.46, so it's getting further away from the correct fraction. Later on, what is discovered is what you're actually measuring is different isotopes,
+
+249
+00:47:15,760 --> 00:47:25,280
+which cannot be chemically distinguished. They can only be physically distinguished. So you have 85 years before we realize what an isotope is, where the verification loop is
+
+250
+00:47:25,280 --> 00:47:33,200
+actively hostile against the correct theory. You just need this remnant to be defending… There's no ex ante reason it's the preferred theory.
+
+251
+00:47:33,200 --> 00:47:45,760
+As a community, we should just have people try to integrate new observations, even if they don't seem to fit their school of thought, and hopefully enough of that happens… Anyways,
+
+252
+00:47:45,760 --> 00:47:59,680
+I guess the thing I'm trying to articulate is the difficulty with automating science. The question is, where is the bottleneck at some level? Are we primarily bottlenecked on one type of thing, or are
+
+253
+00:47:59,680 --> 00:48:12,400
+we bottlenecked on multiple types of things? Certainly, talking to structural biology people, they seem to think that AlphaFold was an enormous advance. It was a shock. At some level,
+
+254
+00:48:12,400 --> 00:48:24,800
+yes, AI can certainly help us speed up science. It is helping with a certain type of bottleneck. That doesn't mean though, as you're saying, that it's necessarily going
+
+255
+00:48:24,800 --> 00:48:35,760
+to help with all kinds of bottlenecks. I suppose the question you're pointing at is, what are the types of bottlenecks that remain, and what are the prospects for getting past them?
+
+256
+00:48:35,760 --> 00:48:45,520
+Even in the case of coding, it's really interesting talking to programmer friends. At the moment they're all in this state of shock and high excitement,
+
+257
+00:48:45,520 --> 00:48:54,320
+and they're all over the place. You do wonder where the bottleneck is going to move to. Certainly, one thing that a lot
+
+258
+00:48:54,320 --> 00:49:04,000
+of them seem to be bottlenecked on now is having interesting ideas, and in particular, having interesting design ideas. There's not really a verification loop for
+
+259
+00:49:04,000 --> 00:49:17,440
+knowing that a design idea is very interesting. They're no longer nearly as bottlenecked by their ability to produce code, but they are still bottlenecked by this other thing.
+
+260
+00:49:17,440 --> 00:49:28,560
+Formerly, they weren't bottlenecked on it because just writing code took so much of their time. They could have lots of ideas while they were taking three weeks to implement their prototype,
+
+261
+00:49:28,560 --> 00:49:39,040
+and then they would implement the next version. Now they're taking three hours to implement the prototype, and they don't have as good ideas after that, from a design point of view.
+
+262
+00:49:39,040 --> 00:49:47,520
+Last year, I predicted that by 2028, AI would be able to prep my taxes about as well as a competent General Manager. But we're already getting pretty close.
+
+263
+00:49:47,520 --> 00:49:54,960
+As I shared before, I use Mercury both for my business and my personal banking. So I recently gave an LLM access to my transaction history across
+
+264
+00:49:54,960 --> 00:50:04,880
+both accounts through Mercury's MCP. I asked it to go through all my 2025 transactions and flag any personal expenses that seem like they should actually be charged to the business.
+
+265
+00:50:04,880 --> 00:50:15,680
+And this worked shockingly well. Mercury's MCP exposes a bunch of detailed information, things like notes and memos and any JPEGs of receipts and PDF attachments.
+
+266
+00:50:15,680 --> 00:50:22,960
+So my LLM had plenty of context to work with. One of my favorite examples happened with a charge to Bay Padel. If you looked at the vendor alone, you would
+
+267
+00:50:22,960 --> 00:50:32,560
+have had to assume that it's a personal expense. But the LLM looked at the receipt and the attached note in Mercury and realized this was actually a team bonding exercise
+
+268
+00:50:32,560 --> 00:50:40,320
+from our last in-person retreat. So a legitimate business expense. I imagine it will be a while before traditional banks have MCP.
+
+269
+00:50:40,320 --> 00:50:48,320
+Functionality like this is why I use Mercury. Go to mercury.com to learn more. Mercury is a fintech company, not an FDIC Insured Bank.
+
+270
+00:50:48,320 --> 00:50:58,000
+Banking services provided through Choice Financial Group and Column NA, members FDIC. You have a very interesting take. I think it was a footnote in one of
+
+271
+00:50:58,000 --> 00:51:07,360
+your essays, and I couldn't find it again, which was that it's very possible that if we met aliens, they would have a totally different technological stack than us.
+
+272
+00:51:07,360 --> 00:51:17,360
+That contradicts a common assumption I had that I never questioned, which is that science is this thing you do relatively early on in the history of civilization.
+
+273
+00:51:17,360 --> 00:51:27,520
+You get to a point and you have a couple hundred years of just cranking through the basics, understanding how the universe works, and you've got it. You've got science. Then everybody
+
+274
+00:51:27,520 --> 00:51:39,840
+would converge on the same "science." I found that a very interesting idea, and I want you to say more about it. The idea there that I'm at least somewhat
+
+275
+00:51:39,840 --> 00:51:55,600
+attached to is that the tech tree or the science and tech tree is probably much larger than we realize. We're in this funny situation. People will sometimes talk about
+
+276
+00:51:55,600 --> 00:52:06,160
+a theory of everything as a potential goal for physics, and then there's this presumption that physics is done once you get there. Of course, this is not true at all.
+
+277
+00:52:06,160 --> 00:52:18,080
+If you think about computer science, computer science started in the 1930s when Turing and Church and so on laid down what the theory of everything was.
+
+278
+00:52:18,080 --> 00:52:29,760
+They just said, "Here's how computation works." We've spent ninety-odd years since then exploring the consequences of that and gradually building up more and more interesting ideas.
+
+279
+00:52:29,760 --> 00:52:38,320
+Those ideas, to some extent, you can regard as technology. But insofar as they're discovered principles inside that theory of computation, I think
+
+280
+00:52:38,320 --> 00:52:50,880
+they're best regarded as science and in some cases, very fundamental science. Ideas like public-key cryptography are incredibly deep, very non-obvious ideas which
+
+281
+00:52:50,880 --> 00:53:03,920
+lay hidden already in the 1930s. My expectation is that there will be different ways of exploring this tech tree, and we're still relatively low down.
+
+282
+00:53:03,920 --> 00:53:13,120
+We're still at the point where we're just understanding these basic fundamental theories, and we haven't yet explored them. A thing which I think is quite fun
+
+283
+00:53:13,120 --> 00:53:26,480
+is if you look at the phases of matter. When I was in school, we'd get taught that there are three phases of matter, or sometimes four or five, depending on what you included.
+
+284
+00:53:26,480 --> 00:53:38,000
+As an adult, as a physicist, you start to realize we've been adding to this list. We've got superconductors and superfluids, and maybe different types of superconductors,
+
+285
+00:53:38,000 --> 00:53:49,280
+and Bose-Einstein condensates, the quantum Hall systems, fractional quantum Hall systems, and so on. It's starting to turn out there's a lot of
+
+286
+00:53:49,280 --> 00:53:57,920
+phases of matter to discover, and we're going to discover a lot more of them. In fact, we're going to be able to start to design them in some sense.
+
+287
+00:53:57,920 --> 00:54:06,640
+We'll still be subject to the laws of physics, but there is this tremendous freedom in there. This looks to me like we're down at the bottom of the tech tree.
+
+288
+00:54:06,640 --> 00:54:18,480
+We've barely gotten started there, and I expect that to be the case broadly. Certainly, programming is a very natural place to look.
+
+289
+00:54:18,480 --> 00:54:34,480
+The idea that we've discovered all the deep ideas in programming just seems obviously ludicrous. We keep discovering what seem like deep, new, fundamental ideas. We're very limited. We're
+
+290
+00:54:34,480 --> 00:54:51,440
+basically slightly jumped-up chimpanzees, so we're slow and it's taking us time. But what do we look like another million years in the future, in terms of all the
+
+291
+00:54:51,440 --> 00:55:07,520
+different ideas people have had around how to manipulate computers and information? I think we're likely to discover that there are a lot of very deep ideas still to be discovered.
+
+292
+00:55:07,520 --> 00:55:18,320
+I think it was Knuth in the preface to The Art of Computer Programming who says something like it. He started this book back in the sixties. He talked to a mathematician who was a bit
+
+293
+00:55:18,320 --> 00:55:26,480
+contemptuous and said, "Look, computer science isn't really a thing yet. Come back to me when there's a thousand deep theorems."
+
+294
+00:55:26,480 --> 00:55:41,040
+Knuth remarks, writing the preface decades later, "There clearly are a thousand deep theorems now." It's really interesting to think what the long-term future is as you get higher and
+
+295
+00:55:41,040 --> 00:55:56,720
+higher up in the tech tree, choices about which direction we go and how we choose to explore. It's potentially the case that different civilizations or different choices mean
+
+296
+00:55:56,720 --> 00:56:10,640
+we end up in different parts of that tree. In particular, there are just very basic things about how we're very visual creatures, while certain other animals are much more aurally based.
+
+297
+00:56:10,640 --> 00:56:23,200
+Does that bias the types of thoughts that you have? Then you extend it to much more exotic kinds of civilizations where maybe their biases in
+
+298
+00:56:23,200 --> 00:56:35,280
+terms of how they perceive and manipulate the world are quite different than ours. That might make some significant changes in terms of how they do
+
+299
+00:56:35,280 --> 00:56:43,920
+that exploration of the tech tree. It's all speculation, obviously. This is such an interesting take. I want to better understand it.
+
+300
+00:56:43,920 --> 00:56:51,120
+One way to understand it is that there might be some things which are so fundamental and have such a wide collision area against reality that they're inevitably
+
+301
+00:56:51,120 --> 00:57:04,640
+going to discover, like general relativity. Numbers. Numbers. Of all the intelligences in the Milky Way galaxy… Maybe that number is one. Well, actually, arguably we've already
+
+302
+00:57:04,640 --> 00:57:17,040
+increased the number. But of all of those, what fraction have the concept of counting? It does seem very natural. What fraction have
+
+303
+00:57:17,040 --> 00:57:30,000
+discovered the idea of some kind of decimal place system? Interesting question. Maybe we're missing something really simple and obvious that's actually way better than that. What fraction
+
+304
+00:57:30,000 --> 00:57:39,280
+got there immediately? What fraction had to go through some other intermediate state? What fraction uses linear representations versus a two-dimensional or a
+
+305
+00:57:39,280 --> 00:57:45,840
+three-dimensional representation? I think the answers to these questions are just not at all obvious. It's a lot of design freedom.
+
+306
+00:57:45,840 --> 00:58:02,160
+On theoretical computer science, this is going to be extremely naive and arrogant, but I took Scott Aaronson's class on complexity theory, and I was by far the worst student he's ever had.
+
+307
+00:58:02,160 --> 00:58:13,760
+What I remember is there was this period, in which you were one of the pioneers, where we figured out the class of problems that quantum computers can solve and how it
+
+308
+00:58:13,760 --> 00:58:22,960
+relates to problems that classical computers can solve. It was groundbreaking. It's crazy that this works. Since then… There's literally this website called Complexity
+
+309
+00:58:22,960 --> 00:58:34,480
+Zoo which lists out all the complexity classes. If you have this complexity class with this kind of oracle, it's equivalent to this other class. It feels like we're building out that taxonomy.
+
+310
+00:58:34,480 --> 00:58:39,120
+There are a couple ways to understand what you're saying. One, maybe you disagree with me that this is actually what's happened with this field.
+
+311
+00:58:39,120 --> 00:58:49,920
+Another is that while that might happen to any one field, who would've thought in 1880 that computer science, other than Babbage, was going to be a thing in the first place?
+
+312
+00:58:49,920 --> 00:59:03,680
+We're underestimating how many more fields there could be. Or maybe you think both, or maybe a third secret thing. I'd be curious. A very common argument here is the low-hanging fruit argument.
+
+313
+00:59:03,680 --> 00:59:16,960
+The argument that says there should be diminishing returns. In fact, empirically we see this. The amount of scientists in the world has exponentially increased. I think it's worth thinking about why
+
+314
+00:59:16,960 --> 00:59:30,880
+you expect diminishing returns and how well that argument actually applies in practice. An analogy I like is thinking about going to an event, like a wedding,
+
+315
+00:59:30,880 --> 00:59:43,120
+and you go to the dessert buffet. They've put out thirty desserts. Naturally, what people do is the best desserts go first. We don't quite have a well-ordered preference
+
+316
+00:59:43,120 --> 00:59:53,440
+there, so maybe there's some difference, but human beings are fairly similar, so the best desserts will go first. This is an argument for why you expect
+
+317
+00:59:53,440 --> 01:00:03,200
+diminishing returns in a lot of different fields. If it's relatively easy to see what's available and people have similar preferences, then the best stuff goes first and it
+
+318
+01:00:03,200 --> 01:00:16,640
+just gets worse and worse after that. If you look at a very static snapshot in time of scientific progress, maybe there's some truth to that.
+
+319
+01:00:16,640 --> 01:00:27,280
+But if somebody is standing behind the dessert table and is replenishing and restocking the desserts and keeps adding new ones in, it may turn out that a little bit later,
+
+320
+01:00:27,280 --> 01:00:36,640
+much better desserts appear, and you're going to go and eat those instead. Scientific progress has a little bit of that flavor.
+
+321
+01:00:36,640 --> 01:00:48,720
+We go through these funny time periods. Computer science is a great example, where computer science basically arose as a side effect of some pretty abstruse questions
+
+322
+01:00:48,720 --> 01:01:04,240
+in the philosophy of mathematics and logic. You've got these people trying to attack these rather esoteric questions that seem quite high up in exploration,
+
+323
+01:01:04,240 --> 01:01:12,480
+and they discover this fundamental new field, and all of a sudden there's an explosion there. The diminishing returns argument just didn't apply there.
+
+324
+01:01:12,480 --> 01:01:24,400
+We just weren't able to see what was there. This has been the case over and over again. New fields arrive and all of a sudden, and boom, it's easy to make progress again.
+
+325
+01:01:24,400 --> 01:01:32,000
+Young people flood in because you can be twenty-one and make major breakthroughs rather than having to spend twenty-five years mastering everything that's been
+
+326
+01:01:32,000 --> 01:01:47,040
+done before. It's obviously very attractive. I'm not sure anybody understands very well the dynamics of that, or how to think about why the structure of knowledge is that way,
+
+327
+01:01:47,040 --> 01:01:58,880
+where these new fields keep opening up. But it does seem empirically to be the case. Despite the fact that that is the case… Take deep learning.
+
+328
+01:01:58,880 --> 01:02:08,960
+Obviously, this is an example of a new field where twenty-one-year-olds can make progress and it's relatively new. Fifteen years or so
+
+329
+01:02:08,960 --> 01:02:20,000
+since it got back into high gear. But already we're in a stage where you need billions, tens of billions, or hundreds of billions of dollars
+
+330
+01:02:20,000 --> 01:02:28,640
+to keep making progress at the frontier. There are a couple ways to understand that. One is that it actually is harder than the kinds of things the ancients had to do,
+
+331
+01:02:28,640 --> 01:02:37,360
+or is more intensive at least. Second is it might not have been, but because our civilizational resources are so large, the amount of people is so large,
+
+332
+01:02:37,360 --> 01:02:47,440
+the amount of money is so large, we can basically make the kind of progress it would have taken the ancients forever to make almost immediately. We notice something is productive and immediately
+
+333
+01:02:47,440 --> 01:02:55,440
+dump in all the resources. But it's also weird that there's not that many of them. I feel like deep learning is notable
+
+334
+01:02:55,440 --> 01:03:03,760
+because it is one big exception to the fact that it's hard to think of other examples. I think that's a consequence of the architecture of attention.
+
+335
+01:03:03,760 --> 01:03:12,000
+At any given time, there's always a most successful thing. If deep learning wasn't a thing, maybe you'd be talking about CRISPR.
+
+336
+01:03:12,000 --> 01:03:28,240
+Maybe we wouldn't think about solving the protein structure prediction problem as a success of AI. Maybe we would have figured out how to do it with curve fitting, more broadly construed,
+
+337
+01:03:28,240 --> 01:03:36,720
+and we'd just be like, "Wow, that took a lot of computing resources." But protein structure prediction might be an enormously important thing.
+
+338
+01:03:36,720 --> 01:03:49,840
+There is always our biggest thing. What you're pointing at is more a consequence of the way in which attention gets centralized. It's basically fashion, is what I'm saying.
+
+339
+01:03:49,840 --> 01:04:05,440
+It's not just fashion, but there is some dynamic there. There's a very interesting and important implication of this idea. That the branching is so wide and so contingent and so path-dependent that
+
+340
+01:04:05,440 --> 01:04:13,040
+different civilizations would stumble on entirely different technology stacks. There's a very interesting implication that there will be gains from trade into the far,
+
+341
+01:04:13,040 --> 01:04:22,800
+far future, which might actually be one of the most important facts about the far future in terms of how civilizations are set up, how they coordinate, and how they interface.
+
+342
+01:04:22,800 --> 01:04:40,160
+There's not this "go forth and exploit." There are humongous gains to trade from adjacent colonies or whatever. Sort of. There's a question of what's actually hard. If it's just the ideas,
+
+343
+01:04:40,160 --> 01:04:48,080
+well, those spread relatively quickly. It's relatively easy to share ideas. If it's something more, it's almost a Dan Wang kind of idea
+
+344
+01:04:48,080 --> 01:04:59,760
+where there's some notion of capacity. You need all the right techs, you need all the right manufacturing capacity, and so on. So civilization A has a very different kind
+
+345
+01:04:59,760 --> 01:05:08,240
+of manufacturing capacity, and it's just not so easy to build in civilization B. Even if civilization B is ahead, I think that becomes true.
+
+346
+01:05:08,240 --> 01:05:23,440
+There is a comparative advantage which is going to provide massive benefits to trade in both directions. Eventually, you expect some diffusion of innovation. It is funny to think about
+
+347
+01:05:23,440 --> 01:05:36,400
+what the barriers are there. A fun thought experiment I like to think about is GitHub but for aliens. Somebody presents you with all of the code
+
+348
+01:05:36,400 --> 01:05:50,080
+from some alien civilization. I don't even know what code means there, but their specification of algorithms. It would have many interesting new ideas in there,
+
+349
+01:05:50,080 --> 01:06:05,120
+and it would take forever for human beings to dig through and try and extract all of those. The origin of this for me was thinking about proteins in nature.
+
+350
+01:06:05,120 --> 01:06:17,200
+We've been gifted this incredible variety of machines which we don't really understand at all. We just have to go and try and understand them on a one-by-one basis.
+
+351
+01:06:17,200 --> 01:06:28,000
+We're still understanding hemoglobin and insulin and things like this. There are hundreds of millions of proteins known. So it is a little bit like that.
+
+352
+01:06:28,000 --> 01:06:43,360
+We've been gifted by biology this immense library of machines, no doubt containing an enormous number of very interesting ideas, and we're just at the very, very beginning of understanding it.
+
+353
+01:06:43,360 --> 01:06:56,560
+I suppose your point—I need to relabel your argument slightly—but you think of that as a gift from an alien civilization, which obviously it isn't, but you think of it that way.
+
+354
+01:06:56,560 --> 01:07:04,960
+And oh my goodness, there's so much in there and we're going to study it. Goodness knows how long we could continue to study it.
+
+355
+01:07:04,960 --> 01:07:13,760
+There are tens of thousands of papers about hemoglobin and things like that, and we still don't understand them, and yet we're getting so much out of it. Just think about
+
+356
+01:07:13,760 --> 01:07:27,680
+insulin alone. It's such an important thing. That's an incredibly useful intuition pump, that you have on Earth… I had Nick Lane on where he had this theory about how life emerged,
+
+357
+01:07:27,680 --> 01:07:37,440
+but whatever theory you have, something like DNA has had four billion years. You have an alien civilization come here and be like, "There's all these interesting
+
+358
+01:07:37,440 --> 01:07:52,320
+things to learn about material science." Think about kinesin walking along. We know almost nothing about these proteins, and yet the tiny few facts we do know are just incredible.
+
+359
+01:07:52,320 --> 01:08:09,760
+The ribosome is another example, this miraculous sort of device, a little factory. All seeded by this particular chemistry on Earth with nucleic acids and carbon-based life forms.
+
+360
+01:08:09,760 --> 01:08:19,680
+That chemistry gives rise to all of these interesting things which an alien civilization would find very interesting. That very seed, which must be one among trillions
+
+361
+01:08:19,680 --> 01:08:29,439
+of possible seeds of general intellectual ideas, leads to all this fecundity. That's a very interesting intuition pump. I want to meditate on this "gains from trade"
+
+362
+01:08:29,439 --> 01:08:39,279
+thing because I feel like there's something very interesting about this idea that if you have this vision of how technology progresses and how it may be different in different civilizations,
+
+363
+01:08:39,279 --> 01:08:45,200
+it actually has important implications about how different civilizations might interact with each other. The fact that there are going
+
+364
+01:08:45,200 --> 01:08:54,399
+to be these huge gains from trade. It makes friendliness much more rewarding? Yes. That's a very important observation. I hadn't thought about that at all.
+
+365
+01:08:54,399 --> 01:09:16,720
+That is a very interesting observation. It is funny. Comparative advantage is something that people love to invoke and it's a very beautiful idea obviously. There are limits to it.
+
+366
+01:09:16,720 --> 01:09:31,120
+It's a special limited model. Chimpanzees can do interesting things, but we don't trade with them. I think it's interesting to think about the reasons why.
+
+367
+01:09:31,120 --> 01:09:44,399
+Part of it is just power, I think. Once there's a sufficiently large power imbalance, very often—not always, but very often—groups of people seem to shift into this other
+
+368
+01:09:44,399 --> 01:09:57,680
+mode where they just seek to dominate. Maybe there's something special about human beings, but maybe it's also a more general thing. You need all these special things to be
+
+369
+01:09:57,680 --> 01:10:09,760
+true before groups will trade. It's not necessarily obvious. I think the big thing going on here is one, transaction costs.
+
+370
+01:10:09,760 --> 01:10:22,880
+Two, comparative advantage does not tell you that the terms on which the trade happens are above subsistence for any given producer. People often bring this up in the context of,
+
+371
+01:10:22,880 --> 01:10:32,400
+"Well, humans will be employed even in a post-AGI world because of comparative advantage." There are five different ways that argument breaks down, but the easiest way to understand it is:
+
+372
+01:10:32,400 --> 01:10:40,880
+why don't we have horses all around on the roads? Because there's some comparative advantage between cars and horses. One, there are huge
+
+373
+01:10:40,880 --> 01:10:52,080
+transaction costs to building roads that are compatible with horses and cars at the same time. In a similar way, AI thinking at 1,000 times the speed that can shoot their latent states at each
+
+374
+01:10:52,080 --> 01:11:07,120
+other is going to find it way more costly than the benefit, in terms of interacting with a human being in the supply chain. Second, just because horses have a comparative
+
+375
+01:11:07,120 --> 01:11:19,600
+advantage mathematically does not mean that it is worth paying $100,000 a year, or whatever it costs to sustain a horse in San Francisco. That subsistence isn't going to be worth the
+
+376
+01:11:19,600 --> 01:11:32,080
+benefit you get out of the horse. I do think it's interesting, the sheer fact… My expectation and my intuition obviously differs a great deal from yours on this.
+
+377
+01:11:32,080 --> 01:11:38,240
+Most parts of the tech tree are never going to be explored. There are just too many interesting ways of combining things.
+
+378
+01:11:38,240 --> 01:11:50,160
+There are too many deep ideas waiting to be discovered, and not only we, but nobody ever is going to discover most of them. So choices about how to do the
+
+379
+01:11:50,160 --> 01:11:59,200
+exploration actually matter quite a bit. It's something I really dislike about technological determinist arguments. I'm willing to buy it low enough
+
+380
+01:11:59,200 --> 01:12:12,000
+down when progress is relatively simple. But higher up, you start to get to shape the way in which you do the exploration. And it's interesting, we are starting to
+
+381
+01:12:12,000 --> 01:12:22,960
+shape it in interesting ways. There are various technologies that have been essentially banned. You think about DDT, chlorofluorocarbons,
+
+382
+01:12:22,960 --> 01:12:36,560
+restrictions on the use of nuclear weapons, the Nuclear Non-Proliferation Treaty. Those kinds of things weren't done before the fact, but they're starting to get pretty close
+
+383
+01:12:36,560 --> 01:12:47,440
+in some cases, where we just preemptively decide, "Oh, we're not going to go down that path." So that starts to look like a set of institutions where we are actually
+
+384
+01:12:47,440 --> 01:12:59,200
+influencing how we explore the tech tree. On where you would see these gains from trade, obviously you'd see the most where it's pure information that could be sent back and forth,
+
+385
+01:12:59,200 --> 01:13:09,120
+because the information has this quality where it is expensive to produce, but cheap to verify and cheap to send. It'll be interesting how much of future
+
+386
+01:13:09,120 --> 01:13:18,080
+productivity can be distilled down to information. Right now, it's hard to do. If China's really good at manufacturing something, there's this process knowledge
+
+387
+01:13:18,080 --> 01:13:26,080
+that's in the heads of 100 million people involved in the manufacturing sector in China. But in the future, it might be easier if AIs are doing it.
+
+388
+01:13:26,080 --> 01:13:39,920
+The question is to what extent our fabrication gets very uniform and gets really commoditized. 3D printers have been the next big thing for at least 20 years now.
+
+389
+01:13:39,920 --> 01:13:50,000
+Why do they still not work all that well? Why are they still not at the center of manufacturing, and what comes after that? It is funny to look at the ribosome by contrast,
+
+390
+01:13:50,000 --> 01:14:00,480
+which really is at the center of biology in a whole lot of really interesting ways. Whether or not that's the future of manufacturing is something very simple,
+
+391
+01:14:00,480 --> 01:14:15,600
+where everything goes as throughput through a bioreactor or something like that. You send the information, and then you grow stuff, or you have some 3D printer that actually works.
+
+392
+01:14:15,600 --> 01:14:27,120
+If they're good enough, then it does become much more a pure information problem, and some of this process knowledge becomes much less important. Jane Street has a lot of compute, but GPUs are
+
+393
+01:14:27,120 --> 01:14:36,240
+very expensive, and so even optimizations that have a relatively small effect on GPU utilization are still extremely valuable. Two of Jane Street's ML engineers,
+
+394
+01:14:36,240 --> 01:14:42,800
+Corwin and Sylvain, walked through some of their optimization workflows at GTC. You're not bottlenecked on the network being too slow, you're bottlenecked on
+
+395
+01:14:42,800 --> 01:14:51,600
+waiting for a different rank in your training not having completed the work. They talked about how Jane Street profiles traces and diagnoses bottlenecks, and then
+
+396
+01:14:51,600 --> 01:14:59,280
+how they solve them using techniques like CUDA graphs and CUDA streams and custom kernels. With these sorts of optimizations, Corwin and Sylvain were able to
+
+397
+01:14:59,280 --> 01:15:08,400
+get their training steps down from 400 milliseconds to 375 milliseconds each. This 25 millisecond difference might sound small, but given the size of Jane Street's fleet,
+
+398
+01:15:08,400 --> 01:15:17,840
+that improvement could free up thousands of B200s. Jane Street open sourced all the relevant code. If you want to check it out, I've linked the GitHub repo and the talk in the description below.
+
+399
+01:15:17,840 --> 01:15:29,120
+And if you find this stuff exciting, Jane Street is hiring researchers and engineers. Go to janestreet.com/dwarkesh to learn more. Can I ask a very clumsily phrased question?
+
+400
+01:15:29,120 --> 01:15:39,840
+There are these deep principles that we've discovered a couple of. One is this idea that if there's a symmetry across a dimension, it corresponds to a conserved
+
+401
+01:15:39,840 --> 01:15:52,160
+quantity. It's a very deep idea. There's another—which you've written a lot about, written a textbook about in fact—about ways to understand what kinds of things you can compute,
+
+402
+01:15:52,160 --> 01:16:01,920
+what kinds of physical systems you can understand with other physical systems, what a universal computer looks like, et cetera. Is your view that if you go down to this level of
+
+403
+01:16:01,920 --> 01:16:11,920
+idea of Noether's theorem or the Church-Turing principle, that there's an infinite number of extremely deep such principles? Because I feel what makes them special
+
+404
+01:16:11,920 --> 01:16:23,920
+is that they themselves encompass so many different possible ways the world could be. But no, the world has to be compatible with a couple of these very deep principles.
+
+405
+01:16:23,920 --> 01:16:33,200
+I don't know. All I have here is speculation and instinct. My instinct is that we keep finding very fundamental new things.
+
+406
+01:16:33,200 --> 01:16:46,640
+It was quite formative for me to understand, as I gave the example before, these wonderful ideas of Church and Turing and these other people about universal programmable devices.
+
+407
+01:16:46,640 --> 01:16:55,120
+Then you understand later, this also contains within it the ideas of public-key cryptography. Then you understand later, that also contains within it
+
+408
+01:16:55,120 --> 01:17:11,200
+the ideas people refer to as cryptocurrency. There's a very deep set of ideas there about the ability to collectively maintain an agreed-upon ledger, which is built upon this.
+
+409
+01:17:11,200 --> 01:17:28,320
+It's taken many years to figure out the right canonical form of those. Just this fact that you keep finding what seem like deep new fundamental primitives
+
+410
+01:17:28,320 --> 01:17:37,920
+has been a very important intuition pump for me. I've given that particular example, but I think you see that same pattern in a lot of different areas.
+
+411
+01:17:37,920 --> 01:17:50,080
+What is your interpretation then of this empirical phenomenon where whatever input you consider into the scientific process or technological progress… Economists have studied this a million ways.
+
+412
+01:17:50,080 --> 01:18:00,560
+It just seems to require a very consistent rate of X percent more researchers per year. There's this famous paper from a couple years ago by Nicholas Bloom and others where they say,
+
+413
+01:18:00,560 --> 01:18:08,400
+"How many people are working in the semiconductor industry, and how has it increased over time through the history of Moore's law?" I think they find that Moore's law
+
+414
+01:18:08,400 --> 01:18:19,040
+means transistor density increases 40% a year, but to keep that going the number of scientists has increased 9% a year, in the semiconductor industry.
+
+415
+01:18:19,040 --> 01:18:25,920
+They go through industry after industry with this observation. Is your view that there are these deep ideas, but they keep getting harder to find?
+
+416
+01:18:25,920 --> 01:18:37,920
+Or is there another way to think about what's happening with these empirical observations? First of all, all of their examples are narrow. They pick a particular thing, and then they
+
+417
+01:18:37,920 --> 01:19:02,160
+look at a particular metric. GPUs don't show up there. All of a sudden you get this ability to parallelize, and that's really interesting. There are a lot of external consequences.
+
+418
+01:19:02,160 --> 01:19:14,880
+Basically they have these simple quantitative measures. They look at it in agricultural productivity. They look at it in a whole lot of different ways, but you do have to focus narrowly.
+
+419
+01:19:14,880 --> 01:19:33,520
+I'm certainly interested in the fact that new types of progress keep becoming possible. But I think even there, there does still seem to be some phenomenon of diminishing returns.
+
+420
+01:19:33,520 --> 01:19:44,560
+Is that intrinsic? Is that something about the structure of the world? What is it? One thing which hasn't changed that much is the individual minds which are doing this kind of work.
+
+421
+01:19:44,560 --> 01:20:02,720
+Maybe those should be improved as well, or some feedback process going on there. Maybe that changes the nature of things. I look at scientific progress up until,
+
+422
+01:20:02,720 --> 01:20:16,720
+let's say, 1700, and it was very slow, and also very irregular. You had the Ionians back five centuries before Christ doing these quite remarkable things, and so
+
+423
+01:20:16,720 --> 01:20:28,080
+much knowledge would get lost, and then it would be rediscovered, and then it would be lost again. You'd have to say that progress was very slow. It's partially just bound up with the fact
+
+424
+01:20:28,080 --> 01:20:35,440
+that there were some very good ideas that we just didn't have. Even once you've had the ideas, you need to build institutions around them.
+
+425
+01:20:35,440 --> 01:20:44,000
+You actually need to solve a whole lot of different problems about training, allocation of capital, and all these kinds of things. Even just basic security for researchers,
+
+426
+01:20:44,000 --> 01:20:51,280
+so they're not worried about the Inquisition or things like that. There are all these complicated problems. You solve all those complicated problems,
+
+427
+01:20:51,280 --> 01:21:02,800
+and then all of a sudden, boom, there's a massive burst of scientific progress. If there's some kind of stagnation, if you're not changing those external circumstances, yes,
+
+428
+01:21:02,800 --> 01:21:14,800
+you may start to get diminishing returns again. But that doesn't mean there's anything intrinsic about the situation. Maybe something external needs to change again.
+
+429
+01:21:14,800 --> 01:21:24,240
+Obviously, a lot of people think AI is potentially going to be a driver. It certainly will at some level. To that extent, you can think of a lot
+
+430
+01:21:24,240 --> 01:21:37,120
+of modern scientific instrumentation as really, at some level, robots. What is the James Webb Space Telescope? It's unconventional maybe to describe
+
+431
+01:21:37,120 --> 01:21:47,520
+it as a robot, but it's not completely unreasonable either. It is an example of a highly automated, very sophisticated system with electronically
+
+432
+01:21:47,520 --> 01:21:58,240
+mediated sensors and actuators, where machine learning is being used to process the data. In that sense, we're already starting to see that transition.
+
+433
+01:21:58,240 --> 01:22:06,320
+We've been seeing it for decades. I have this "smoke a joint and take a puff" thought, which— I think we've had a few.
+
+434
+01:22:06,320 --> 01:22:14,560
+I think we're getting to that part of the conversation, and then you can help me get my foot out of my mouth and figure out a more concrete way to think about it.
+
+435
+01:22:14,560 --> 01:22:26,560
+To your point that there was the Industrial Revolution, the Enlightenment, and now there's AI, and each might be a different pace or a different way in which science happens.
+
+436
+01:22:26,560 --> 01:22:39,120
+If you think about the pace of how fast such transitions have been happening, you can draw over the long span of human history this hyperbolic rate of growth that is
+
+437
+01:22:39,120 --> 01:22:46,080
+increasing over time as well. A hundred thousand years ago, you had the Stone Age. You go back even much further, how long have primates been around?
+
+438
+01:22:46,080 --> 01:22:54,240
+It would be millions of years. A hundred thousand years ago, the Stone Age, then ten thousand years ago, the Agricultural Revolution, then three hundred years ago,
+
+439
+01:22:54,240 --> 01:23:04,320
+the Industrial Revolution, each marked by this increase in the rate of exponential growth. Then people think it's going to happen again with AI.
+
+440
+01:23:04,320 --> 01:23:12,400
+But that would happen potentially even faster. It would not have occurred to somebody at the beginning of the Industrial Revolution that the next demarcation
+
+441
+01:23:12,400 --> 01:23:25,520
+in this trend will be artificial intelligence. So if things are getting faster, and it's hard to anticipate what the next transition will be. I guess we just think of this singularity between
+
+442
+01:23:25,520 --> 01:23:36,160
+now and AI as what distinguishes the past from the future. But applying the same heuristic that many people in the past should have had,
+
+443
+01:23:36,160 --> 01:23:46,560
+maybe the "Intelligence Age" is also quite short and the next thing after that, we don't even have the ontology to describe what it is, the future will not think of the
+
+444
+01:23:46,560 --> 01:24:01,440
+past as pre-intelligent AI and post-AI. No, obviously we can't prove this, but it certainly seems quite plausible. Part of the issue is just that the substrate
+
+445
+01:24:01,440 --> 01:24:20,160
+we have available to conceive seems all wrong. You can't speculate with a bunch of chimpanzees about what it would be to have language. Just to pick a major transition in the past,
+
+446
+01:24:20,160 --> 01:24:34,720
+the transition itself is the thing. It seems likely. If we're talking about "taking a puff" kind of thoughts, I'm certainly amused by the idea that there's going to be some
+
+447
+01:24:34,720 --> 01:24:45,360
+transition involving artificial general intelligence using classical computers. But actually, there'll be an interesting transition with quantum computers as well.
+
+448
+01:24:45,360 --> 01:24:59,520
+They're probably capable of a strictly larger class of potentially interesting computations. So maybe the character of AQGI, or whatever it should be called,
+
+449
+01:24:59,520 --> 01:25:12,960
+is actually qualitatively different. So maybe there's a brief period between those two things. As I say, this is just speculation, but it's certainly amusing. Is there a reason to think that?
+
+450
+01:25:12,960 --> 01:25:24,320
+From what I understand, for decades people like you have put pretty tight bounds on the kinds of things quantum computers are going to do. It'll speed up search somewhat.
+
+451
+01:25:24,320 --> 01:25:32,000
+The kinds of things it speeds up extremely, like Shor's algorithm, it seems like… Again, maybe this is to your point that we can't predict in advance what's down the tech tree, but at least
+
+452
+01:25:32,000 --> 01:25:43,280
+from here, it seems like you break encryption, but what else are you using Shor's algorithm to do? We've only been thinking about it for 40 or so years.
+
+453
+01:25:43,280 --> 01:25:56,720
+Not for very long, and we haven't thought that hard about it as a civilization. Does it turn out that it's very narrow? Maybe. Does it turn out that it's very broad?
+
+454
+01:25:56,720 --> 01:26:06,800
+That's also a really radical expansion that seems distinctly possible. Keep in mind as well, we've been doing it without the benefit of having the devices.
+
+455
+01:26:06,800 --> 01:26:16,400
+That's a pretty big bottleneck to have. If you're thinking about computer science in the 1700s and you're like, "it can do AND/OR, what can come out of that?" You can't anticipate
+
+456
+01:26:16,400 --> 01:26:30,240
+Bitcoin. You can't anticipate deep learning. Maybe you could if you were sufficiently bright, but it is a pretty hard situation. What is your inside view, having been
+
+457
+01:26:30,240 --> 01:26:40,000
+in and contributing to quantum information and quantum computing back in the '90s and 2000s? What is your telling of the history of what was the bottleneck?
+
+458
+01:26:40,000 --> 01:26:53,280
+What was the key transition that made it a real field? How do you rank the contributions from Feynman to Deutsch to everybody else who came along?
+
+459
+01:26:53,280 --> 01:27:04,800
+Let's just focus on the question about what actually changed. Why was quantum computing not a thing in the 1950s? It could have been. Somebody
+
+460
+01:27:04,800 --> 01:27:14,800
+like John von Neumann is a good example. He was absolutely pioneering computation. He also wrote a very important book about quantum mechanics and was deeply interested in it.
+
+461
+01:27:14,800 --> 01:27:21,440
+He could have invented quantum computing at that time, and I think there were quite a number of people who potentially could have.
+
+462
+01:27:21,440 --> 01:27:31,440
+So why do we have these papers by people like Feynman and Deutsch in the '80s? Those are fairly regarded as the foundation of the field.
+
+463
+01:27:31,440 --> 01:27:46,000
+There are some partial anticipations a little bit earlier, but they were nowhere near as comprehensive and nowhere near as deep. You should ask David. You can't ask Feynman, unfortunately,
+
+464
+01:27:46,000 --> 01:27:58,480
+but he'll know much better than I do. A couple things that I think are interesting. One is that computation became far more salient in the late '70s and early '80s.
+
+465
+01:27:58,480 --> 01:28:06,720
+It just became a thing which many more people were interested in, partially for very banal reasons. You could go and buy a PC. You could buy an Apple II.
+
+466
+01:28:06,720 --> 01:28:14,960
+You could buy a Commodore 64. You could buy all these kinds of things. It became apparent to people that these were very powerful devices, very interesting to think about.
+
+467
+01:28:14,960 --> 01:28:26,480
+At the same time, in the quantum case, that was also the time of the Paul trap and the ability to trap single ions. Up to that point, we hadn't really had the
+
+468
+01:28:26,480 --> 01:28:41,440
+ability to manipulate single quantum states. You got these two separate things that for historically contingent reasons had both matured around 1980 or so.
+
+469
+01:28:41,440 --> 01:28:55,120
+Somebody like von Neumann could have had the idea earlier, but it is quite an interesting factor. There's a story about Richard Feynman. He went and got one of the
+
+470
+01:28:55,120 --> 01:29:16,000
+first PCs around 1980 or 1981. He was apparently so excited with this device, he actually tripped and hurt himself quite badly carrying his brand-new computing device.
+
+471
+01:29:16,000 --> 01:29:32,400
+That's a very historically contingent coincidence, having somebody who's very talented and understanding of quantum mechanics also just very excited about these new machines.
+
+472
+01:29:32,400 --> 01:29:47,120
+It's not so surprising perhaps that he's thinking about it then. What similar story could you have told 10 years earlier? The conditions don't exist for it. I mean, it's quite a banal story, but…
+
+473
+01:29:47,120 --> 01:29:58,160
+One of the things we were going to discuss was this idea you had about the market for follow-ups. I think this is the perfect story to discuss it for because you wrote the
+
+474
+01:29:58,160 --> 01:30:12,480
+textbook about the field. "Mike and Ike" is the definitive textbook on quantum information. You presumably came in after Deutsch. But you in the '90s somehow identified
+
+475
+01:30:12,480 --> 01:30:20,480
+it as the thing that is worth following up on and building on. Instead of talking about it more abstractly, I'd love to just hear the firsthand story
+
+476
+01:30:20,480 --> 01:30:30,720
+of how you knew that this is the thing to do. Of all the things that were happening in physics and computing, how did you decide you want to think about this problem?
+
+477
+01:30:30,720 --> 01:30:44,720
+Richard Feynman writes this great paper in 1982. David Deutsch writes an absolutely fantastic paper in 1985 sketching out a lot of the fundamental ideas of quantum computing. I'm
+
+478
+01:30:44,720 --> 01:30:56,800
+11 in 1985. I'm not thinking about this. I'm playing soccer and doing whatever. But in 1992, I took a class on quantum mechanics that was really terrific, given by Gerard Milburn.
+
+479
+01:30:56,800 --> 01:31:12,320
+I just went and asked Gerard one day after the fifth lecture or something. I said, "Do you have any papers or whatever that you could give me?" He said, "Come by my office in a couple of days' time."
+
+480
+01:31:12,320 --> 01:31:24,720
+I did, and he presented me with a giant stack of papers, which included the Deutsch paper, the Feynman paper, and a whole bunch of other very fundamental papers about quantum computing
+
+481
+01:31:24,720 --> 01:31:39,880
+and quantum information at a time when essentially nobody in the world was working on it. He was. I think he wrote the very first paper that proposed a practical approach to quantum computing.
+
+482
+01:31:39,880 --> 01:31:57,040
+It wasn't very practical, but it was actually in a real system. So in some sense, I'm benefiting from the taste of this other person. As soon as I read the papers… These are exciting papers.
+
+483
+01:31:57,040 --> 01:32:06,480
+They're asking very fundamental questions, and you realize I can make progress here. These are things that one could potentially work on.
+
+484
+01:32:06,480 --> 01:32:28,560
+Deutsch has this conjecture, or thesis or whatever you’d call it, that a universal model, a quantum Turing machine, should be capable of efficiently simulating any physical system at all.
+
+485
+01:32:28,560 --> 01:32:39,680
+This is a very provocative idea. I think in that paper, he more or less claims that he's proved it. I'm not sure everybody would agree with that.
+
+486
+01:32:39,680 --> 01:32:52,160
+There are questions about whether or not you can simulate quantum field theory effectively. That kind of question is very interesting and very exciting.
+
+487
+01:32:52,160 --> 01:33:04,400
+It's obviously a fundamental question about the universe. He has some wonderful ideas in there about quantum algorithms, where they come from,
+
+488
+01:33:04,400 --> 01:33:16,080
+what they mean, and what they relate to the meaning of the wave function. Questions like this are still not agreed upon amongst physicists.
+
+489
+01:33:16,080 --> 01:33:26,160
+There's just some sense of, "Oh, I am in contact with something which is (A) deeply important, and (B) we as a civilization don't have this." Of course, you start to focus
+
+490
+01:33:26,160 --> 01:33:44,080
+your attention a little bit there. I'm not sure I got the answer to the question… Maybe I misunderstood the question. Maybe I'll explain the motivation first.
+
+491
+01:33:44,080 --> 01:33:57,840
+In a previous conversation, we were discussing how you could have known in the 1940s that the Shannon theorems and Shannon's way of thinking about a communication channel is a deep idea that goes
+
+492
+01:33:57,840 --> 01:34:09,840
+beyond the problems with pulse-code modulation that Bell Labs was trying to solve at the time, and that it applies to everything from quantum mechanics to genetics to computer science.
+
+493
+01:34:09,840 --> 01:34:19,520
+One of the ideas you stated that we didn't get a chance to talk about yet… Shannon published this paper. There are all these other papers,
+
+494
+01:34:19,520 --> 01:34:29,760
+but there's some market of follow-ups where people gravitate to and build upon Shannon's work. How do they realize that that's the thing to do, and how does that process happen?
+
+495
+01:34:29,760 --> 01:34:37,680
+I guess you gave your local answer. You read these papers, and you immediately realized there's work to be done here. There's low-hanging fruit.
+
+496
+01:34:37,680 --> 01:34:48,000
+There's some deep provocative idea that I need to better understand, and I could tractably make progress on. To some extent, you're saying, "Okay,
+
+497
+01:34:48,000 --> 01:35:01,840
+I wanted to get into this game of contributing to humanity's understanding of the universe," and you are applying this low-hanging fruit algorithm. You're like, "elative to my particular set of
+
+498
+01:35:01,840 --> 01:35:16,880
+interests and abilities, where should I pick up my shovel and start digging?" There it was like, "Oh, this looks like quite a good place to start digging."
+
+499
+01:35:16,880 --> 01:35:29,120
+Different people, of course, chose very differently. It was a very unusual choice at the time. This was 1992. Very few people were thinking about that.
+
+500
+01:35:29,120 --> 01:35:41,200
+Fast-forwarding a bit, I don't know how you think about your work on the open science movement now, but did it work? What does success there look like?
+
+501
+01:35:41,200 --> 01:35:58,960
+What is the movement trying to accomplish? It's interesting. You didn't stop and define open science there, which 20 years ago you would have had to do. People recognize the phrase.
+
+502
+01:35:58,960 --> 01:36:06,000
+People have some set of associations with it. Most often, they have a relatively simple set of associations. It means maybe something
+
+503
+01:36:06,000 --> 01:36:19,920
+about making scientific papers open access. Very often they have some set of notions about also making code openly available or making data openly available.
+
+504
+01:36:19,920 --> 01:36:35,200
+Those are already very large successes of the open science movement, to make those salient issues. Those are issues on which people have opinions, and there are relatively common arguments.
+
+505
+01:36:35,200 --> 01:36:47,600
+This is like the meme version: publicly funded science should be open science. That's a distillation of a set of ideas which you might be able to contest.
+
+506
+01:36:47,600 --> 01:37:01,680
+But if you can get people actually thinking about it and engaged with that kind of argument, that's a very fundamental issue to be considering in the whole political economy of science.
+
+507
+01:37:01,680 --> 01:37:13,040
+If you go back three centuries, there was a very similar argument prosecuted, which is the question: do we publicly disclose our scientific results or not?
+
+508
+01:37:13,040 --> 01:37:26,240
+If you look at people like Galileo and Kepler, the extent to which they publicly disclosed was done in a very odd way. Sometimes they did bizarre things where
+
+509
+01:37:26,240 --> 01:38:02,560
+they published some of their results as anagrams. They'd find some discovery, write down the result in a sentence, scramble it, and publish that. Then if somebody else later made the same
+
+510
+01:38:02,560 --> 01:38:12,720
+discovery, they would unscramble the anagram and say, "Oh, yeah, I actually did it first." This is not an ideal foundation for a discovery system.
+
+511
+01:38:12,720 --> 01:38:27,840
+It took a very long time, over a century, I think, to obtain more or less the modern ideals, in which you disclose the knowledge in the form of a paper. There is an expectation of attribution, and a
+
+512
+01:38:27,840 --> 01:38:37,200
+reputation economy gets built. "So-and-so did this work, so they deserve the credit for that," and that's the basis for their careers. This is the underlying
+
+513
+01:38:37,200 --> 01:38:48,160
+political economy of science. That made a lot of sense when you have a printing press and the ability to do scientific journals. Then you transition to this modern situation,
+
+514
+01:38:48,160 --> 01:39:00,960
+where you can start to share a lot more. You can share your code, your data, your in-progress ideas. But there's no direct credit associated to those.
+
+515
+01:39:00,960 --> 01:39:18,080
+It's not at all obvious how much reputation should be associated to them. That's all constructed socially. Making it a live issue is a very important thing to have done.
+
+516
+01:39:18,080 --> 01:39:28,800
+I view that as one of the main positive outcomes of work on open science. I'll give you a really practical example to illustrate the problem.
+
+517
+01:39:28,800 --> 01:39:42,400
+For a long time in physics, there was a preprint culture in which people would upload preprints to the preprint archive, and in biology, this didn't happen.
+
+518
+01:39:42,400 --> 01:39:54,080
+There was no preprint culture. That's changing now, but for a long time, this was the case. I used to amuse myself by asking physicists and biologists why this was the case.
+
+519
+01:39:54,080 --> 01:40:10,080
+What I would hear from biologists was they would say, "Biology is so much more competitive than physics that we need to protect our priority, so we can't possibly upload to the archive.
+
+520
+01:40:10,080 --> 01:40:18,080
+We have to just publish in journals." Then I would sometimes hear from physicists, "Physics is so much more competitive than biology that we need to establish
+
+521
+01:40:18,080 --> 01:40:25,280
+our priority by uploading as rapidly as possible to the preprint archive. We can't possibly wait to do it with the journals."
+
+522
+01:40:25,280 --> 01:40:36,000
+I think this emphasizes the extent to which this kind of attribution economy is just something we construct. It's something we do by agreement.
+
+523
+01:40:36,000 --> 01:40:51,600
+Any attempt to change that economy results in a different system by which we construct knowledge. There is this very fundamental set of problems around the political economy of science.
+
+524
+01:40:51,600 --> 01:41:01,760
+We've got this collective project, and how we mediate it depends upon the economy we have around ideas. One of the things you've emphasized
+
+525
+01:41:01,760 --> 01:41:11,120
+as a part of this project of open science, and we talked about it earlier, is collective science, or groups of people making progress on a problem where no individual understands
+
+526
+01:41:11,120 --> 01:41:24,320
+all the logical and explanatory levels necessary to make a leap or a connection. Outside of mathematics, what is the best example of such a discovery?
+
+527
+01:41:24,320 --> 01:41:34,800
+I'm not sure I have a well-ordering of them to give you a best. An example that I think is very interesting is the LHC, where it's
+
+528
+01:41:34,800 --> 01:41:44,240
+just this immensely complicated object. Years ago, I snuck into an accelerator physics conference. I didn't know anything at
+
+529
+01:41:44,240 --> 01:41:53,680
+all about accelerator physics, but I was just curious to see what they were talking about. This particular group of people were experts on numerical methods,
+
+530
+01:41:53,680 --> 01:42:04,880
+in particular on inverse methods. Inside these accelerators, you have these cascades. A particle will be massively accelerated, maybe
+
+531
+01:42:04,880 --> 01:42:17,360
+it'll be collided, and then you'll get a shower of particles which decays and decays and decays. There's just this incredible, consequential shower, which is ultimately what you see
+
+532
+01:42:17,360 --> 01:42:29,280
+at the detector. Then you have to retroactively figure out what produced it. There are these very complicated inverse problems that need to be solved. You've got this final data,
+
+533
+01:42:29,280 --> 01:42:40,160
+but you need to figure out what produced it, and that's how you look for signatures of these. Many of these people were incredibly deep experts on simulation methods
+
+534
+01:42:40,160 --> 01:42:52,480
+for following particle tracks. This was really deep and difficult stuff. I was like, "Wow, you could spend a lifetime just learning how to do this and how to solve
+
+535
+01:42:52,480 --> 01:43:09,600
+some of these inverse problems, and you would know very little about quantum field theory, detector physics, vacuum physics, or data processing, all these things that are absolutely essential
+
+536
+01:43:09,600 --> 01:43:22,960
+to understanding, say, the Higgs boson". I don't think it's possible for one person to understand everything in depth. Lots of people broadly understand a
+
+537
+01:43:22,960 --> 01:43:34,880
+lot of these ideas, but they don't understand everything in the depth that is actually utilized. That's why there are these papers with well over a thousand authors.
+
+538
+01:43:34,880 --> 01:43:45,440
+Those people can talk to one another at a high level, but they don't understand each other's specialties in all that much depth. Things like detector physics, vacuum physics,
+
+539
+01:43:45,440 --> 01:44:02,080
+solving inverse problems, this stuff is incredibly different from each other. To understand it in real detail is serious work. How do you think about prolificness versus depth?
+
+540
+01:44:02,080 --> 01:44:11,280
+Maybe Darwin's an example of somebody who's just gestating on something for many decades. There are other examples. Einstein during the year he comes up with special relativity is
+
+541
+01:44:11,280 --> 01:44:20,560
+just doing a bunch of different things. And Pais talks about how they were all relevant to the eventual build-up. It's something I stress about a lot.
+
+542
+01:44:20,560 --> 01:44:33,040
+Sometimes I feel I'm too slow. It's funny though, the Darwin example is really interesting. Prolific at what? God knows how many letters he wrote.
+
+543
+01:44:33,040 --> 01:44:46,560
+It must have been an enormous number. So he was certainly very active. There's two types of work that tend to be involved in any kind of creative project.
+
+544
+01:44:46,560 --> 01:44:54,320
+There's routine stuff, and there you just want to avoid procrastination. You just want to ask, "How do I get good at this?" or "How do I outsource it?" and "How do I do it as
+
+545
+01:44:54,320 --> 01:45:11,200
+rapidly as possible?" and just avoid getting into a situation where you're prolonging it. Then there's high-variance stuff where you actually need to be willing to take a lot of time.
+
+546
+01:45:11,200 --> 01:45:20,720
+You need to be willing to go to different places and talk to different people, where in any given instance, most of it is just not going to be an input.
+
+547
+01:45:20,720 --> 01:45:31,920
+Somehow balancing those two things… I think a lot of people are very good at doing one or the other, but it's almost like a personality trait which one you prefer.
+
+548
+01:45:31,920 --> 01:45:45,040
+People tend to end up doing a lot of one and not enough of the other. So I certainly try and balance those two things. Einstein is such an interesting example. 1905
+
+549
+01:45:45,040 --> 01:45:53,360
+is just this extraordinary year. You can delete special relativity entirely, and it's an extraordinary year. You can delete special relativity, and you can
+
+550
+01:45:53,360 --> 01:46:07,520
+delete the photoelectric effect for which he won the Nobel Prize, and it's still an extraordinary year, plausibly a multi-Nobel-Prize-winning year. So what's he doing? Maybe the answer is
+
+551
+01:46:07,520 --> 01:46:22,560
+just that he's smarter than the rest of us. There's a lot of luck as well. Certainly for myself anyway, trying to identify those things that are routine
+
+552
+01:46:22,560 --> 01:46:34,560
+that I should get good at, and then just try to do them as quickly as possible. I think that's yielded a certain amount of returns. But also being willing to bet a little bit more on myself on the
+
+553
+01:46:34,560 --> 01:46:45,920
+variance side has also been very, very helpful. That's really hard, because intrinsically you're putting yourself in situations where you don't know what the outcome is going to be.
+
+554
+01:46:45,920 --> 01:46:58,000
+If you're very driven to be productive, and actually mostly it's not working over there, you think, "Let's reduce this." It doesn't feel right. When I worked in San Francisco,
+
+555
+01:46:58,000 --> 01:47:08,000
+a practice I used to have each day was instead of taking the 15-minute walk to work, I would take the more beautiful 30-minute walk.
+
+556
+01:47:08,000 --> 01:47:19,200
+Partially just because it was beautiful, but partially also as just a reminder that there are real benefits to not being efficient. But it's not an answer to your question.
+
+557
+01:47:19,200 --> 01:47:30,320
+Really, I think all I'm saying is I struggle a lot with the question. I think Dean Keith Simonton has this famous equal odds rule where he says
+
+558
+01:47:30,320 --> 01:47:40,480
+the probability that any given thing you release—any paper, book, whatever—will be extremely important for a given person through their lifetime is not that different.
+
+559
+01:47:40,480 --> 01:47:53,360
+What really determines in what era they are the most productive is how much they're publishing. Any given thing has equal odds of being extremely important.
+
+560
+01:47:53,360 --> 01:48:03,200
+I think some of the most successful creatives or scientists, they're just doing a lot. Shakespeare was just publishing a lot. Of course, then there are counterexamples. Gödel
+
+561
+01:48:03,200 --> 01:48:23,680
+published almost nothing. But broadly speaking, you need a very good reason to not do that. It's funny, I've met a lot of people over the years who are clearly brilliant,
+
+562
+01:48:23,680 --> 01:48:33,680
+and they're just obsessed that they are going to work on the great project that makes them famous, and they never do anything. That seems connected. It's a type of aversiveness. I think very
+
+563
+01:48:33,680 --> 01:48:45,760
+often they just don't want public judgment. Something that I would love to see… There's an awful lot of biographies and memoirs and histories of people who achieve a lot.
+
+564
+01:48:45,760 --> 01:49:02,960
+I wish there was a very large number of biographies of people who are fantastically talented who just missed. I've known people who won gold medals at IMOs
+
+565
+01:49:02,960 --> 01:49:18,000
+and things like that, who then tried to become mathematicians and failed. What happened? What was the reason? I suspect in many cases that's actually more informative than anything else.
+
+566
+01:49:18,000 --> 01:49:28,800
+You have this essay that I was reading before this interview about how you think about what the work you're doing is. And "writer" doesn't seem like the right label.
+
+567
+01:49:28,800 --> 01:49:41,600
+As you say, was Charles Darwin a writer? What exactly is that label? I'm a podcaster. In a way, obviously our work is very different, but I also think a lot about what this
+
+568
+01:49:41,600 --> 01:49:50,480
+work is and how I get better at it. In particular, how can I make sure there's some compounding between the different people I talk to on the podcast?
+
+569
+01:49:50,480 --> 01:50:04,560
+I worry that instead of this compounding, I build up some understanding that's somewhat superficial about a topic, and then it depreciates. I move down to the next topic, and it depreciates.
+
+570
+01:50:04,560 --> 01:50:15,680
+There are a lot of podcasters in the world who will interview way more experts than I have, and I don't think they're much the wiser or more knowledgeable as a result.
+
+571
+01:50:15,680 --> 01:50:29,120
+So it's clearly possible to mess this up. I wonder if you have thoughts or takes or advice on how one actually learns in a deeper way from this kind of work.
+
+572
+01:50:29,120 --> 01:50:42,560
+It's an incredibly complicated and rich question. It seems like the question is, how do you make it a higher-growth context? How do you make it a more demanding context?
+
+573
+01:50:42,560 --> 01:50:52,880
+You can do that in relatively small ways that might yield compounding returns, or you can do something that is more radical. Maybe it means starting a parallel project in
+
+574
+01:50:52,880 --> 01:51:02,160
+which you do something that is actually quite a bit different. There is something really interesting about how being very demanding can
+
+575
+01:51:02,160 --> 01:51:10,880
+simply change your response to something. Something that I would sometimes do with students and sometimes with myself, it was really aimed more at myself,
+
+576
+01:51:10,880 --> 01:51:23,840
+was they would say some week, "I'm going to try and do this work over the coming week." Then the next week would come by and they hadn't solved the problem.
+
+577
+01:51:23,840 --> 01:51:36,240
+If a million dollars had been at stake, would you have put the same effort in? And the answer is no, invariably. They've tried, but they haven't really tried.
+
+578
+01:51:36,240 --> 01:51:50,320
+I think that's a very familiar feeling for all of us. You could do a lot more if you had just the right demanding taskmaster standing by you and saying,
+
+579
+01:51:50,320 --> 01:52:01,600
+"Look, you're barely operating here." I do wonder a little bit about what's the demanding taskmaster? What can they ask you that is going
+
+580
+01:52:01,600 --> 01:52:14,000
+to make your preparation way more intense? The most helpful thing honestly is… For some subjects it is very clear how I prep. I'm doing an upcoming episode on chip
+
+581
+01:52:14,000 --> 01:52:27,200
+design with the founder of a company that does chip design, and he wrote a textbook on it. Yesterday I went over to his office, and we brainstormed five roofline analyses I can do.
+
+582
+01:52:27,200 --> 01:52:37,120
+If I understand that, I have some good understanding. The problem is with almost every other field, there's not this curriculum.
+
+583
+01:52:37,120 --> 01:52:45,280
+When I interviewed Ilya three, four years ago, it was: implement the transformer, and if you implement it, you have some nugget of understanding you have clamped down.
+
+584
+01:52:45,280 --> 01:52:58,560
+With other fields, it's just that I vaguely understand this. It's not clamped. There's no forcing function of "do this exercise, and if you do it, you will understand."
+
+585
+01:52:58,560 --> 01:53:07,120
+Really what you're saying is you can do a good job at podcasting without actually attaining this kind of understanding, and that's the problem from your point of view.
+
+586
+01:53:07,120 --> 01:53:18,000
+You want to change your job description so that you are internalizing these chunks and just getting this kind of integration each time. It seems to me that what that means is you
+
+587
+01:53:18,000 --> 01:53:34,160
+actually want to change the structure of the work output at some level. There’s this terrible idea that lots of people have that they should be in flow all of the time.
+
+588
+01:53:34,160 --> 01:53:41,920
+And as far as I can tell, high performers just don't believe this at all. They're in flow some of the time. You certainly see this with athletes.
+
+589
+01:53:41,920 --> 01:53:51,200
+When they're actually out there playing basketball or tennis, ideally they are in flow much of the time. But when they're training they're not.
+
+590
+01:53:51,200 --> 01:54:00,400
+They're stuck a lot of the time, or they're doing things badly. I suppose I wonder what that looks like for you. That I would be extremely satisfied with.
+
+591
+01:54:00,400 --> 01:54:12,960
+The problem is I just don't know what the equivalent of doing 64 laps is. This is a thing you can change by choosing guests where there is a legible curriculum.
+
+592
+01:54:12,960 --> 01:54:28,720
+So maybe it's a mistake not to have done that. Also, there's no real way to prep for Terence Tao. There's no curriculum that's a plausible one. There are many failure modes, but one
+
+593
+01:54:28,720 --> 01:54:39,680
+long-term dynamic I'm worried about is that you can have a good podcast and reach a local maximum, but for no particular guest or topic are you going deep enough.
+
+594
+01:54:39,680 --> 01:54:49,280
+My model of learning is that if you don't really understand the deeper mechanism, you're just mapping inputs and outputs of a black box. That just fades incredibly fast or is
+
+595
+01:54:49,280 --> 01:55:05,680
+not worth it in the first place. You just move on and it's over. You need to build the intermediate connection. AI in a weird way is really easy for that reason,
+
+596
+01:55:05,680 --> 01:55:16,880
+because there is a clear thing you can do. Just implement it, and then you understand it. If I applied that criterion elsewhere, do I just not do history episodes?
+
+597
+01:55:16,880 --> 01:55:27,680
+Exactly. Ada Palmer. Wonderful to talk to, incredibly interesting. But for you personally, what changed? There are some things I learned.
+
+598
+01:55:27,680 --> 01:55:36,960
+If I had allocated more time, especially after the interview, to write up 2,000 words on everything I learned and how it connects to other things I know.
+
+599
+01:55:36,960 --> 01:55:46,880
+Maybe that's a thing worth doing, spreading out the episodes more and spending more time afterwards consolidating. I would pay infinite amounts of money if there was
+
+600
+01:55:46,880 --> 01:55:55,920
+somebody who was really good at coming up with the curriculum, the practice problems you need to do, and the exercise you need to do after the interview to clamp what you have learned.
+
+601
+01:55:55,920 --> 01:56:04,480
+Have you tried doing that with somebody? It's hard to find someone. I haven't tried super hard, but isn't it going to be tough to find somebody who could do that
+
+602
+01:56:04,480 --> 01:56:12,400
+for every single kind of discipline? Maybe I should just hire different ones for different topics. Maybe. There's something about,
+
+603
+01:56:12,400 --> 01:56:24,560
+what problem are you solving for each episode? As far as I can tell, that's the only way I really understand anything. I get interested in something. At first, I don't even have a problem,
+
+604
+01:56:24,560 --> 01:56:32,560
+but there's just some sense that there's some contribution to make here, and gradually you hone in, and there's a problem. Funnily enough, spending time
+
+605
+01:56:32,560 --> 01:56:47,760
+stuck is incredibly important. That used to just be annoying. Now it seems like it's maybe even the most important part of the whole process.
+
+606
+01:56:47,760 --> 01:57:01,680
+That hard-won nature of it means that I internalize it afterwards. I've written 10,000-word essays in a couple of days, and I've written
+
+607
+01:57:01,680 --> 01:57:16,240
+them in three months or six months. I feel like I didn't learn very much from the ones that only took a couple of days. Whereas some of the ones that took three months,
+
+608
+01:57:16,240 --> 01:57:31,280
+15 years later, I'll still remember. Can you describe outside of physics how you learn, of the ones that took three months? By far the most common thing is there's always
+
+609
+01:57:31,280 --> 01:57:45,200
+some creative artifact. Sometimes it's a class. Sometimes it's engagement with a group of people who are working on some collective creative artifact together.
+
+610
+01:57:45,200 --> 01:57:56,640
+You might not even be aware of it, but you're acting as an input to their creative ends in some way. Sometimes it's an essay or a book or whatever.
+
+611
+01:57:56,640 --> 01:58:10,240
+It's one of the reasons why I often quite enjoy doing podcasts. I said yes to come here partially because I know you ask unusually demanding questions.
+
+612
+01:58:10,240 --> 01:58:20,080
+That's an attempt to get this sort of perspective from a different kind of a forcing function. Trying to pick the most demanding creative context.
+
+613
+01:58:20,080 --> 01:58:27,680
+For this interview, I went through three lectures of the Susskind special relativity book. The problem is that there's almost no practice problems in it.
+
+614
+01:58:27,680 --> 01:58:39,760
+So I hired a physicist friend. I haven't done it yet, but for every lecture I want a bunch of practice problems to go through, and I'm planning on being appropriately humbled.
+
+615
+01:58:39,760 --> 01:58:49,120
+How do you make it as jugular as possible? The higher you can raise the stakes, the better. The interview is in some sense high stakes, but also
+
+616
+01:58:49,120 --> 01:58:57,760
+it doesn't necessarily test deep understanding. I don't think the interview is that high stakes. You're not writing a book about special relativity, and you're not trying to write a
+
+617
+01:58:57,760 --> 01:59:16,240
+book that replaces whatever the existing standard textbook is. That's a really high stake. By the way, a phrase that I find particularly difficult. People will talk about "going deep" on a subject,
+
+618
+01:59:16,240 --> 01:59:24,600
+and it turns out different people have different ideas of what this means. For some people it means they read a couple of blog posts. For some people it means they read a book about it.
+
+619
+01:59:24,600 --> 01:59:36,000
+For some people it means they wrote a book about it. The standard you hold yourself to determines a lot about your
+
+620
+01:59:36,000 --> 01:59:51,840
+ability to integrate knowledge in this way. I found that I'm in some sense able to move much faster on some things through the help of AI, but I don't know if I'm learning better.
+
+621
+01:59:51,840 --> 02:00:00,480
+I think it's probably because… The hardest thing, the thing that is most demanding, is so aversive that you try to take any excuse you can to get out of it.
+
+622
+02:00:00,480 --> 02:00:07,680
+Just having a back-and-forth conversation with an LLM where you gloss over… It’s entertaining but not necessarily anything else.
+
+623
+02:00:07,680 --> 02:00:17,280
+It’s such an easy way to get out of the thing. In fact, it makes it easier because instead of doing some intermediate thinking, there's always a next question you can ask a chatbot.
+
+624
+02:00:17,280 --> 02:00:33,840
+Yeah. And it's somewhat valuable. That’s part of the seductiveness, of course. It's not actually useless. But it can substitute for actually doing the thing that maybe you should be doing.
+
+625
+02:00:33,840 --> 02:00:55,920
+It’s interesting. To what extent should you be outsourcing that kind of stuff? It’s an interesting judgment call. There is a whole bunch of routine work that you want done.
+
+626
+02:00:55,920 --> 02:01:04,640
+It's low value for you, so if you can get a chatbot to do it, you may as well. Somebody interviewed the pioneering computer scientist Alan Kay years ago,
+
+627
+02:01:04,640 --> 02:01:13,360
+and he was asked what he thought about Linux. If I remember his answer correctly, he basically said, "It doesn't have anything to do with computer science.
+
+628
+02:01:13,360 --> 02:01:24,800
+It's just a great big ball of mud. There are a few interesting ideas in there which are worth understanding, but mostly all you're learning is stuff about Linux.
+
+629
+02:01:24,800 --> 02:01:38,160
+You're not actually learning anything which is transferable." I thought that was very interesting. There's a certain kind of seductiveness to some things where it's sort of a Rube Goldberg machine.
+
+630
+02:01:38,160 --> 02:01:48,400
+You can just learn about all the bits, and it feels entertaining. But if you step back and think about what you're actually doing here,
+
+631
+02:01:48,400 --> 02:01:57,360
+it might not actually be meeting your objectives. Maybe you want to become a sysadmin, and learning Linux is a great use of your time. There's no harm in that at all.
+
+632
+02:01:57,360 --> 02:02:08,400
+But if your objective is to understand the fundamentals of computing, it's much less clear that that's a good use of your time. It was certainly an answer I've thought a
+
+633
+02:02:08,400 --> 02:02:24,240
+lot about, where for a certain type of mind, there is a seductiveness in just learning systems and confusing that with understanding. Okay, I'll keep you updated on how this goes.
+
+634
+02:02:24,240 --> 02:02:33,120
+I owe you a text within a month of some revamped learning system. I'd be really curious. It's also true that tiny incremental improvements
+
+635
+02:02:33,120 --> 02:02:43,040
+in this are just worth so much. It's the main input into the podcast. It's great that the bookshelves are fancy and I've got a blackboard or whatever,
+
+636
+02:02:43,040 --> 02:02:58,400
+but really the thing that makes the podcast better is if I can improve the learning I do. So yes, it's worth every morsel of improvement. All right, thanks for the therapy session. Great
+
+637
+02:02:58,400 --> 02:03:02,964
+note to end on. Thanks, Michael. All right. Thanks, Dwarkesh.

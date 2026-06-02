@@ -1,0 +1,191 @@
+1
+00:00:00,480 --> 00:00:08,880
+We've seen the valuations of a bunch of software companies crash because people are expecting AI to commoditize software. There's a potentially naive way of thinking
+
+2
+00:00:08,880 --> 00:00:19,440
+about things, which is: look, Nvidia sends a GDS2 file to TSMC. TSMC builds the logic dies, it builds the switches, then it packages them with the HBM
+
+3
+00:00:19,440 --> 00:00:27,440
+that SK Hynix, Micron, and Samsung make. Then it sends it to an ODM in Taiwan where they assemble the racks. Nvidia is fundamentally making software that
+
+4
+00:00:27,440 --> 00:00:46,160
+other people are manufacturing, and if software gets commoditized, does Nvidia get commoditized? In the end, something has to transform electrons to tokens. The transformation of electrons to tokens
+
+5
+00:00:46,160 --> 00:01:05,519
+and making those tokens more valuable over time is hard to completely commoditize. The transformation from electrons to tokens is such an incredible journey.
+
+6
+00:01:05,519 --> 00:01:16,240
+Making that token is like making one molecule more valuable than another molecule, making one token more valuable than another. The amount of artistry, engineering,
+
+7
+00:01:16,240 --> 00:01:30,080
+science, and invention that goes into making that token valuable, obviously we're watching it happen in real time. The transformation, the manufacturing, all of the
+
+8
+00:01:30,080 --> 00:01:46,240
+science that goes in there is far from deeply understood and the journey is far from over. I doubt that it will happen. We're going to make it more efficient, of course.
+
+9
+00:01:46,240 --> 00:01:58,560
+The way that you framed the question is my mental model of our company. The input is electrons, the output is tokens. In the middle is Nvidia. Our job
+
+10
+00:01:58,560 --> 00:02:10,720
+is to do as much as necessary and as little as possible to enable that transformation to be done at incredible capabilities. What I mean by "as little as possible,"
+
+11
+00:02:10,720 --> 00:02:20,800
+whatever I don't need to do, I partner with somebody and make it part of my ecosystem. If you look at Nvidia today, we probably have the largest ecosystem of partners,
+
+12
+00:02:20,800 --> 00:02:34,160
+both in the supply chain upstream and downstream, all of the computer companies, application developers, and model makers. AI is a five-layer cake, if you will.
+
+13
+00:02:34,160 --> 00:02:46,560
+We have ecosystems across the entire five layers. We try to do as little as possible, but the part that we have to do, as it turns out, is insanely hard.
+
+14
+00:02:46,560 --> 00:03:00,320
+I don't think that gets commoditized. In fact, I also don't think the enterprise software companies, the tools makers… Most software companies today are tool makers.
+
+15
+00:03:00,320 --> 00:03:13,840
+Some of them are not. Some of them are workflow codification systems. But for a lot of companies, they're tool makers. For example, Excel is a tool, PowerPoint is a
+
+16
+00:03:13,840 --> 00:03:27,200
+tool, Cadence makes tools, Synopsys makes tools. I actually see the opposite of what people see. I think the number of agents is going to grow exponentially, and the number
+
+17
+00:03:27,200 --> 00:03:42,400
+of tool users is going to grow exponentially. It's very likely that the number of instances of all these tools is going to skyrocket. It’s very likely that the number of instances
+
+18
+00:03:42,400 --> 00:03:58,080
+of Synopsys Design Compiler is going to skyrocket, along with the number of agents using the floor planners, our layout tools, and our design rule checkers.
+
+19
+00:03:58,080 --> 00:04:04,320
+Today we're limited by the number of engineers. Tomorrow, those engineers are going to be supported by a bunch of agents. We're going to be exploring the
+
+20
+00:04:04,320 --> 00:04:14,560
+design space like you've never seen before, and we're going to use the tools that we use today. I think tool use is going to cause the software companies to skyrocket.
+
+21
+00:04:14,560 --> 00:04:21,519
+The reason why it hasn't happened yet is because the agents aren't good enough at using their tools yet. Either these companies are going to build
+
+22
+00:04:21,519 --> 00:04:32,480
+the agents themselves, or agents are going to get good enough to be able to use those tools. I think it's going to be a combination of both. I think in your latest filings, you had almost
+
+23
+00:04:32,480 --> 00:04:44,880
+a $100 billion in purchase commitments with foundries, memory, and packaging. SemiAnalysis has reported that you will have $250 billion of these kinds of purchase commitments.
+
+24
+00:04:44,880 --> 00:04:54,160
+One interpretation is that Nvidia's moat is really that you've locked up many years of these scarce components. Somebody else might have an accelerator,
+
+25
+00:04:54,160 --> 00:05:01,920
+but can they actually get the memory to build it? Can they actually get the logic to build it? Is this really Nvidia's big moat for the next few years?
+
+26
+00:05:01,920 --> 00:05:14,640
+It's one of the things that we can do that is hard for someone else to do. We've made enormous commitments upstream. Some of it is explicit, these commitments that you mentioned.
+
+27
+00:05:14,640 --> 00:05:27,440
+Some of it is implicit. For example, a lot of the investments that are upstream are made by our supply chain because I said to the CEOs, "Let me tell you how big this industry is going to be,
+
+28
+00:05:27,440 --> 00:05:44,320
+let me explain to you why, let me reason through it with you, and let me show you what I see." As a result of that process of informing, inspiring, and aligning with CEOs of all
+
+29
+00:05:44,320 --> 00:05:51,120
+different industries upstream, they're willing to make the investments. Why are they willing to make the investments for me and not someone else?
+
+30
+00:05:51,120 --> 00:06:02,880
+The reason for that is because they know that I have the capacity to buy their supply and sell it through my downstream. The fact is that Nvidia's downstream supply
+
+31
+00:06:02,880 --> 00:06:18,720
+chain and our downstream demand is so large, they're willing to make the investment upstream. If you look at GTC, people are marveled by the scale of it and the people that go.
+
+32
+00:06:18,720 --> 00:06:31,200
+It's a full 360 degrees, the entire universe of AI all in one place. They're all in one place because they need to see each other. I bring them together so that the downstream can see the upstream,
+
+33
+00:06:31,200 --> 00:06:42,320
+the upstream can see the downstream, and all of them can see the advances in AI. Very importantly, they can all meet the AI natives, all the AI startups being built,
+
+34
+00:06:42,320 --> 00:06:55,040
+and all the amazing things happening so they can see firsthand all the things that I tell them. I spend a lot of my time informing, directly or indirectly, our supply chain, partners, and
+
+35
+00:06:55,040 --> 00:07:15,440
+ecosystem about the opportunity in front of us. Some people always say, "Jensen, in most keynotes, it's one announcement after another." With our keynotes, there’s always a part
+
+36
+00:07:15,440 --> 00:07:27,360
+of it that's a little torturous in the sense that it almost comes across like education. In fact, that's exactly on my mind. I need to make sure the entire supply
+
+37
+00:07:27,360 --> 00:07:40,400
+chain, upstream and downstream, the ecosystem, understands what is coming at us, why it's coming, when it's coming, how big it's going to be, and is able to reason about it systematically,
+
+38
+00:07:40,400 --> 00:07:56,240
+just like I reason about it. Regarding the moat as you describe it, we're able to build for a future. If our next several years are a trillion dollars
+
+39
+00:07:56,240 --> 00:08:10,000
+in scale, we have the supply chain to do it. Without our reach, the velocity of our business… Just as there's cash flow, there's supply chain flow, there's churns.
+
+40
+00:08:10,000 --> 00:08:23,120
+Nobody is going to build a supply chain for an architecture if the business churns are low. Our ability to sustain the scale is only because our downstream demand is so great.
+
+41
+00:08:23,120 --> 00:08:32,240
+And they see it, they hear about it, they see it all coming. That allows us to do the things we're able to do at the scale we do them.
+
+42
+00:08:32,240 --> 00:08:41,280
+I do want to understand more concretely whether the upstream can keep up. For many years now, you guys have been 2x-ing revenue year over year.
+
+43
+00:08:41,280 --> 00:08:49,920
+You've been more than tripling the amount of flops you're providing to the world year over year. And 2x-ing at this scale now is really incredible. Exactly. But then you look at logic.
+
+44
+00:08:49,920 --> 00:09:00,320
+You're the biggest customer on TSMC's N3 node, and you're one of the biggest on N2. AI as a whole this year is going to be sixty percent of N3.
+
+45
+00:09:00,320 --> 00:09:09,680
+It's going to be 86% next year, according to SemiAnalysis. How do you double if you're the majority? And how do you do that year over year?
+
+46
+00:09:09,680 --> 00:09:25,920
+Are we in a regime now where the growth rate in AI compute has to slow because of upstream? Do you see a way to get around this? How do we build 2x more fabs year over year, ultimately? At some level,
+
+47
+00:09:25,920 --> 00:09:46,160
+the instantaneous demand is greater than the supply upstream and downstream in the world. At any instant, we could be limited by the number of plumbers, which actually happens.
+
+48
+00:09:46,160 --> 00:09:59,680
+The plumbers are invited to next year's GTC. By the way, great idea. But that's a good condition. You want an industry where the instantaneous demand is greater

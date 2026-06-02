@@ -5,6 +5,26 @@
 ## [Unreleased]
 
 ### Added
+- **抖音解说稿生成能力**：新增 `douyin-script` 和 `pipeline-douyin` CLI 命令。
+  - `douyin-script`：Transcript JSON → 口语化中文解说稿 Markdown。
+  - `pipeline-douyin`：SRT 字幕 → 解说稿全自动流水线（parse-srt → assign-speakers → douyin-script）。
+- **说话人分离分片（sharding）**：`assign-speakers` 新增长 transcript 自动分片处理，含跨分片标签归一化和边界连续性保证。
+- 新增 prompt 模板：`douyin_script.md`（抖音解说稿风格规范，v2 已优化）。
+- 新增 step：`douyin_script.py`，注册到 Step Registry。
+- 新增 SRT 测试 fixture：`tests/fixtures/sample_interview.srt`。
+- **风格规范文档**：`docs/goal目标制定/风格规范-抖音解说稿prompt蓝图.md`（6 条核心转化规律）。
+- **差距分析**：`docs/goal目标制定/差距分析-三篇产出vs黄金样本.md`（v1/v2 两轮评分）。
+- **三个播客的抖音解说稿产出**（`project/*/抖音剪辑版/`）。
+
+### Changed
+- `assign-speakers` 重构：抽取 `_parse_llm_content`、`_shard_segments`、`_process_shard`、`_normalize_labels_across_shards`、`_merge_shard_results` 函数。
+- 新增 `shard_size`、`shard_overlap` 参数。
+- Step Registry 新增 `douyin_script` 条目。
+- `douyin_script.md` prompt v2 优化：禁止 Markdown 标题/LLM 引导语、增加外部知识硬性要求（≥3 处）、增加人物介绍和现场感要求。
+
+## [Unreleased]
+
+### Added
 - 文件转换型 Step CLI：`download`、`transcribe`、`parse-srt`、`assign-speakers`、`split`、`render`、`polish` 七个单步命令。
 - SRT 字幕解析：`parse-srt subtitles.srt -o transcript.json`，纯解析不调 LLM。
 - LLM 说话人推断：`assign-speakers transcript.json -o transcript.speakers.json`，以及 `parse-srt --assign-speakers` 快捷路径。

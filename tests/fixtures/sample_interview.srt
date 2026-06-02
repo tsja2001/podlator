@@ -1,0 +1,43 @@
+1
+00:00:00,000 --> 00:00:05,000
+Welcome to this interview about artificial intelligence and the future of technology.
+
+2
+00:00:05,000 --> 00:00:10,500
+Today we have a special guest who has been working on AI for over two decades.
+
+3
+00:00:10,500 --> 00:00:15,000
+Let's start with the big picture. Where do you see AI heading in the next five years?
+
+4
+00:00:15,000 --> 00:00:20,500
+I think we're at an inflection point. The technology is advancing faster than most people realize.
+
+5
+00:00:20,500 --> 00:00:26,000
+What's happening right now is the equivalent of the internet in 1995. We're just at the beginning.
+
+6
+00:00:26,000 --> 00:00:31,500
+But there are also real risks. We need to be thoughtful about how we deploy these systems.
+
+7
+00:00:31,500 --> 00:00:37,000
+Can you give a concrete example of something that's about to change dramatically?
+
+8
+00:00:37,000 --> 00:00:43,500
+Healthcare. AI is going to transform how we diagnose diseases. It's already starting to happen.
+
+9
+00:00:43,500 --> 00:00:50,000
+There are AI systems today that can detect cancer earlier than human radiologists can.
+
+10
+00:00:50,000 --> 00:00:55,000
+That's fascinating. But aren't there concerns about reliability and bias?
+
+11
+00:00:55,000 --> 00:01:00,000
+Absolutely. That's why we need rigorous testing and diverse training data. It's a real challenge.

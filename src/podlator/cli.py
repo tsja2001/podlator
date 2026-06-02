@@ -592,3 +592,210 @@ async def _polish_cmd(
 
     typer.echo(f"润色完成: {output}")
     typer.echo(f"  字数: {len(polished)}")
+
+
+@app.command(name="douyin-script")
+def douyin_script(
+    transcript: Annotated[
+        Path,
+        typer.Argument(
+            help="Transcript JSON 路径（建议已标注说话人）",
+            exists=True,
+        ),
+    ],
+    output: Annotated[
+        Path,
+        typer.Option("-o", "--output", help="输出 Markdown 路径"),
+    ] = ...,  # type: ignore[assignment]  # required
+    title: Annotated[
+        str | None,
+        typer.Option("--title", help="节目标题（默认使用 transcript 中记录的标题）"),
+    ] = None,
+    provider: Annotated[
+        str | None,
+        typer.Option("--provider", help="LLM provider 名称（默认 claude，质量更高）"),
+    ] = None,
+    target_words: Annotated[
+        int,
+        typer.Option("--target-words", help="目标字数（默认 3000）"),
+    ] = 3000,
+) -> None:
+    """生成抖音解说稿：Transcript JSON → 口语化中文解说稿 Markdown。
+
+    产出风格：钩子开场、解说者视角、按主题重组、术语白话化、
+    穿插外部知识、口语化有节奏。
+
+    建议先用 assign-speakers 标注说话人，效果更好。
+    """
+    asyncio.run(_douyin_script_cmd(transcript, output, title, provider, target_words))
+
+
+async def _douyin_script_cmd(
+    transcript_path: Path,
+    output: Path,
+    title: str | None,
+    provider: str | None,
+    target_words: int,
+) -> None:
+    from podlator.config import Settings
+    from podlator.steps.douyin_script import generate_douyin_script
+    from podlator.steps.io import read_transcript, write_markdown
+
+    settings = Settings()
+    provider_name = provider or settings.llm_provider_polish
+
+    try:
+        doc = read_transcript(transcript_path)
+    except (FileNotFoundError, ValueError) as e:
+        typer.echo(f"读取 Transcript 失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    try:
+        script = await generate_douyin_script(
+            doc,
+            title=title,
+            provider_name=provider_name,
+            settings=settings,
+            target_words=target_words,
+        )
+        write_markdown(output, script)
+    except ValueError as e:
+        typer.echo(f"生成失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+    except Exception as e:
+        typer.echo(f"生成失败 (LLM 错误): {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    typer.echo(f"解说稿生成完成: {output}")
+    typer.echo(f"  字数: {len(script)}")
+
+
+@app.command(name="pipeline-douyin")
+def pipeline_douyin(
+    srt: Annotated[
+        Path,
+        typer.Argument(
+            help="SRT 字幕文件路径",
+            exists=True,
+        ),
+    ],
+    output: Annotated[
+        Path,
+        typer.Option("-o", "--output", help="输出 Markdown 路径"),
+    ] = ...,  # type: ignore[assignment]  # required
+    title: Annotated[
+        str | None,
+        typer.Option("--title", help="节目标题（默认从文件名推断）"),
+    ] = None,
+    speaker_provider: Annotated[
+        str | None,
+        typer.Option(
+            "--speaker-provider", help="说话人分离 LLM provider（默认 deepseek）"
+        ),
+    ] = None,
+    script_provider: Annotated[
+        str | None,
+        typer.Option("--script-provider", help="解说稿 LLM provider（默认 claude）"),
+    ] = None,
+    target_words: Annotated[
+        int,
+        typer.Option("--target-words", help="目标字数（默认 3000）"),
+    ] = 3000,
+    skip_speakers: Annotated[
+        bool,
+        typer.Option("--skip-speakers", help="跳过说话人分离（SRT 已标注或只有单人）"),
+    ] = False,
+) -> None:
+    """一键流水线：SRT 字幕 → 抖音解说稿 Markdown。
+
+    自动执行：
+    1. parse-srt（解析字幕）
+    2. assign-speakers（说话人分离，可用 --skip-speakers 跳过）
+    3. douyin-script（生成解说稿）
+    """
+    asyncio.run(
+        _pipeline_douyin_cmd(
+            srt,
+            output,
+            title,
+            speaker_provider,
+            script_provider,
+            target_words,
+            skip_speakers,
+        )
+    )
+
+
+async def _pipeline_douyin_cmd(
+    srt_path: Path,
+    output: Path,
+    title: str | None,
+    speaker_provider: str | None,
+    script_provider: str | None,
+    target_words: int,
+    skip_speakers: bool,
+) -> None:
+    from podlator.config import Settings
+    from podlator.steps.assign_speakers import assign_speakers
+    from podlator.steps.douyin_script import generate_douyin_script
+    from podlator.steps.io import write_markdown
+    from podlator.steps.parse_srt import parse_srt_file
+
+    settings = Settings()
+    sp_provider = speaker_provider or settings.llm_provider_summarize
+    sc_provider = script_provider or settings.llm_provider_polish
+
+    # Step 1: parse-srt
+    typer.echo(f"[1/3] 解析字幕: {srt_path}")
+    try:
+        doc = parse_srt_file(srt_path, title=title)
+    except (FileNotFoundError, ValueError) as e:
+        typer.echo(f"解析失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    typer.echo(f"  片段数: {len(doc.segments)}")
+    duration_m = (doc.source.duration_seconds or 0) / 60
+    typer.echo(f"  时长: {duration_m:.0f} 分钟")
+
+    # Step 2: assign-speakers (optional)
+    if skip_speakers:
+        typer.echo("[2/3] 跳过说话人分离")
+    else:
+        typer.echo(f"[2/3] 说话人分离 (provider: {sp_provider})")
+        try:
+            doc = await assign_speakers(
+                doc, provider_name=sp_provider, settings=settings
+            )
+        except Exception as e:
+            typer.echo(f"说话人分离失败: {e}", err=True)
+            raise typer.Exit(code=1) from e
+
+        unique_speakers = {
+            seg.speaker
+            for seg in doc.segments
+            if seg.speaker and seg.speaker != "UNKNOWN"
+        }
+        speakers_str = ", ".join(sorted(unique_speakers))
+        typer.echo(f"  识别到 {len(unique_speakers)} 位说话人: {speakers_str}")
+
+    # Step 3: douyin-script
+    typer.echo(f"[3/3] 生成解说稿 (provider: {sc_provider})")
+    try:
+        script = await generate_douyin_script(
+            doc,
+            title=title,
+            provider_name=sc_provider,
+            settings=settings,
+            target_words=target_words,
+        )
+        write_markdown(output, script)
+    except ValueError as e:
+        typer.echo(f"生成失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+    except Exception as e:
+        typer.echo(f"生成失败 (LLM 错误): {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    typer.echo("\n✅ 流水线完成!")
+    typer.echo(f"  输出: {output}")
+    typer.echo(f"  字数: {len(script)}")

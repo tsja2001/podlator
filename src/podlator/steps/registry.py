@@ -99,3 +99,10 @@ register(
     input_type=str,
     output_type=str,
 )
+
+register(
+    name="douyin_script",
+    description="Transcript → 抖音解说稿 Markdown",
+    input_type=TranscriptDocument,
+    output_type=str,  # Markdown
+)

@@ -154,7 +154,13 @@ uv run podlator download <URL> -o <音频路径> [--metadata <JSON路径>]
 - **音频文件**（`.mp3` / `.m4a`）：下载的播客/视频音频
 - **metadata JSON**（可选）：`title`、`description`、`duration_seconds`、`published_at`、`source_type`、`thumbnail_url`
 
-> 示例：`uv run podlator download "https://www.youtube.com/watch?v=XXXXX" -o episode.mp3 --metadata meta.json`
+> 示例：
+> ```bash
+> # 下载 YouTube 视频的音频，保存为 episode.mp3，同时把标题/时长等写入 meta.json
+> uv run podlator download "https://www.youtube.com/watch?v=XXXXX" \
+>   -o episode.mp3 \
+>   --metadata meta.json
+> ```
 
 ---
 
@@ -175,7 +181,14 @@ uv run podlator transcribe <音频文件> -o <JSON路径> [--provider <名称>] 
 
 转写通过调用外部项目 `speech-transcriber` 的 CLI 完成，Podlator 本身不直接调用 ASR SDK。
 
-> 示例：`uv run podlator transcribe episode.mp3 -o transcript.json --provider tencent_cloud`
+> 示例：
+> ```bash
+> # 用腾讯云 ASR 将 episode.mp3 转写为 transcript.json
+> uv run podlator transcribe episode.mp3 -o transcript.json --provider tencent_cloud
+>
+> # 用默认 provider（.env 中 SPEECH_TRANSCRIBER_PROVIDER 配置的值）
+> uv run podlator transcribe episode.mp3 -o transcript.json
+> ```
 
 ---
 
@@ -200,8 +213,15 @@ uv run podlator parse-srt <SRT文件> -o <JSON路径> [--assign-speakers] [--sou
 
 > 示例：
 > ```bash
+> # 纯解析 SRT → Transcript JSON，不调 LLM，不花钱
 > uv run podlator parse-srt subtitles.srt -o transcript.json
-> uv run podlator parse-srt subtitles.srt -o transcript.speakers.json --assign-speakers
+>
+> # 解析 SRT 的同时用 LLM 推断说话人，一步到位
+> uv run podlator parse-srt subtitles.srt \
+>   -o transcript.speakers.json \
+>   --assign-speakers \
+>   --title "Ep.42" \
+>   --source-url "https://www.youtube.com/watch?v=XXXXX"
 > ```
 
 ---
@@ -222,7 +242,16 @@ uv run podlator assign-speakers <Transcript JSON> -o <JSON路径> [--provider <�
 
 行为约束：**只修改 `speaker` 字段**，不改写正文、时间戳或置信度。LLM 通过上下文线索推断说话人（非声纹级分离，结果应视为辅助标注）。
 
-> 示例：`uv run podlator assign-speakers transcript.json -o transcript.speakers.json`
+> 示例：
+> ```bash
+> # 用 LLM 推断每句话是谁说的，结果写入 transcript.speakers.json
+> uv run podlator assign-speakers transcript.json -o transcript.speakers.json
+>
+> # 指定用 Claude 做说话人推断
+> uv run podlator assign-speakers transcript.json \
+>   -o transcript.speakers.json \
+>   --provider claude
+> ```
 
 ---
 
@@ -242,7 +271,14 @@ uv run podlator split <Transcript JSON> -o <JSON路径> [--provider <名称>]
 
 行为约束：**只输出章节结构**，不翻译、不摘要、不润色正文。Prompt 使用 segments 中带时间戳的文本（`[0.00 - 5.25] speaker: text`），保证章节边界精确。
 
-> 示例：`uv run podlator split transcript.json -o chapters.json`
+> 示例：
+> ```bash
+> # 将 transcript.json 按主题切分为章节，每章含起止时间和中文标题
+> uv run podlator split transcript.json -o chapters.json
+>
+> # 指定用 DeepSeek 做章节切分
+> uv run podlator split transcript.json -o chapters.json --provider deepseek
+> ```
 
 ---
 
@@ -268,8 +304,24 @@ uv run podlator render <Transcript JSON> --chapters <Chapters JSON> --mode <summ
 
 > 示例：
 > ```bash
-> uv run podlator render transcript.json --chapters chapters.json --mode summary -o summary.md
-> uv run podlator render transcript.json --chapters chapters.json --mode full -o full.md
+> # 生成中文精简摘要（按章节压缩，适合快速浏览）
+> uv run podlator render transcript.json \
+>   --chapters chapters.json \
+>   --mode summary \
+>   -o summary.md
+>
+> # 生成中文全文翻译（不压缩，按章节完整翻译）
+> uv run podlator render transcript.json \
+>   --chapters chapters.json \
+>   --mode full \
+>   -o full.md
+>
+> # 用 Claude 做全文翻译
+> uv run podlator render transcript.json \
+>   --chapters chapters.json \
+>   --mode full \
+>   --provider claude \
+>   -o full-claude.md
 > ```
 
 ---
@@ -291,7 +343,19 @@ uv run podlator polish <Markdown草稿> -o <MD路径> [--title <标题>] [--prov
 
 负责全局润色：修正翻译腔、统一术语、生成引言和结论。不改变章节结构。
 
-> 示例：`uv run podlator polish summary.md -o brief.md --title "Ep.42 — The Future of AI"`
+> 示例：
+> ```bash
+> # 润色摘要草稿：修正翻译腔、统一术语、生成引言和结论
+> uv run podlator polish summary.md -o brief.md
+>
+> # 带标题润色，LLM 会在引言中引用标题信息
+> uv run podlator polish summary.md \
+>   -o brief.md \
+>   --title "Ep.42 — The Future of AI"
+>
+> # 用 Claude 做润色（.env 中 LLM_PROVIDER_POLISH 的默认值就是 claude）
+> uv run podlator polish summary.md -o brief.md --provider claude
+> ```
 
 ---
 
@@ -345,22 +409,166 @@ uv run podlator polish <Markdown草稿> -o <MD路径> [--title <标题>] [--prov
 
 #### 典型工作流
 
-```bash
-# 场景 1：从 YouTube 到简报（全自动）
-uv run podlator run "https://www.youtube.com/watch?v=XXXXX"
+以下示例演示了 Podlator 在实际使用中的几种常见路径。
 
-# 场景 2：从 URL 开始，逐步调试
-uv run podlator download "https://www.youtube.com/watch?v=XXXXX" -o episode.mp3 --metadata meta.json
+---
+
+##### 场景 1：一键全自动 — 从 YouTube URL 到最终简报
+
+适合"我就想看看结果"的情况。一条命令跑完整条 pipeline，中间产物保存在 `data/artifacts/{task_id}/` 下。
+
+```bash
+# 投喂一个 YouTube 链接，自动下载 → 转写 → 切章节 → 摘要 → 润色 → 导出 Markdown
+uv run podlator run "https://www.youtube.com/watch?v=XXXXX"
+```
+
+完成后终端会打印简报文件路径和总费用。
+
+---
+
+##### 场景 2：逐步调试 — 从 URL 出发，每步检查中间产物
+
+适合调试 prompt、检查转录质量、调整章节切分、对比 summary vs full。
+
+```bash
+# 1️⃣ 下载音频 + 元数据
+#    URL → episode.mp3 + meta.json（含标题、时长、发布日期）
+uv run podlator download "https://www.youtube.com/watch?v=XXXXX" \
+  -o episode.mp3 \
+  --metadata meta.json
+
+# 2️⃣ 语音转文字
+#    episode.mp3 → transcript.json（含带时间戳的 segments + 全文）
+uv run podlator transcribe episode.mp3 -o transcript.json
+
+# 3️⃣ 切分章节
+#    transcript.json → chapters.json（每个章节的 start/end + 中文标题）
+uv run podlator split transcript.json -o chapters.json
+
+# 4️⃣ 生成中文精简摘要
+#    transcript.json + chapters.json → summary.md（按章节的中文要点）
+uv run podlator render transcript.json \
+  --chapters chapters.json \
+  --mode summary \
+  -o summary.md
+
+# 5️⃣ 全局润色
+#    summary.md → brief.md（修正翻译腔、统一术语、补引言/结论）
+uv run podlator polish summary.md -o brief.md
+
+# 可选：顺便生成一份全文翻译
+uv run podlator render transcript.json \
+  --chapters chapters.json \
+  --mode full \
+  -o full-translation.md
+```
+
+---
+
+##### 场景 3：从已有 SRT 字幕出发 — 不需要下载和转写
+
+适合已经有字幕文件（如 YouTube 自动生成字幕、B站字幕）的情况。
+
+```bash
+# 1️⃣ 解析 SRT 字幕 → Transcript JSON（纯解析，不调 LLM）
+uv run podlator parse-srt subtitles.srt \
+  -o transcript.json \
+  --title "Ep.42 — The Future of AI" \
+  --source-url "https://www.youtube.com/watch?v=XXXXX"
+
+# 或者一步到位：解析字幕的同时让 LLM 推断说话人
+uv run podlator parse-srt subtitles.srt \
+  -o transcript.speakers.json \
+  --assign-speakers \
+  --title "Ep.42 — The Future of AI"
+
+# 2️⃣ 如果第 1 步没开 --assign-speakers，可以单独补做说话人推断
+#    transcript.json → transcript.sp.json（只补充 speaker 字段）
+uv run podlator assign-speakers transcript.json -o transcript.sp.json
+
+# 3️⃣ 切分章节 → chapters.json
+uv run podlator split transcript.sp.json -o chapters.json
+
+# 4️⃣ 渲染为中文全文翻译
+#    transcript.sp.json + chapters.json → full.md
+uv run podlator render transcript.sp.json \
+  --chapters chapters.json \
+  --mode full \
+  -o full.md
+
+# 5️⃣ （可选）对全文翻译做润色
+uv run podlator polish full.md -o full-polished.md
+```
+
+---
+
+##### 场景 4：更换章节切分策略 — 复用已有转录，只重跑 split + render
+
+适合"章节切得不对，换个 provider 或调整 prompt 重试"的情况。
+
+```bash
+# 已有 transcript.json，重新切分章节
+uv run podlator split transcript.json -o chapters-v2.json
+
+# 对比新旧章节
+diff <(cat chapters.json | python -m json.tool) \
+     <(cat chapters-v2.json | python -m json.tool)
+
+# 用新章节重新生成摘要
+uv run podlator render transcript.json \
+  --chapters chapters-v2.json \
+  --mode summary \
+  -o summary-v2.md
+```
+
+---
+
+##### 场景 5：双输出 — 同一期内容同时出精简简报和全文翻译
+
+适合"既要快餐版快速浏览，又要存档版完整翻译"的情况。
+
+```bash
+# 前几步共享
+uv run podlator download "https://www.youtube.com/watch?v=XXXXX" -o episode.mp3
 uv run podlator transcribe episode.mp3 -o transcript.json
 uv run podlator split transcript.json -o chapters.json
-uv run podlator render transcript.json --chapters chapters.json --mode summary -o summary.md
-uv run podlator polish summary.md -o brief.md --title "From meta.json"
 
-# 场景 3：从已有的 SRT 字幕出发
-uv run podlator parse-srt subtitles.srt -o transcript.json
-uv run podlator assign-speakers transcript.json -o transcript.sp.json
-uv run podlator split transcript.sp.json -o chapters.json
-uv run podlator render transcript.sp.json --chapters chapters.json --mode full -o full.md
+# 分叉 A：精简简报（适合分享/快速阅读）
+uv run podlator render transcript.json \
+  --chapters chapters.json \
+  --mode summary \
+  -o summary.md
+uv run podlator polish summary.md -o brief.md
+
+# 分叉 B：全文翻译（适合存档/深度阅读）
+uv run podlator render transcript.json \
+  --chapters chapters.json \
+  --mode full \
+  -o full-translation.md
+```
+
+---
+
+##### 场景 6：对比不同 LLM 的渲染效果
+
+适合评估 DeepSeek vs Claude 对同一内容的中文翻译质量。
+
+```bash
+# 用 DeepSeek（默认）生成全文翻译
+uv run podlator render transcript.json \
+  --chapters chapters.json \
+  --mode full \
+  -o full-deepseek.md
+
+# 用 Claude 生成全文翻译做对比
+uv run podlator render transcript.json \
+  --chapters chapters.json \
+  --mode full \
+  --provider claude \
+  -o full-claude.md
+
+# 用 diff 对比差异
+diff full-deepseek.md full-claude.md
 ```
 
 ### 启动 Web UI

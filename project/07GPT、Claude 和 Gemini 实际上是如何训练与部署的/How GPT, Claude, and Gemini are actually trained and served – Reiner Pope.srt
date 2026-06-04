@@ -1,0 +1,2403 @@
+1
+00:00:00,210 --> 00:00:09,090
+Today, I'm interviewing Reiner Pope, who is the CEO of MatX, which is a new chip startup. Previously, he was doing TPU architecture and many other things at Google.
+
+2
+00:00:09,090 --> 00:00:16,480
+This is a very different format from my usual interviews. This is going to be a blackboard lecture. We're going to get up in a second. We in fact built this whole new studio with specifically this
+
+3
+00:00:16,480 --> 00:00:25,370
+format in mind, so it's a pleasure to get to inaugurate it with you. We're going to be talking about model architecture, ML infra, and many other things.
+
+4
+00:00:25,370 --> 00:00:35,696
+The reason I think it's an important topic is because once you understand how training and inference work in a cluster, a lot of things—about why AI is the way
+
+5
+00:00:35,696 --> 00:00:45,550
+it is, why AI architectures are the way they are, why API prices are the way they are, and fundamentally why AI progress is the way it is—start making sense.
+
+6
+00:00:45,550 --> 00:00:52,859
+You need to understand the details to get there, and you need a blackboard to understand the details. Reiner, thank you so much for doing this. Very happy to be here.
+
+7
+00:00:52,859 --> 00:01:05,150
+Full disclosure, I am an angel investor in MatX, but that's unrelated to this podcast. Reiner, to kick us off I'll ask this question. We have a couple of companies like Claude and Codex and Cursor
+
+8
+00:01:05,150 --> 00:01:14,640
+offering something like Fast Mode, where for 6x the price, they'll stream you tokens at 2.5x the speed. Mechanically, I'm curious what's going on here.
+
+9
+00:01:14,640 --> 00:01:27,220
+Why is it the case that you can pay more to get faster latency? Two, could you keep going? Could you pay 100x more and somehow get much faster speeds? Three, could you go the other way?
+
+10
+00:01:27,220 --> 00:01:36,820
+Could you have something like Claude Code "Slow Mode", where if you are willing to wait for minutes on end, you could get even cheaper prices?
+
+11
+00:01:36,820 --> 00:01:44,049
+Maybe this will help motivate the analysis that you'll be doing through the lecture. Great. To jump to the conclusion a little bit, the big effect is batch size.
+
+12
+00:01:44,049 --> 00:01:53,780
+What we're going to do now is quantify exactly what that looks like and what its implications are on latency and cost. There's another effect, which you can call speculative decoding
+
+13
+00:01:53,780 --> 00:02:04,170
+or multi-token prediction. We can maybe come back to that later, but the first thing that we'll talk through is batch size. What I'd like to introduce is the two principles of analysis.
+
+14
+00:02:04,170 --> 00:02:19,190
+First, we're going to look at a roofline analysis of how we run a transformer model on a cluster of chips. We'll take a Blackwell NVL72 cluster, so a rack of 72 GPUs.
+
+15
+00:02:19,190 --> 00:02:27,890
+The roofline analysis means we look at memory bandwidth and compute performance. The other side of that is that we're going to look at just two simple
+
+16
+00:02:27,890 --> 00:02:42,289
+factors of the model: the time to operate on the weights, and the time to operate on the context, the KV cache. Let's jump in. We're going to try and estimate the time that it takes to run
+
+17
+00:02:42,289 --> 00:02:52,490
+an inference of a certain shape. We're not perfect here. We can't exactly predict the time, so instead we're going to approximate. We're going to say that the time must be greater than or
+
+18
+00:02:52,490 --> 00:03:07,310
+equal to a certain quantity. We're going to consider two different aspects: the time it takes to do the memory fetches, and the time it takes to do the compute.
+
+19
+00:03:07,310 --> 00:03:19,750
+It will turn out that this gives us very strong predictive power, even with a simple model. One by one, what is the time that it takes to do the compute?
+
+20
+00:03:19,750 --> 00:03:28,110
+There are really two things I need to do in the compute. I need to multiply by all of the active parameters, and then I need to do some work on the attention.
+
+21
+00:03:28,110 --> 00:03:38,340
+Multiplying by all the active parameters, I have a certain batch size that I'm running, and I've got a number of active parameters in my model.
+
+22
+00:03:38,340 --> 00:03:48,350
+Then I'm just going to divide this by the compute throughput, which is the FLOPs of the chip. This is a hardware concern.
+
+23
+00:03:48,350 --> 00:04:00,770
+This accounts for all of the compute time for all of the weight matrix multiplies. There's a little caveat here. We've ignored the time to do any of the attention computation, but that in general
+
+24
+00:04:00,770 --> 00:04:09,009
+will be quite small in comparison to this. So we'll ignore this. I'll just interrupt from time to time to ask some very naive questions or to clarify some basic points.
+
+25
+00:04:09,009 --> 00:04:17,540
+For the audience, you're not serving one user at a time. The batch refers to the fact that you're serving many different users at the same time, and that's a whole batch.
+
+26
+00:04:17,540 --> 00:04:28,070
+I can motivate the batch at least a little bit. We will see exactly why batch is such a favorable optimization. What will turn out to be the case is that if you do not batch together many
+
+27
+00:04:28,070 --> 00:04:40,920
+users, the cost and the economics you get can be a thousand times worse than if you do batch many users together. We'll be able to see that quite explicitly. Then, number of active parameters.
+
+28
+00:04:40,920 --> 00:04:52,210
+If I look at, for example, a DeepSeek model, the DeepSeek V3 model has about 37 billion active parameters, and 700 billion total parameters.
+
+29
+00:04:52,210 --> 00:05:00,910
+We're focusing on just the ones that are active for a single AI token. We're modeling compute performance. I'm going to keep writing equals, but in all of these cases, you can think of this
+
+30
+00:05:00,910 --> 00:05:09,630
+time as being at least this much, and maybe there will be some terms we ignored. On the memory side, what do we need to do with memory?
+
+31
+00:05:09,630 --> 00:05:21,589
+We need to fetch all of the weights, so there is some time to fetch the total number of parameters, not just the active parameters.
+
+32
+00:05:21,589 --> 00:05:36,870
+There's weight fetch time, and then in addition, there's a KV cache fetch time. This actually depends on batch size. For every element of the batch, we have to fetch an entire context
+
+33
+00:05:36,870 --> 00:05:52,770
+length worth of tokens, and there's a size per token, bytes for one token. This is a model parameter. Maybe just backing up, let's explain what the KV cache is real quick.
+
+34
+00:05:52,770 --> 00:06:06,640
+When I do a forward pass… Let me draw how the autoregressive inference works. This is during decode. If I have a bunch of text tokens… I'm drawing a tensor because ultimately
+
+35
+00:06:06,640 --> 00:06:22,870
+the tokens are represented as a tensor in some embedding dimension. In this direction, I have the sequence length. The work of running a decode is that I have to run each token through
+
+36
+00:06:22,870 --> 00:06:35,770
+a whole bunch of matrix multiplies over a bunch of different layers. In general, I'm going to have to do that work over all of these tokens.
+
+37
+00:06:35,770 --> 00:06:50,360
+But one step of decode is to produce just this one additional token up here. What I'm going to do there is run a full forward pass of multiplying by all of the weight matrices in the entire model.
+
+38
+00:06:50,360 --> 00:07:03,690
+But then I've got this attention mechanism where this token is looking at all of the past tokens, and what is it looking at specifically? It is looking at some internal representation that the model
+
+39
+00:07:03,690 --> 00:07:13,440
+has produced of the tokens, and we call that the KV cache. This process of this single token attending to all of the history of tokens is attention.
+
+40
+00:07:13,440 --> 00:07:23,309
+It is mostly dominated by memory fetches rather than matrix multiplies. So we've got the amount of memory that we're fetching shown over here,
+
+41
+00:07:23,309 --> 00:07:41,250
+and then this is of course just divided by the memory bandwidth, so the memory bytes per second. In fact, these equations here are enough for us to now draw some fit lines.
+
+42
+00:07:41,250 --> 00:07:55,300
+The things that we'd like to look at are sensitivity to batch, and then also, which we'll draw separately, to context length. We said that the big effect you can get is some trade-off in
+
+43
+00:07:55,300 --> 00:08:11,710
+latency versus cost in batch size. Let's draw them out. I think there are just really two graphs that we want to draw. We'll first draw batch size versus time here.
+
+44
+00:08:11,710 --> 00:08:27,890
+When we look at the shape of this, we've got a maximum of the sum and then another term. Let's look at these terms one by one and how they scale: the time for compute and memory, and how they show up.
+
+45
+00:08:27,890 --> 00:08:44,260
+Let's first look at this compute time. This is just purely linear in batch size with no offset, so it is some curve like this. This is t compute.
+
+46
+00:08:44,260 --> 00:09:14,349
+On the memory side, we've got some portion here that is just this constant in some base offset here, which is the weight fetch. Finally, we have this term here, which is the KV fetch, which is pretty
+
+47
+00:09:14,349 --> 00:09:29,099
+linear in batch size, and so it looks like that. The sum of this plus this maxed with this… Let's at least first draw the sum.
+
+48
+00:09:29,099 --> 00:09:47,399
+The two memory times in conjunction end up looking on this curved slope like this. Then the overall maximum is—I'll draw a little thicker here—the maximum of these two curves. What does this mean?
+
+49
+00:09:47,399 --> 00:10:11,150
+This is a latency plot. If I grow my batch size, initially I get some not very strong dependence on batch size, so there is some lower bound on latency here.
+
+50
+00:10:11,150 --> 00:10:20,580
+This already partially answers the question. For a given hardware configuration—and we can talk about varying the hardware configuration—there is a lower bound on latency.
+
+51
+00:10:20,580 --> 00:10:34,380
+It is simply that I need to read all of my total parameters from memory into the chips, and that takes a certain amount of time. If I use all of my memory bandwidth, I can't do any better than that.
+
+52
+00:10:34,380 --> 00:10:49,580
+It seems like the way you've drawn the slopes for compute time and how the KV grows—and what implication the KV has on memory time— What if this were above or below?
+
+53
+00:10:49,580 --> 00:11:00,969
+Yeah, is that necessarily the case? If this is always true, then as batch size grows compute always dominates KV, which suggests that if you have a big enough batch size,
+
+54
+00:11:00,969 --> 00:11:08,270
+maybe memory is never an issue. This is really sensitive to the context length, so I think we should come back and explore this.
+
+55
+00:11:08,270 --> 00:11:15,490
+As you vary the context length, the KV fetch time will go up and up, and that will cause a transition from compute-limited to memory-limited.
+
+56
+00:11:15,490 --> 00:11:29,790
+Is there something especially significant about the slope being exactly the slope of the compute time? Whenever we have balance points, it says that you're getting it exactly right.
+
+57
+00:11:29,790 --> 00:11:40,660
+For the particular context length where the slopes match, that says I am equally memory-bound and compute-bound, which is a really desirable place to be.
+
+58
+00:11:40,660 --> 00:11:54,650
+This is a very simple algebra problem, but suppose the optimal is 100K context length, and you go to 200K context length. Does your MFU go down to 50%?
+
+59
+00:11:54,650 --> 00:12:08,620
+Does it have a humongous impact on MFU to be slightly outside of the optimal context length range, the Goldilocks zone? That's right. That is true as modeled here. There is a key point here that
+
+60
+00:12:08,620 --> 00:12:20,000
+I'm modeling the memory fetch as linear in context length. That depends on model architecture. It is true for all of the model architectures with dense attention.
+
+61
+00:12:20,000 --> 00:12:27,900
+Sparse attention actually scales much better than that. Got it. Is sparse attention what everybody uses in practice? I'm pretty excited about sparse attention.
+
+62
+00:12:27,900 --> 00:12:36,199
+It's hard to know what the labs are using. DeepSeek has published a sparse attention mechanism. I'll just put a plug in that some of the DeepSeek papers that have
+
+63
+00:12:36,199 --> 00:12:49,660
+published sparse attention end up putting a square root in this term. So far, we've looked at the latency. It's hard to read off cost from this. If I think about what cost means…
+
+64
+00:12:49,660 --> 00:12:59,760
+To run this inference, I'm going to use the GPU for a certain number of seconds, like one millisecond or 20 milliseconds. I have to pay the rental time for that time.
+
+65
+00:12:59,760 --> 00:13:12,509
+So it's $2/hour per GPU or something like that. That's the cost of this inference, but how many tokens have I processed during that inference? That is the batch size.
+
+66
+00:13:12,509 --> 00:13:34,480
+What we actually want to plot is the cost versus batch size, which is t over B versus batch size. This is the cost per token. We have to imagine dividing each of these three curves by B, so
+
+67
+00:13:34,480 --> 00:13:52,520
+multiplying by this reciprocal. What we end up with there is… The compute curve was linear. We divide by B, and that makes it a constant here. This is t compute.
+
+68
+00:13:52,520 --> 00:14:22,880
+The KV fetch was linear, and now it becomes a constant as well. Then the weight fetch was constant, and now we've divided by B, so it becomes this parabola.
+
+69
+00:14:22,880 --> 00:14:41,289
+Again, we're going to compute the max of the sum. The sum of these two terms shifts the parabola up. The sum of the KV fetch and the weight fetch gives us a higher parabola that's like this.
+
+70
+00:14:41,289 --> 00:14:54,870
+Then we're going to take the max with the compute here. We end up with this being the overall shape that we care about. Again, we see some limiting behavior.
+
+71
+00:14:54,870 --> 00:15:07,020
+The cost initially starts very high at a batch size of one. It almost goes to infinity because we've got so many weight fetches that are not amortized over a large batch size.
+
+72
+00:15:07,020 --> 00:15:18,639
+But as we increase the batch size, the weight fetches become amortized over so many different batch elements that their cost grows very small, and eventually the compute time ends up driving the cost.
+
+73
+00:15:18,639 --> 00:15:35,910
+So there is a limiting lower bound on cost, which is this line here. So Claude Code Slow or Codex Slow or whatever would just live on this line.
+
+74
+00:15:35,910 --> 00:15:46,790
+It wouldn't help much because you're not able to amortize the KV values over a much bigger batch. They're unique per batch. The compute is also unique per batch.
+
+75
+00:15:46,790 --> 00:16:04,880
+So what is the minimum work you can do per batch after amortizing everything else away? This point where you are no longer memory bandwidth bound, practically how big a batch do you need?
+
+76
+00:16:04,880 --> 00:16:15,580
+How big are the batches practically for frontier models? You can just solve for that. It's not even particularly sensitive to model architecture. Let's go ahead and do that.
+
+77
+00:16:15,580 --> 00:16:30,119
+What we're talking about is when the memory time is equal to the compute time. That’s what that question is. Because we're focused on what the batch size is—and really there's a question
+
+78
+00:16:30,119 --> 00:16:38,290
+of when the weights are amortized over the multiplies—I'm going to focus on comparing the weight fetch time to the weight multiply time.
+
+79
+00:16:38,290 --> 00:16:58,030
+I'm going to disregard the KV fetch term just to simplify the analysis so we can get a clean answer out. We're going to equate this portion with these two times.
+
+80
+00:16:58,030 --> 00:17:22,559
+Writing that out, we get N, number of total parameters, over memory bandwidth, is equal to batch size times number of active parameters divided by the compute performance.
+
+81
+00:17:22,559 --> 00:17:31,250
+Looking over here, everything on the top are model parameters. Everything on the bottom are hardware parameters. It turns out to be nice to rearrange them such that we have
+
+82
+00:17:31,250 --> 00:17:56,300
+the hardware parameters on one side. This is equivalent to FLOPs over memory bandwidth being equal to batch size times number of active parameters, divided by the number of total parameters.
+
+83
+00:17:56,300 --> 00:18:07,900
+This hardware parameter ends up being a dimensionless constant. If you look in terms of FLOPs… What are the dimensions of this? This is multiplies per second. This is bytes per second.
+
+84
+00:18:07,900 --> 00:18:25,430
+So that's not quite dimensionless. But what you do is you say, how many FP4 multiplies per second times the fact that each FP4 is half a byte. I can actually make this end up being dimensionless.
+
+85
+00:18:25,430 --> 00:18:41,850
+On most GPUs, this ends up being somewhere around 300. Has that ratio changed over time as we've gone from model generation to model generation, where the FLOPs keep increasing?
+
+86
+00:18:41,850 --> 00:18:53,900
+This is a hardware parameter. To what extent has the hardware changed? From A100 to H100 to B100, the FLOPs have increased substantially, the memory bandwidth has also increased substantially, and it
+
+87
+00:18:53,900 --> 00:19:05,849
+has remained reasonably stable. We can express this one as well. This is a sparsity parameter. I might even phrase this slightly differently. Let's solve for batch size in total.
+
+88
+00:19:05,849 --> 00:19:21,719
+Moving this back over to the other side, we end up with batch size needs to be bigger than approximately 300 times sparsity. For example, in DeepSeek I activate 32
+
+89
+00:19:21,719 --> 00:19:33,130
+out of 256 experts, so this would be 8 for DeepSeek. This actually gives you a ballpark which is remarkably accurate to practice. Generally, people will go a little bit larger than this.
+
+90
+00:19:33,130 --> 00:19:44,490
+They don't really want to be exactly at the balance point because real-world efficiencies aren't as good as a roofline analysis would say. But take this and maybe double or triple it.
+
+91
+00:19:44,490 --> 00:20:00,070
+Okay, so it's two to three thousand tokens per batch. But then if you included the KV cache, the implication would be that the optimal batch size... Should grow larger.
+
+92
+00:20:00,070 --> 00:20:13,370
+We solved for the equivalence between when compute time is equal to memory time. If I add in something that consumes more memory bandwidth, then I have less available for the weight loads.
+
+93
+00:20:13,370 --> 00:20:24,330
+I need to grow the memory bandwidth more, and therefore the batch size more. This seems incredibly small. This would be less than one sequence, right?
+
+94
+00:20:24,330 --> 00:20:33,969
+Keep in mind that I'm talking about the number of tokens that I'm generating one more token for. It's actually 2,000 unique sequences. Got it.
+
+95
+00:20:33,969 --> 00:20:43,080
+We're just talking about a single forward pass on these sequences. You think of the batch as the number of sequences. That’s right.
+
+96
+00:20:43,080 --> 00:20:50,580
+When I'm prepping for interviews, I often talk to experts in the field. So for Reiner, I chatted with two of Jane Street's engineers, Clark and Axel.
+
+97
+00:20:50,580 --> 00:20:57,589
+Clark, who works on low latency trading systems, walked me through why Jane Street uses FPGAs to make sure that they have predictable nanosecond latencies.
+
+98
+00:20:57,589 --> 00:21:04,370
+“You can just build these like giant grids of compute very easily that do exactly what you need that touch a hundred megabytes of SRAM and then
+
+99
+00:21:04,370 --> 00:21:13,020
+get your response back in tens of nanoseconds very easily. And that's basically impossible on a CPU.” He then went on to explain why CPUs just wouldn't work for this kind of thing.
+
+100
+00:21:13,020 --> 00:21:21,100
+“And so if you have a clock that's going every three nanoseconds, you actually have several bytes of information at a time to make your decision.
+
+101
+00:21:21,100 --> 00:21:27,730
+That's as opposed to a CPU where you'll just collect up a whole packet, you know, let's say a 1500-byte packet, and then you say, okay, this packet's ready. Here you go, CPU.
+
+102
+00:21:27,730 --> 00:21:34,879
+You can start thinking about it now.” FPGAs allow you to react to the earliest part of the packet as it arrives, rather than having to wait for the full thing.
+
+103
+00:21:34,879 --> 00:21:46,059
+We also talked about liquid cooling, network design, and many other things. If you're interested in this stuff, Jane Street is hiring. You can check out their open roles at JaneStreet.com/Dwarkesh.
+
+104
+00:21:46,059 --> 00:21:56,010
+And if you want to watch the full prep conversation, we posted it there too. If you've got a frontier model and you are actually doing inference, surely they must
+
+105
+00:21:56,010 --> 00:22:08,169
+have more than 2,000 concurrent users. Is there any added latency from the fact that you need to have the whole batch fill up? Or if you have a reasonable amount of users, is it so unlikely that
+
+106
+00:22:08,169 --> 00:22:25,460
+it would take you 100 milliseconds to fill up the next 2,000 slots? The way to think about this is: when does the train depart, as a model? Let's say I've picked a batch size that I'm going to run at.
+
+107
+00:22:25,460 --> 00:22:32,860
+By the way, this intersection point is the same intersection point here. I pick this batch size, and I know that it's going to take, for
+
+108
+00:22:32,860 --> 00:22:56,420
+example, 20 milliseconds, which is a common place this ends up landing. This is a timeline of what is running on the GPU. It's going to start a new batch every 20 milliseconds regardless.
+
+109
+00:22:56,420 --> 00:23:05,109
+You can think of this as a schedule for the train. A new train departs every 20 milliseconds. Any passengers who are ready board the train. If the train is full, they wait until the next train.
+
+110
+00:23:05,109 --> 00:23:17,750
+If the train is not full, the train is going to go anyway. In terms of what that means for queuing latency, the worst case is that a request arrives just after the train departed.
+
+111
+00:23:17,750 --> 00:23:27,160
+It has to wait for the next train, so that's up to 20 milliseconds, and then it has to wait for that train to complete. So the worst-case latency is 40 milliseconds.
+
+112
+00:23:27,160 --> 00:23:40,159
+How is the 20 milliseconds derived? It's a rule of thumb, but where it comes from is not fully explained yet. So far we've focused on memory bandwidth and compute time.
+
+113
+00:23:40,159 --> 00:23:55,670
+When we look at memory, the other consideration is that we want to use all of the memory capacity we have. Generally, we're going to use all of that memory capacity to store the weights or the KVs.
+
+114
+00:23:55,670 --> 00:24:03,450
+In the time of doing a forward pass, we want to read all of the memory capacity into the chip. That is capacity divided by bandwidth.
+
+115
+00:24:03,450 --> 00:24:13,090
+That tends to be 20 milliseconds on many different generations of HBM. The units make sense. You would have a byte divided by bytes per second.
+
+116
+00:24:13,090 --> 00:24:36,853
+For example, on the Rubin generation, it is something like 288 gigabytes divided by 20 terabytes per second. This comes out to about 15 milliseconds. Let me make sure I understand what this is saying.
+
+117
+00:24:36,853 --> 00:24:56,830
+I understand the unit analysis. What it's saying is we can evacuate and replace the HBM in this amount of time. So we don't want to be in a situation where the HBM is not big enough that we're
+
+118
+00:24:56,830 --> 00:25:08,349
+not actually able to write everything we want to it or take everything out of it. Or we don't want to be in a situation where our ability to write back and forth is so small compared...
+
+119
+00:25:08,349 --> 00:25:19,110
+There are sort of two scenarios. Why don't we pick a latency that is bigger than 15 milliseconds? If I think about what that means, it means I actually have time to read the HBM twice.
+
+120
+00:25:19,110 --> 00:25:30,519
+By the way, most HBM accesses are reads, not writes. It's almost all reads because the weight matrices are read-only, and almost all of the KV cache accesses are reads.
+
+121
+00:25:30,519 --> 00:25:40,840
+In around 30 milliseconds, I can read all of HBM twice, but what's the point of that? I don't want to read the weight matrices twice. I don't want to read the KVs twice. Makes a ton of sense.
+
+122
+00:25:40,840 --> 00:25:52,310
+A couple of quick questions. If it is the case that the optimal batch size is something like 2,000, it's totally dependent on the sparsity, not dependent on the model size or anything.
+
+123
+00:25:52,310 --> 00:26:07,020
+Sparsity shows up in model size, but beyond that, it only depends on sparsity, not on scale. That's a very interesting result. One question is how much of a push towards centralization is it that
+
+124
+00:26:07,020 --> 00:26:15,520
+you would have these economies of scale from inference for batching? But it seems like it's not that big a deal. Is 2,000 users at the same time a lot? It doesn't seem like a lot.
+
+125
+00:26:15,520 --> 00:26:25,049
+We can do a bit of analysis on this. You can think of it in terms of number of users, but a more productive way to think of it is in terms of tokens per second.
+
+126
+00:26:25,049 --> 00:26:40,980
+What does this batch size mean in terms of tokens per second of the system? Tokens per second is going to be equal to the batch size. We run a batch of tokens, and we do that
+
+127
+00:26:40,980 --> 00:26:58,150
+every time interval, which is equal to the 15-millisecond or 20-millisecond number. This ends up being batch size times about 60, so 64 x B.
+
+128
+00:26:58,150 --> 00:27:20,440
+This ends up being around 2,000 x 64, so 128,000 tokens per second. This is in more digestible units. It's hard to reason about concurrent users, but what is the global traffic for a system?
+
+129
+00:27:20,440 --> 00:27:31,230
+When you look at some of the announcements, sometimes the API providers will brag about how much traffic they have. The numbers I remember from some announcements of Gemini last year
+
+130
+00:27:31,230 --> 00:27:44,929
+were in the hundreds of millions of tokens per second worldwide. This is one-thousandth of that. Gemini is big. One-thousandth of Gemini is a lot.
+
+131
+00:27:44,929 --> 00:28:04,849
+To actually be competitive at scale, you need to be able to serve at least one-thousandth of Gemini. That's interesting. The more sparsity you have, the less compute you need.
+
+132
+00:28:04,849 --> 00:28:14,170
+It does seem that as batch sizes get bigger, compute ends up being the bottleneck, according to this analysis. Then the question is, how far can you take sparsity?
+
+133
+00:28:14,170 --> 00:28:23,160
+As the sparsity ratio increases, as you have fewer active parameters relative to total parameters, how much is the performance of the model degrading?
+
+134
+00:28:23,160 --> 00:28:36,240
+Is it degrading faster than you're saving compute by increasing the sparsity factor? You mean the quality of the model, rather than the speed of the model.
+
+135
+00:28:36,240 --> 00:28:50,269
+Unfortunately, we're not able to answer that analytically. That is an empirical question of model quality. The best I can do is pull up a paper and answer that empirically. Should
+
+136
+00:28:50,269 --> 00:28:57,770
+we pull up the paper now? This paper is "Unified Scaling Laws for Routed Language Models." It's a somewhat old paper by this stage, but one of the things they looked
+
+137
+00:28:57,770 --> 00:29:05,119
+at is if I keep increasing sparsity, what is the model quality impact? This answer is very sensitive to the actual choice of mixture of experts.
+
+138
+00:29:05,119 --> 00:29:17,059
+Mixture of experts has been around for a really long time, maybe even back in 2017, but the techniques have changed a lot. DeepSeek's mixture of experts was a big change in how it worked.
+
+139
+00:29:17,059 --> 00:29:24,560
+There have been older papers, like "GShard" and "Switch Transformer". The actual empirical results are going to depend on all of that.
+
+140
+00:29:24,560 --> 00:29:32,790
+On one of the older techniques shown here, you can see if I hold constant the number of active parameters at a certain size, and then I increase
+
+141
+00:29:32,790 --> 00:29:43,490
+the sparsity, which they call expert count, the quality keeps increasing. If you imagine drawing a horizontal line from 1.3B dense across, you end up
+
+142
+00:29:43,490 --> 00:29:55,620
+seeing that, in this case, the 64-expert 370-million activated parameter model is as good as a dense 1.3-billion model. So in some sense, it's actually not amazing returns where you need
+
+143
+00:29:55,620 --> 00:30:10,830
+to increase total parameters a hundredfold to get the equivalent of 10x as many active parameters. Actually even more so. It's a huge increase in parameter count for a modest increase in efficiency.
+
+144
+00:30:10,830 --> 00:30:29,990
+So in this case, actually it's 4x? 64x for 4x. So while it is true that you get this benefit of being able to economize on your compute time if you increase sparsity, naively it would seem
+
+145
+00:30:29,990 --> 00:30:44,530
+like a trade-off worth making. But if you're decreasing this by 2x and then having this go up by 8x every time you double sparsity... Is that good or bad, actually?
+
+146
+00:30:44,530 --> 00:30:56,880
+Even from a memory point of view… Keep in mind you are doubling this portion of the memory fetches, which is amortized by batch. So just keep running a larger batch size.
+
+147
+00:30:56,880 --> 00:31:12,569
+From the point of view of the analysis we've done here, this is a pure win. Keep doing it until you run out of available users, basically. There's
+
+148
+00:31:12,569 --> 00:31:18,620
+this equivalence where if I have a lot of users, I can go to a much sparser model. From that point of view, it's a reasonable trade-off.
+
+149
+00:31:18,620 --> 00:31:27,320
+The other trade-off that shows up here is that it also consumes memory capacity. We've only reasoned about memory bandwidth here, but it also consumes memory capacity. I see.
+
+150
+00:31:27,320 --> 00:31:42,530
+Let me make sure I understood. You're saying we want to spend less time computing, therefore we do more sparsity. To make that work, we need bigger batch sizes.
+
+151
+00:31:42,530 --> 00:31:58,809
+Which means we need more memory capacity to have more sparsity. Maybe this would be a good point to talk about how a mixture of experts layer is typically laid out on a rack of GPUs. Cool.
+
+152
+00:31:58,809 --> 00:32:15,490
+Makes sense. Where were we? Sparse mixture of experts. Maybe how we lay that out on a GPU. Let's zoom in on the mixture of experts layer first and draw what that looks like.
+
+153
+00:32:15,490 --> 00:32:27,890
+Typically, we'll have some kind of a router layer, which is making the decision of where we route the tokens to. We get tokens coming in here, they go through a router layer, and then
+
+154
+00:32:27,890 --> 00:32:41,359
+we have a bunch of different experts. I'll draw a few more to line some up. The router will make a decision of which experts it's going to
+
+155
+00:32:41,359 --> 00:32:59,950
+route to, and it will be a small fraction of them, maybe 1 in 32. Maybe it will make a decision to route to this one, maybe this one, and maybe this one. Each expert itself is a normal MLP.
+
+156
+00:32:59,950 --> 00:33:10,810
+It has an up projection and then a down projection with a nonlinearity in between. Then finally, we do the inverse operation. Where we were broadcasting things out here, we're going to bring
+
+157
+00:33:10,810 --> 00:33:28,514
+them back in and sum them up. Bringing them in like this. Then finally, we have our residual connections. The token is also passed through here, and it gets added to the result of the MoE layer.
+
+158
+00:33:28,514 --> 00:33:41,250
+This is a normal MoE layer. What I want to talk through is how this is mapped to a GPU rack and what this means for communication, because I think this will start to show some
+
+159
+00:33:41,250 --> 00:33:54,209
+of the limits of how sparse we can go. The standard practice here, and it is the best solution, is to use expert parallelism. That means different experts go on different GPUs.
+
+160
+00:33:54,209 --> 00:34:11,330
+If we take something like a DeepSeek model, they have 256 experts. Let's say we want to run that on a Blackwell rack. There are 72 GPUs. We have a divisibility problem. This is not a power of two.
+
+161
+00:34:11,330 --> 00:34:24,270
+We'll just simplify and say we're only going to use 64 of them. Just ignore the other eight. It's not a big deal. So we have four experts per GPU. Very simple.
+
+162
+00:34:24,270 --> 00:34:39,120
+For the sake of the diagram, actually let's just say we have two experts per GPU. We end up just putting these GPU boundaries. Every pair of experts is on its own GPU.
+
+163
+00:34:39,120 --> 00:34:51,120
+Then we can look at the communication cost. We had some tokens stored centrally here. They get routed to all of these experts, and there is some communication cost paid here.
+
+164
+00:34:51,120 --> 00:35:03,339
+There's the same communication cost paid on the output. The hope is that this does not become communication limited. Now what is the traffic pattern here?
+
+165
+00:35:03,339 --> 00:35:14,540
+The traffic pattern here is that any GPU will be talking to any other GPU, depending on the decisions made by the model. This is an all-to-all traffic pattern.
+
+166
+00:35:14,540 --> 00:35:25,520
+When you say any GPU in the pre-tense, the router is more than one GPU? I drew this as one router. In reality, you would actually have many copies of the router, and you would
+
+167
+00:35:25,520 --> 00:35:40,270
+have as many routers as GPUs, in fact. As the incoming traffic. Yeah. These are 64 GPUs and these are 64 GPUs. It's actually the same GPUs, we just draw them as separate because
+
+168
+00:35:40,270 --> 00:35:52,280
+they're serving different purposes. So at this point, any GPU can be sending to any other GPU. This all-to-all pattern of communication that shows up and how the Blackwell
+
+169
+00:35:52,280 --> 00:36:06,480
+racks are configured is a perfect fit for the communication pattern that the MoE actually wants to do. However, if you think maybe one rack is too slow and I want to do two
+
+170
+00:36:06,480 --> 00:36:24,160
+racks, then I have this challenge that maybe I've got some sort of rack boundary drawn outside here like this, and I no longer have all-to-all communication between all the GPUs in two racks.
+
+171
+00:36:24,160 --> 00:36:36,260
+The rack-to-rack communication ends up being a substantial bottleneck. The fundamental thing here is that one rack bounds the size of an expert layer you can do.
+
+172
+00:36:36,260 --> 00:36:47,309
+This has been part of what's been driving towards larger and larger interconnect domains. Before we continue, it may be worth you explaining what exactly a rack is.
+
+173
+00:36:47,309 --> 00:36:56,660
+The differences in bandwidth between a rack and within a rack, and the all-to-all versus not all-to-all nature of communication within versus outside.
+
+174
+00:36:56,660 --> 00:37:11,969
+This is a place where it starts to be very different between Nvidia, for example, and Google, and then others, including us. Generally, a rack is a physical structure.
+
+175
+00:37:11,969 --> 00:37:24,840
+It's a few meters tall, a meter or two wide, depending on configuration, and it stores some number of GPUs or XPUs, which is typically about 64.
+
+176
+00:37:24,840 --> 00:37:38,170
+What constrains it being a certain size is power delivery, weight, and cooling ability. It ends up being about this size in many cases because of these physical constraints.
+
+177
+00:37:38,170 --> 00:37:50,185
+When I deploy a data center, a data center may have thousands of these racks. I've got one of these tall racks, it's got a bunch of GPUs in it, and so on. And then I put another rack next to it.
+
+178
+00:37:50,185 --> 00:38:07,189
+You make it sound so easy. Right. I just drop them in. In Nvidia's case, the communication topology… They actually put the GPUs on the outside of the rack, and then they put
+
+179
+00:38:07,189 --> 00:38:19,389
+these switches on the inside of the rack. What this ends up being is that there's a set of switches in here. These are the NV switches. Then they run a bunch of cables.
+
+180
+00:38:19,389 --> 00:38:39,239
+Every single GPU has cables going to the switches in the middle. The switches have connections to all the GPUs. All of the GPUs can talk to all the other GPUs in just two hops: going to
+
+181
+00:38:39,239 --> 00:38:56,429
+the switch, going to the other GPU. Now, when I want to leave the rack, I end up going via a different path. The GPUs also have a much slower connectivity, which is typically about eight times slower.
+
+182
+00:38:56,429 --> 00:39:10,730
+The green that I drew here in the GPU cases is the NVLink. More generally, it's called the scale-up network. You will typically also have a scale-out network, which allows you
+
+183
+00:39:10,730 --> 00:39:39,430
+to connect to some data center switch. All of the GPUs will have some connectivity up to some data center switch somewhere. This is the scale-out, and it tends to be about 8x slower in bandwidth.
+
+184
+00:39:39,430 --> 00:39:54,920
+The challenge, if you want to lay out a mixture of experts layer across two racks, is that half of the GPUs here are going to be wanting to talk to the GPUs here.
+
+185
+00:39:54,920 --> 00:40:03,679
+On average, when I look at where the tokens on these GPUs want to go, half of the tokens want to go inside the rack. That's great. They can use the fast scale-up network.
+
+186
+00:40:03,679 --> 00:40:10,440
+But half the tokens are going to want to leave the rack and go to the other rack, and that's not as good. They need to use a much slower network, and so that becomes the
+
+187
+00:40:10,440 --> 00:40:27,540
+bottleneck on the all-to-all pattern. A different choice would be, why don't I have a big switch here and connect everything to a much bigger switch that actually combines the two racks together?
+
+188
+00:40:27,540 --> 00:40:35,810
+There are many ideas in this direction, but in general, the reason you have this hierarchy of switches rather than one big switch is to manage the cabling congestion.
+
+189
+00:40:35,810 --> 00:40:44,200
+You just need to run a large number of cables. Sorry, is that question you just asked basically, why isn't it a bigger scale-up? Exactly.
+
+190
+00:40:44,200 --> 00:41:00,060
+Why not just have a million chips in scale-up or a thousand chips? What has changed that has allowed Nvidia to go from Hopper, which was 8, then Blackwell is 72, and now Rubin will be...
+
+191
+00:41:00,060 --> 00:41:10,250
+is it 500 something? Yeah, 500 and something. What has allowed that to happen? From Hopper to Blackwell is mostly just the decision to switch from
+
+192
+00:41:10,250 --> 00:41:27,550
+trays as the form factor to switching to racks as the form factor. That's a product decision. There wasn't a substantial technical barrier there. Switching from 64 to 500 or
+
+193
+00:41:27,550 --> 00:41:38,700
+so, there's a bit of Jensen math there, but there is at least a genuine 4x increase, which is coming from a much more complicated and difficult rack design.
+
+194
+00:41:38,700 --> 00:41:51,510
+That is actually a new physical design to run more cables. The cable complication is just the cost of figuring out which cable hops to which, or which signal goes from what to what?
+
+195
+00:41:51,510 --> 00:42:04,870
+Let's zoom in on this and look at the wire density. I'll draw this diagram just once more so we have a bit of a cleaner and larger version to work with. Let's say I have some switches in the middle.
+
+196
+00:42:04,870 --> 00:42:21,120
+Initially, I'm going to start with just two GPUs on each side or two trays of GPUs on each side. Let's say maybe each tray wants to have two cables coming out of it.
+
+197
+00:42:21,120 --> 00:42:35,309
+I physically run vertical cables that look like this running out to the switches. Now if I want to double the number of GPUs in a rack, I need to run literally twice the density of cables.
+
+198
+00:42:35,309 --> 00:42:52,289
+I need to run these as well. Extremely naive question. But if you look at a physical data center, it seems like there's a lot of space within a rack. I don't know. The cables are really big and...
+
+199
+00:42:52,289 --> 00:43:07,080
+There is space outside the rack. Inside the rack… As they become more optimized, these racks are very tight. There's connector density going from
+
+200
+00:43:07,080 --> 00:43:16,890
+the tray into the rack and the rack's backplane, and the backplane itself has a really high density. There are other physical constraints including the bend radius of cables.
+
+201
+00:43:16,890 --> 00:43:27,750
+You don't want to snap them and so on. Okay, so it's literally the physical space to put a cable that's constraining it. I had no idea. Interesting. That seems surprising. The
+
+202
+00:43:27,750 --> 00:43:39,059
+rack is so big and we can't just stuff more cables in there. Rack design is not my expertise, but when I talk to folks on what constraints they're up against, it's a combination of things.
+
+203
+00:43:39,059 --> 00:43:50,350
+What are the big physical things you're optimizing for? Space, weight of the rack. It's actually really heavy, so you need enough metal to not sag and fall.
+
+204
+00:43:50,350 --> 00:44:00,400
+But then you add more metal, and it's heavier. Then power and cooling. All of those are competing. Modern racks are pushing all of those to very extreme physical limits.
+
+205
+00:44:00,400 --> 00:44:11,160
+Deep work is by its nature quite aversive, so even things which seem like work, like Slack and email, can be easy ways to distract yourself. So I often wish that I could just turn the internet off.
+
+206
+00:44:11,160 --> 00:44:18,400
+But if I'm prepping for an interview, even if I have the papers and books on hand, it's still super useful to be able to do a back and forth with an LLM so I can break
+
+207
+00:44:18,400 --> 00:44:26,810
+down concepts and research follow-ups. Google's new Gemma 4 is the first open model that allows me to have this kind of fully disconnected focus machine.
+
+208
+00:44:26,810 --> 00:44:33,500
+It's small enough to run on my laptop, but good enough to actually be useful. So to prep for this episode, I downloaded Reiner's scaling book and shut off the internet.
+
+209
+00:44:33,500 --> 00:44:45,580
+I was able to have Gemma help me understand the material and answer my questions. If you want an LLM that you can run locally on your laptop or even your phone, you should check out Gemma 4.
+
+210
+00:44:45,580 --> 00:44:58,130
+When was GPT-4 released again? Was it 2022 or 2023? 2023. Okay. And it was rumored to be over one trillion parameters. It seems like only now, within the last six months, have models been getting
+
+211
+00:44:58,130 --> 00:45:07,040
+released that have significantly more parameters than the model released three years ago, when supposedly there should have been this scaling in the meantime.
+
+212
+00:45:07,040 --> 00:45:21,710
+Is the reason that we were just waiting for racks with enough memory to hold a five-trillion parameter model, along with its KV cache for enough users for a lot of sequences?
+
+213
+00:45:21,710 --> 00:45:35,090
+Or if you're doing RL, a similar consideration of actually holding the KV cache for the batch of problems you're trying to solve. If you look at Hopper, you had eight Hoppers, and I think
+
+214
+00:45:35,090 --> 00:45:49,230
+that's 640 gigabytes as of 2022. With Blackwell finally, which was deployed in…? Very recently. Maybe last year. Last year. You finally have a scale-up on the order of 10-20 terabytes, which is
+
+215
+00:45:49,230 --> 00:46:04,830
+enough for a 5T model plus KV cache. Deploying in larger scale-up domains is a huge unlock. I've drawn here the Nvidia Blackwell deployment. The Google deployment has actually had very large scale-up
+
+216
+00:46:04,830 --> 00:46:15,380
+domains for a long time. That also explains why Gemini seemed to be ahead. It just seems like Gemini has had successful pre-training for longer than some of the other labs.
+
+217
+00:46:15,380 --> 00:46:27,520
+Not having been there at the time, I'm not sure how much is coming from successfully deploying higher sparsity ratios, which it could be. It could also be a whole bunch of actual modeling things,
+
+218
+00:46:27,520 --> 00:46:39,630
+specifically how you do the mixture of experts. We've seen the DeepSeek mixture of experts activate more experts, but finer-grained experts. That was a big innovation.
+
+219
+00:46:39,630 --> 00:46:52,799
+I'm sure there are many other innovations on the model architecture as well as on the training data. It's hard to disentangle all of them, but what shows up in terms of the limits of what you can do
+
+220
+00:46:52,799 --> 00:47:06,840
+is that the active parameters, as we saw, are limited by the compute cost, and the total parameters are limited by the scale-up size. When you're operating within a single scale-up domain, is that
+
+221
+00:47:06,840 --> 00:47:23,760
+a consideration specifically for either forward or backward, or specifically for prefill versus decode? Or is it preferred to always be within a scale-up whatever kind
+
+222
+00:47:23,760 --> 00:47:38,780
+of workload you have, whether you're doing a pre-training run, RL generation, or inference for users? Really interesting. To answer that question, we're going to need to talk about
+
+223
+00:47:38,780 --> 00:47:57,630
+the communication patterns. We've talked about the mixture of experts communication pattern. That is this all-to-all. All-to-all very strongly favors full connectivity,
+
+224
+00:47:57,630 --> 00:48:12,150
+which is what we've just shown here, and it favors being within one rack. There are other kinds of parallelism besides expert parallelism, which we just showed here. In the literature is
+
+225
+00:48:12,150 --> 00:48:20,930
+tensor parallelism. With the trend towards smaller experts, this has become much less relevant, so we can ignore that. But the other two things we have available are data parallelism
+
+226
+00:48:20,930 --> 00:48:34,959
+and pipeline parallelism. They can be a much better fit for using multiple racks. Let's focus on pipeline parallelism specifically. This is one layer of MoE.
+
+227
+00:48:34,959 --> 00:48:54,949
+I'm going to have a hundred more layers up above. I could decide at this point, for example, to move to a different rack, change rack. Now, is that going to become a communication bottleneck?
+
+228
+00:48:54,949 --> 00:49:01,750
+We can actually solve for when this becomes a communication bottleneck. Before we do that algebraically, let's visualize it out and sketch the path.
+
+229
+00:49:01,750 --> 00:49:21,550
+We're going to have another MoE layer, and another MoE layer here, and so on. Let's say I change rack here, and then some number of layers later, I change rack here as well.
+
+230
+00:49:21,550 --> 00:49:35,390
+The methodology we're going to use to determine whether we have a communication bottleneck at the point where we change rack is we're going to compare the scale-out
+
+231
+00:49:35,390 --> 00:49:49,390
+bandwidth requirements to the scale-up bandwidth requirements. Let's write this. The hint is going to be that there's a lot more sends here.
+
+232
+00:49:49,390 --> 00:49:59,570
+We're sending many things here, whereas we're only sending one thing here, and we're also maybe doing it many times. That's what makes the difference. Can I try to guess?
+
+233
+00:49:59,570 --> 00:50:09,980
+Just out of curiosity, to see if I'm actually understanding, it seems like you're sending batch size into the rack. In here? Yes.
+
+234
+00:50:09,980 --> 00:50:29,930
+But the communication within the rack is batch size times number of GPUs. Number of activated GPUs. I don't send to this GPU at all. There's an explosion from 1-3x larger here in this diagram.
+
+235
+00:50:29,930 --> 00:50:48,820
+The key thing is that I didn't even need to send to this GPU at all, and so that's a big saving. We're going to talk through to what extent scale-up is a bottleneck over scale-out.
+
+236
+00:50:48,820 --> 00:51:15,670
+We will directly jump to the ratio of the time spent on scale-up over the time spent on scale-out. This is the quantity we're talking about. The first consideration is that scale-up is
+
+237
+00:51:15,670 --> 00:51:28,010
+8x faster than scale-out generally. At a baseline, if the bandwidths were the same, we would have this 1/8, which is coming from bandwidth.
+
+238
+00:51:28,010 --> 00:51:44,889
+But then we have some amount of expansion in how much data we're sending. If one token comes in here, then this one token gets routed to, in the DeepSeek case maybe 32 experts or 16 experts.
+
+239
+00:51:44,889 --> 00:52:08,860
+It gets routed to some number of experts. So this is the number of activated experts. This same thing applies on multiple different layers, so maybe I'm going to run two layers.
+
+240
+00:52:08,860 --> 00:52:29,450
+There's also multiple times the number of layers per stage. Don't you need to multiply the whole thing by two for the all-to-all? For the up and down. Yes, there's a factor of two. Thank you.
+
+241
+00:52:29,450 --> 00:52:38,020
+What we would like is for the scale-up time to be greater than the scale-out time, because the scale-up time is the more important and precious resource.
+
+242
+00:52:38,020 --> 00:52:46,869
+We would like this number to be greater than or equal to one. This really doesn't seem hard. There's just a factor of 8 that we need to overcome.
+
+243
+00:52:46,869 --> 00:52:55,600
+So we need the product of these three things to be bigger than 8. Typically we have a fairly large number of activated experts. It could be 8 by itself.
+
+244
+00:52:55,600 --> 00:53:05,609
+Then we can increase the number of layers per stage a lot until we satisfy this. What this ends up looking like is that I can have an entire pipeline of racks
+
+245
+00:53:05,609 --> 00:53:15,900
+where one rack does one layer, and then I move on to the next rack and do another layer, and then I move on to the next rack and do another layer. It's interesting to me that the best
+
+246
+00:53:15,900 --> 00:53:25,030
+parallelism strategy in practice ends up being one which physically resembles the actual architecture. It's not some galaxy brain thing.
+
+247
+00:53:25,030 --> 00:53:31,790
+It's like, "Oh, we have experts, we're going to put them on different GPUs, or we have different layers, we're just going to put them on different racks." I feel that's interesting.
+
+248
+00:53:31,790 --> 00:53:49,200
+The cutting matches the model architecture. Exactly. It could have been something wackier with tensor parallelism and whatever. The galaxy brain way to think of it is,
+
+249
+00:53:49,200 --> 00:54:00,584
+what are all the different dimensions in which a model is scaled up? It is scaled up by layers, it is scaled up by the model dimension, it is scaled up by the DFF dimension, it
+
+250
+00:54:00,584 --> 00:54:11,380
+is scaled up by the number of experts. Every single one of those numbers you can choose to cut along. If those numbers are big enough, it eventually becomes profitable to cut along there.
+
+251
+00:54:11,380 --> 00:54:23,930
+We have selected two of them. The other two, in the way models are typically sized, are not profitable. So there's a talk by Ilya where he says, "Today we know not to do pipeline parallelism."
+
+252
+00:54:23,930 --> 00:54:36,229
+And Horace He gave my friends and me… I hate that it sounds like a Dr. Seuss quote. But he gave us a lecture on these different kinds of parallelisms.
+
+253
+00:54:36,229 --> 00:54:45,450
+He said the problem with pipeline parallelism is that, other than the bubbles, it creates these architectural constraints. Kimi,
+
+254
+00:54:45,450 --> 00:54:59,410
+for example, has these residuals where attention attends to layers a few back, so it becomes hard to implement in this way. I guess we didn't fully articulate even what is the
+
+255
+00:54:59,410 --> 00:55:15,460
+benefit that we're getting from pipelining. These complexities are real. Pipelining is a massive hassle, but it does give you some benefits.
+
+256
+00:55:15,460 --> 00:55:27,960
+You can then decide whether those benefits are worth the costs. It has some benefits in inference, maybe bigger benefits in training. In inference, what are we saving on?
+
+257
+00:55:27,960 --> 00:55:41,510
+Are we saving on memory time or compute time? Not really. We're just moving the memory time from one chip to another chip, or one rack to a different rack. There's no actual benefit in runtime.
+
+258
+00:55:41,510 --> 00:55:55,360
+However, what we are saving on is memory capacity. If we think that the memory in a rack is a bottleneck, then there's a constraint on how fast we can go.
+
+259
+00:55:55,360 --> 00:56:11,180
+Pipelining allows us to massively reduce that bottleneck. The opposite connotation to this… Before this interview, I was chatting with Axel, who's a GPU performance engineer at Jane Street.
+
+260
+00:56:11,180 --> 00:56:23,270
+He was explaining that to do pipelining, you have to do micro-batches rather than full batches. If you do micro-batches, then you're by definition not able to
+
+261
+00:56:23,270 --> 00:56:32,480
+amortize loading the weights across all the users or all the sequences. The positive connotation of that is you don't have to use as much memory.
+
+262
+00:56:32,480 --> 00:56:46,680
+The negative connotation is that we can't amortize loading the weights across all those users. Maybe it's worth explaining why you have to do micro-batches. Shall we draw the pipeline bubble?
+
+263
+00:56:46,680 --> 00:57:07,570
+What is this micro-batching that shows up in pipeline parallelism? I'll focus on inference first. It's a slightly simpler problem. I'm going to draw time, and then which rack we're on.
+
+264
+00:57:07,570 --> 00:57:23,260
+The idea is that maybe I'll have four racks. I've got an inference that is going to step through these four racks in some time like this. This is inference number zero. It
+
+265
+00:57:23,260 --> 00:57:34,400
+runs at a certain batch size and steps through all the pipeline stages like this. Now, if we were to say, "Well, we're going to run inference number one here," this is clearly a massive waste.
+
+266
+00:57:34,400 --> 00:57:50,990
+Like three-quarters of the time each of the racks is doing nothing. We don't actually run inference one here, we run it as soon as we can, which is immediately after inference zero finishes. And
+
+267
+00:57:50,990 --> 00:58:00,450
+then we keep going. If we hadn't filled this in, we would call this the pipeline bubble. When I've drawn it in this inference context where we're only going in a forwards pass, it's obvious.
+
+268
+00:58:00,450 --> 00:58:14,709
+Why would you do this stupid thing? In a training context, it's maybe less obvious. But in the inference context, it's really natural to make this change. Oh, interesting.
+
+269
+00:58:14,709 --> 00:58:22,190
+This is sort of obvious, but the difference between micro-batch and batch doesn't matter at all in inference because you can just call it whatever you want.
+
+270
+00:58:22,190 --> 00:58:38,760
+It only matters in training because there is an optimal batch size. Yes. Before you do a full backward step, you want to have accumulated all the sequences in that batch. If you want to do
+
+271
+00:58:38,760 --> 00:58:51,196
+pipelining in training, in order to avoid that bubble, you need to— Should we draw the training diagram with that? Let’s do that. This is the inference diagram, and I'll call this forward so we don't
+
+272
+00:58:51,196 --> 00:59:01,509
+have the wrong thing showing up there. Let's do the same thing for training now. We've got a forwards pass, but at some stage we're going to have to transition to a backwards pass.
+
+273
+00:59:01,509 --> 00:59:24,700
+We'll do some number of batches in the forwards pass, and then we're going to transition to the backwards pass for everyone all in one go.
+
+274
+00:59:24,700 --> 00:59:33,580
+The inference part is the same here, but then we do a hard stop at this point and transition everyone to the backwards pass, with similar numbering like this.
+
+275
+00:59:33,580 --> 00:59:45,500
+It may be worth clarifying the reason there is that hard stop is because you want to do a whole batch at once for the backward step. And then there is an optimal size for how big that batch should be.
+
+276
+00:59:45,500 --> 00:59:55,892
+Smaller is always better, actually, is a way to put it. From an ML convergence rate perspective, smaller is always better because you're getting the freshest information from the gradient descent.
+
+277
+00:59:55,892 --> 01:00:05,480
+But from a total training time perspective? From a total training time perspective, smaller is worse from a systems perspective. The optimum is the trade-off between those two.
+
+278
+01:00:05,480 --> 01:00:21,099
+So you pick a batch size, and for that batch size, you do some amount forwards and then some amount backwards. You asked why there is even a hard stop there. With pipeline parallelism, because
+
+279
+01:00:21,099 --> 01:00:31,340
+you've got this idle time here which is the bubble, there are so many techniques in the literature for how to lay this out differently and avoid that.
+
+280
+01:00:31,340 --> 01:00:42,620
+There are more complicated schemes called zero bubble or one-forward-one-backward, which interweave the forwards and the backwards in complicated ways. You can mine Bitcoin in that bubble. Right.
+
+281
+01:00:42,620 --> 01:00:58,450
+More usefully, you can do the weight gradient step, but you can also mine Bitcoin. In inference, the effect of pipelining on anything you care about, like batch size or latency, is neutral.
+
+282
+01:00:58,450 --> 01:01:03,470
+It doesn't improve it, it doesn't make it worse. If you look at the latency of this inference, running it if it were pipelined
+
+283
+01:01:03,470 --> 01:01:14,010
+versus if it were all on one rack… If it were all on one rack, we would just slide all the boxes down and still put them in a row, and the latency would be the same. Pipelining
+
+284
+01:01:14,010 --> 01:01:25,720
+is neither better nor worse for latency. It does mean that you just use less memory capacity per rack. Because now instead of needing the whole model, you only need a quarter
+
+285
+01:01:25,720 --> 01:01:36,000
+of the model, and you can expand. Makes a ton of sense. So it's a no-brainer to use pipelining during inference, but there's this harder trade-off during training.
+
+286
+01:01:36,000 --> 01:01:44,130
+Even in inference, in fact, it is not used a ton. It reduces your memory capacity requirements, but there's actually a huge surplus.
+
+287
+01:01:44,130 --> 01:01:59,770
+I think you were saying that a rack of Blackwell has many tens of terabytes. That's much bigger than a trillion parameter model. A trillion parameter model only needs one terabyte, so it already fits.
+
+288
+01:01:59,770 --> 01:02:14,020
+There's not a huge benefit from pipelining because you're reducing a number that's already pretty small. But it does say that theoretically, maybe you had too much memory there. You could have
+
+289
+01:02:14,020 --> 01:02:22,859
+built different hardware that has less memory. If you were designing your hardware, you could say, "I didn't need that much memory because I don't need the weights to fit in one rack.
+
+290
+01:02:22,859 --> 01:02:34,690
+I can fit the weights in eight racks, then I could have built hardware that didn't have so much HBM per GPU." Last week, Horace He was kind enough to give me and my friends a great lecture
+
+291
+01:02:34,690 --> 01:02:43,190
+on large-scale pre-training systems. And there were some concepts that I wanted to animate for a write-up on my blog, like how weights shard and gradients flow depending on
+
+292
+01:02:43,190 --> 01:02:53,650
+the parallelism that you're using. So I gave Cursor my lecture notes and a sketch that I made during the lecture. And I asked it to visualize a specific hierarchical collective
+
+293
+01:02:53,650 --> 01:03:01,270
+that Horace had explained. The first version was already pretty good, and then I was able to use design mode to select and tweak any specific components from there.
+
+294
+01:03:01,270 --> 01:03:08,410
+I was able to do all of this without a clear end state in mind. Cursor's Composer 2 Fast model was quick enough that I was able to iterate almost instantaneously.
+
+295
+01:03:08,410 --> 01:03:15,599
+I could try an idea, test the results in the built-in browser, and immediately make any changes. I went through 10 different versions in under 20 minutes.
+
+296
+01:03:15,599 --> 01:03:21,410
+If you want to check out this animation, I published it along with the lecture notes in a blog post. The link is in the description.
+
+297
+01:03:21,410 --> 01:03:33,820
+And if you want to try out this kind of iterative design flow for yourself, go to cursor.com/dwarkesh to get started. everybody's talking about the memory wall right now.
+
+298
+01:03:33,820 --> 01:03:45,480
+Memory is getting super expensive. There's not enough memory. Smartphone volume will go down 30% because there's not enough memory. This is shocking, Dylan said hyperscalers are spending 50% of
+
+299
+01:03:45,480 --> 01:03:57,180
+their CapEx this year on memory. That’s believable. What is hyperscaler CapEx? That's high hundreds of billions, maybe a trillion, and they're spending half of that on memory?
+
+300
+01:03:57,180 --> 01:04:04,860
+That is a huge constraint. That's why we're not going to get new laptops and phones this year. But at the same time, we have too much memory?
+
+301
+01:04:04,860 --> 01:04:14,620
+People are willing to put too much memory into these systems. Why is Jensen shoving all this memory into these racks if you don't need it?
+
+302
+01:04:14,620 --> 01:04:23,790
+In the equations we had here before we erased them, we were doing memory time, memory bandwidth and compute bandwidth. Let's now start looking at memory capacity.
+
+303
+01:04:23,790 --> 01:04:43,690
+We'll start off with memory capacity without even thinking about a parallelism scheme. The demand on memory is the number of total parameters.
+
+304
+01:04:43,690 --> 01:05:07,640
+This is what we need to fit the weights in some system that we are using. Then we need to fit the KVs as well. KVs go as batch size times the length of the context times the bytes per token.
+
+305
+01:05:07,640 --> 01:05:23,289
+What I was arguing about in this context, and the case I was making for pipelining, is that there are some techniques that allow us to solve this. Let's consider running this on some number of GPUs.
+
+306
+01:05:23,289 --> 01:05:42,790
+We're going to have one extent, which is E, the expert parallelism. When we had this sharding of an expert layer across many GPUs, to what extent do we do that? How many GPUs?
+
+307
+01:05:42,790 --> 01:06:03,160
+We're going to say that this is, for example 64. Then P is going to be the extent of pipelining. This is the number of racks, maybe we'll pick 4 or something like that.
+
+308
+01:06:03,160 --> 01:06:27,870
+This is the total memory requirement across the system, but now I'm going to calculate a memory requirement per GPU. I'll use a lowercase cmem. Obviously, we just take all of these numbers and divide
+
+309
+01:06:27,870 --> 01:06:54,870
+it by E and P. Really easy. It's this Ntotal, plus the batch times length of context times bytes per token, all divided by E times P. Why is this correct as divided this way?
+
+310
+01:06:54,870 --> 01:07:05,710
+We knew that the parameters were perfectly divided amongst all the GPUs in a rack. The layers are perfectly divided amongst the different racks. So that works here.
+
+311
+01:07:05,710 --> 01:07:18,385
+Somehow we're going to arrange—I'll hand-wave exactly how—the same perfect sharding of the contexts across GPUs in a rack, and then based on layer across racks. Sorry, 4 is the number of racks?
+
+312
+01:07:18,385 --> 01:07:35,710
+Yeah, for example. This is the place where we actually need to go back and analyze this batch size B. You were making this comment that there's micro-batching versus global batching.
+
+313
+01:07:35,710 --> 01:07:45,330
+Let's come back to this pipelining diagram here. We've got one batch going forward here, and then as I drew it, it kind of just disappeared. That's not really correct.
+
+314
+01:07:45,330 --> 01:08:00,300
+If you think about how decode is working, I have a bunch of tokens that I have generated already. I do one forwards pass where I generate a new token, and then I write that to my KV cache.
+
+315
+01:08:00,300 --> 01:08:10,450
+Then I do another forwards pass that generates the next token. I'm actually going to be running this batch zero in a loop. In fact, I go forwards.
+
+316
+01:08:10,450 --> 01:08:38,040
+Once I finish, I can start the next iteration of the loop up here. We'll just fill this in. We've got the two, three, two and three, and two and three. Let's split this batch.
+
+317
+01:08:38,040 --> 01:08:55,990
+This batch will be the global batch size. B is going to be the number of micro-batches times the batch size per micro-batch. How many micro-batches do we need?
+
+318
+01:08:55,990 --> 01:09:22,090
+The number of micro-batches in this diagram is 4: zero, one, two, three. The micro-batch size is still this 2000-ish number. Sorry, no, this is the 300 times sparsity. This is
+
+319
+01:09:22,090 --> 01:09:33,599
+how big the train that takes off every 20 milliseconds is. Right. This is going to be the 20-millisecond train. The global batch size is the number of micro-batches times the local batch size.
+
+320
+01:09:33,599 --> 01:09:47,429
+Local batch size is set by this hardware parameter. The number of micro-batches is as small as possible, such that we can wrap around and not leave any idle time.
+
+321
+01:09:47,429 --> 01:09:57,269
+If we had fewer, we would have this idle time when we wrap around. You can visually see that it is equal to the number of pipeline stages. It's a proof by visual here.
+
+322
+01:09:57,269 --> 01:10:06,790
+It is 4, and it's 4 this way as well. You can look and see that it goes along here, and then it wraps around to the number of pipeline stages. Sorry, very basic question.
+
+323
+01:10:06,790 --> 01:10:21,730
+Is this what is actually done? A frontier model today will have pipelining during inference? For sure during massive scale training this is done. It can be done for inference.
+
+324
+01:10:21,730 --> 01:10:33,950
+I'm actually going to make the case for why it is less attractive. It is useful for weights, but not so useful for KVs. The big challenge is... Let's fill this in.
+
+325
+01:10:33,950 --> 01:10:52,220
+The micro-batch size here ends up being equal to the number of pipeline stages. When we go back and substitute all of that into here, we get
+
+326
+01:10:52,220 --> 01:11:12,140
+a number of pipeline stages times this little b showing up in here. When we factor this out, I'm going to split this plus into two terms. We get the full division by E times P over here.
+
+327
+01:11:12,140 --> 01:11:26,950
+We still have division by E times P over here, but the Ps cancel. What we find is that if you increase the number of pipeline stages, the
+
+328
+01:11:26,950 --> 01:11:40,440
+memory footprint for the number of weights keeps going down and down and down, but the memory footprint for the number of activations stays constant. So it doesn't actually work. Most of your memory…
+
+329
+01:11:40,440 --> 01:11:53,309
+Once you do enough pipelining—and it's really not much, even two is often enough—this term becomes very small. The KV cache becomes the dominant term. I know this is wrong.
+
+330
+01:11:53,309 --> 01:12:03,580
+I'm just trying to think about why my train of logic here is wrong. If you're pipelining through many different stages, the KV values are not shared between layers.
+
+331
+01:12:03,580 --> 01:12:12,559
+Why would it not help to be pipelining across multiple layers? Because then you don't have to store... You only need to store one layer rather than two layers of KVs.
+
+332
+01:12:12,559 --> 01:12:24,200
+It helps from that perspective, you're right. What's competing with that, though, is that you need to be keeping all of the racks usefully busy at a time, so the number of sequences that are
+
+333
+01:12:24,200 --> 01:12:34,650
+in flight simultaneously has gone up. Ah, that makes sense. Those exactly cancel, and you end up not getting a saving per GPU. Right. This is going back fundamentally to the point of how you're not
+
+334
+01:12:34,650 --> 01:12:48,139
+able to amortize across KV caches. First, we established you can’t amortize KV caches across batch size. Now we're saying you also can't shard it across pipeline stages.
+
+335
+01:12:48,139 --> 01:13:00,800
+It sucks from both of those points of view. Interesting. So then what is done during inference? The DeepSeek paper reports what they do, which is that they just do a lot of expert parallelism.
+
+336
+01:13:00,800 --> 01:13:12,779
+In effect, you should increase your expert parallelism up to your scale-up domain size, and then do very little pipelining. Maybe none at all, maybe two, just enough to make the weight
+
+337
+01:13:12,779 --> 01:13:24,020
+storage not too big of an issue. Those are the only two parallelisms that really make sense. In the past, there was tensor parallelism, which was cutting up within an expert,
+
+338
+01:13:24,020 --> 01:13:36,770
+but the experts are so small now that that is not a profitable optimization. Does that mean that frontier labs, when they're doing inference, are just within a single scale-up? Yes.
+
+339
+01:13:36,770 --> 01:13:52,390
+You can look at how it depends on model size. You could have a very large model, one that exceeds the memory of a rack. There you should be doing a bit of pipelining.
+
+340
+01:13:52,390 --> 01:14:00,070
+Maybe it's extremely sparse, for example, and that would be a reason to do it. This goes back to the promise at the beginning of the lecture,
+
+341
+01:14:00,070 --> 01:14:12,050
+which was this will actually tell you about AI progress as well. To the extent it is the case that model size scaling has been slow until recently… Let me make sure I understand the claim.
+
+342
+01:14:12,050 --> 01:14:24,340
+The claim would not be you could have trained across more racks. It was just that it would not have made sense before, we didn't have the ability to do inference for a bigger model easily.
+
+343
+01:14:24,340 --> 01:14:36,660
+Actually, pipelining doesn't help with context length. It totally helps with model size. Because of the ability to do pipelining, a rack at least should
+
+344
+01:14:36,660 --> 01:14:46,400
+not be a constraint on your ability to fit the model parameters. The other consideration you're asking is, why hasn't it scaled up more, and why did bigger scale-up domains help?
+
+345
+01:14:46,400 --> 01:14:55,610
+We talked through one aspect of that, which is that it's not because of memory capacity. We have a solution to the memory capacity at least with respect to model size,
+
+346
+01:14:55,610 --> 01:15:13,449
+not with respect to KV cache size but at least with respect to model size. The other issue that shows up is latency. I was just about to ask, going from rack to rack, what is the latency cost per hop?
+
+347
+01:15:13,449 --> 01:15:26,060
+This is very much dependent on the hardware. I can't say with a lot of authority. I think it's probably on the order of a few milliseconds, but it could be off by an order of magnitude there.
+
+348
+01:15:26,060 --> 01:15:35,749
+Is 4 a realistic number of how many pipelining stages you might have? Yes. So that's not that much. On a small number of pipelining stages, this is not a huge latency impact.
+
+349
+01:15:35,749 --> 01:15:50,710
+But I guess it's 10 milliseconds per token. That's right. 2 times 4-ish, or I don't know how many you said… 10 milliseconds per token is actually a lot. If it goes from 20 to 30, or something
+
+350
+01:15:50,710 --> 01:16:08,829
+like that… Just to chart the path that it goes through, here you're going from your GPU or TPU to a network card, which then goes to a top-of-rack switch,
+
+351
+01:16:08,829 --> 01:16:18,360
+and then hops over to the other rack and does the same thing in reverse. You have to sum up the latencies of these different things. Sorry, is this the same thing as the data center switch?
+
+352
+01:16:18,360 --> 01:16:32,050
+It may in fact go up to a data center switch and back. It depends on deployment configuration. Got it. And because it's decode and sequential, they stack up across the stages.
+
+353
+01:16:32,050 --> 01:16:44,742
+You can't do them at the same time. That’s right. This brings us back to the question then, is the size of the scale-up at all relevant to why AI model sizes have been what they have been over
+
+354
+01:16:44,742 --> 01:17:02,120
+the last few years, whether through training or through inference? We talked about latency of the hop. There is also just the tmem latency. The memory time latency is actually massively improved
+
+355
+01:17:02,120 --> 01:17:28,860
+by larger scale-up domains. I'll recall tmem down here. tmem for the weights was equal to the number of total parameters divided by the memory bandwidth.
+
+356
+01:17:28,860 --> 01:17:40,609
+Which memory bandwidth are we talking about here? Is it just one GPU? It is the number of GPUs that I can use in parallel to load these weights.
+
+357
+01:17:40,609 --> 01:17:50,710
+I can't use different pipeline stages in parallel because they're not running at the same time, but I can use all the GPUs in my scale-up domain in parallel to load the weights.
+
+358
+01:17:50,710 --> 01:18:10,090
+This is actually extremely effective. Basically, I end up with a term here, this memory bandwidth term itself is equal to scale-up size... Times memory bandwidth per GPU. Yeah. Times GPU bandwidth.
+
+359
+01:18:10,090 --> 01:18:16,459
+This term doesn't increase a lot. It maybe increases 1.5 or 2x per generation, but this one increased by a factor of 8 from Hopper.
+
+360
+01:18:16,459 --> 01:18:27,910
+So the reason the bigger scale-up matters, it's not the memory capacity of the whole scale-up, but really the memory bandwidth. Yeah. Pipelining totally solves the capacity problem, but
+
+361
+01:18:27,910 --> 01:18:37,660
+scale-up size helps solve the bandwidth problem. And the bandwidth problem helps you do longer context lengths, which is more and more relevant as these models get more agentic.
+
+362
+01:18:37,660 --> 01:18:53,529
+It lets you just run the model at lower latency as a first thing. If I just do a very sparse model and it's on a little H100 box, the latency will be really high. A super tangential question.
+
+363
+01:18:53,529 --> 01:19:01,870
+There's Chinchilla scaling, which tells you how big a model should be relative to the amount of data you're going to train it on.
+
+364
+01:19:01,870 --> 01:19:11,959
+But now, obviously, you're not just trying to optimize for the highest quality model you could get with training compute. You want the best results a user can get with a mixture of
+
+365
+01:19:11,959 --> 01:19:24,370
+training and inference compute. So there's a question of how much you should over-train a model such that compute amortized over training and inference is minimized to get a certain performance.
+
+366
+01:19:24,370 --> 01:19:36,700
+But now with RL, there's another consideration which is, you're going to do some amount of pre-training. That pre-training will be used both for RL generation and then
+
+367
+01:19:36,700 --> 01:19:46,779
+for inference for the final user. By over-training here I mean that while it would have been more efficient just from a training compute perspective to have a bigger model that you train for less time
+
+368
+01:19:46,779 --> 01:19:55,200
+because it can learn faster, maybe you get a smaller model, spend more compute training it than you otherwise would have, but now it's cheaper to give it to users.
+
+369
+01:19:55,200 --> 01:20:03,509
+Let me make the question more concrete. Basically, how much more than Chinchilla optimal are models over-trained? And has that changed as a result of RL generation?
+
+370
+01:20:03,509 --> 01:20:19,990
+This is a place where we have to do a bit of guesswork because the updated scaling laws and the model traffic are not reported, so we have to guess there. One way to look at it…
+
+371
+01:20:19,990 --> 01:20:34,300
+Let me first just make a general heuristic claim. If I have some cost, and I've got a total cost which is a sum of cost A and cost B, like maybe this is the training cost and this is the inference
+
+372
+01:20:34,300 --> 01:20:54,080
+cost, and I want to minimize this sum… For many curves, the minimum tends to be where the costs are equalized. That's something of a heuristic claim, but there are many examples where it's true.
+
+373
+01:20:54,080 --> 01:21:10,929
+Where one is 1/x and the other one is x, for example, they tend to be minimized at the point where they equal each other. It's also true for ex and e-x and all kinds of other things.
+
+374
+01:21:10,929 --> 01:21:21,620
+Basically, I've got some curve that's going down, some other curve that's going up, and they tend to be minimized at this equal point. Heuristically,
+
+375
+01:21:21,620 --> 01:21:30,349
+I will conjecture that that is true for the setup you described as well. Actually showing that would be true would require looking at the
+
+376
+01:21:30,349 --> 01:21:43,870
+scaling laws and fitting these weird exponents, but things that follow power laws tend to have this property. So I'll just make that claim and move on.
+
+377
+01:21:43,870 --> 01:22:05,099
+We're going to say that we want to equalize the cost of training and the cost of inference. We can do all of it in general. The cost of pre-training, that's the number of
+
+378
+01:22:05,099 --> 01:22:24,239
+active params times the data on pre-training. There's a factor of 6 out here, which is the number of FLOPs. There's the famous 6ND formula. Then in RL, we have approximately the same thing.
+
+379
+01:22:24,239 --> 01:22:42,059
+We've got the same number of active parameters, but now the amount of data is the RL data. There is this extra efficiency multiplier, or inefficiency...
+
+380
+01:22:42,059 --> 01:22:54,340
+Which is the fact that you're not training on all your rollouts. Well, there's that, and then the other, perhaps even bigger inefficiency is that this involves a substantial amount of decode.
+
+381
+01:22:54,340 --> 01:23:09,760
+Often decode runs at less MFU than training. Okay. So if you're doing a backward pass on every single generation in RL, it would be 6ND. So this could be a smaller number, right? It
+
+382
+01:23:09,760 --> 01:23:20,380
+would at least be two, because that's the lower... Somewhere in the range of two to six. We'll say somewhere in the range of two to six and leave it at that. Then we can add in the inference cost.
+
+383
+01:23:20,380 --> 01:23:33,750
+The inference cost is two, the number of active parameters times the data in inference. Sorry, I think the way I said it was super garbled. Just for the audience,
+
+384
+01:23:33,750 --> 01:23:43,830
+forward plus backwards per parameter is 6. Forward alone is 2. That's why RL, where you're definitely going to generate all the trajectories
+
+385
+01:23:43,830 --> 01:23:54,610
+but you might or might not train all the trajectories, is 2 to 6. Yes. Thank you. And then inference is just 2. We're going to solve for essentially equality of all three of these terms.
+
+386
+01:23:54,610 --> 01:24:04,980
+That is the ballpark of where people are going to be. Labs have more information on what is productive in doing more RL, for example, versus doing more pre-training.
+
+387
+01:24:04,980 --> 01:24:15,170
+I don't have that information, but I think a good ballpark is a 33% split between each of them. I'm not sure I understand the intuition for that.
+
+388
+01:24:15,170 --> 01:24:24,190
+Another naive model could have been that RL plus pre-training would be 50% and inference would be 50%. That's also a valid answer.
+
+389
+01:24:24,190 --> 01:24:38,220
+Because this is heuristic, I can't really argue for one versus the other. They don't differ by that much. Thirty-three versus twenty-five is only a small factor off. Let's pick one of them.
+
+390
+01:24:38,220 --> 01:24:47,460
+All equal seems simple enough, so we're just going to solve for equality of them. It's pretty straightforward. We can immediately see that the number of activated parameters totally
+
+391
+01:24:47,460 --> 01:25:02,870
+disappears, so let's factor that out. We're going to just say that data in pre-training—I decided to do it your way, it's a little bit nicer—plus... Oh,
+
+392
+01:25:02,870 --> 01:25:28,770
+I didn't have the inefficiency over here either. Data in pre-training plus some multiple of α times the data in RL is going to end up equal to some β times the data in inference.
+
+393
+01:25:28,770 --> 01:25:47,930
+Let's just roughly size the α. This α is maybe somewhere in the range of 2 to 6. Over 6, from this term compared to this term. And then we've got an inefficiency term, which I would say is
+
+394
+01:25:47,930 --> 01:26:11,360
+maybe in the range of 30%. So this alpha is going to be something like 1/10. And this β here is actually the same. It's a third. It's one third times 30%. So it also equals 1/10.
+
+395
+01:26:11,360 --> 01:26:20,480
+If both of them are one in ten, that kind of implies that there's never a backward pass on RL? Yeah. Okay, we can make this 2/10. Make it a bit bigger.
+
+396
+01:26:20,480 --> 01:26:32,200
+Just write it out once more, this is 2/10, this is 1/10. The number of inference tokens you have is just a function of hundreds
+
+397
+01:26:32,200 --> 01:26:48,720
+of millions of tokens per second times my model is deployed for two months before I ship to the next version. That should determine the number of tokens in RL and pre-training.
+
+398
+01:26:48,720 --> 01:27:04,980
+I guess we didn't do the equivalence between pre-training and RL, so we'll do that here. Data in pre-training should be equal to 2/10 data in RL for them to be cost equivalent. Sorry, 1/10.
+
+399
+01:27:04,980 --> 01:27:28,460
+I got it backwards. We pay more cost when it's inefficient, so this needs to be 1/10. Tracing this back… This thing ends up actually being, as written here… This is like 1.5, and this is one.
+
+400
+01:27:28,460 --> 01:27:35,964
+Billions of dollars worth of compute just flowed in the other direction. Right? I think if you do it with a spreadsheet and actually model
+
+401
+01:27:35,964 --> 01:27:47,610
+it out, you might notice when the money’s going down the drain. All of these end up being close in, as modeled here. This 30% may have been a little bit too generous.
+
+402
+01:27:47,610 --> 01:27:58,880
+So let's say something like 1.5 here, and leave this as a one here. I think at this point, you can almost read it off. The number of inference tokens should be about the same as the number of
+
+403
+01:27:58,880 --> 01:28:09,219
+pre-training tokens, which should be about the same as the number of RL tokens, within factors that we're not able to reason about. Sorry for making a basic algebra mistake.
+
+404
+01:28:09,219 --> 01:28:22,099
+It seems like there should be fewer RL tokens than pre-training tokens? That's in general right. Because RL is less efficient in terms of machine time,
+
+405
+01:28:22,099 --> 01:28:31,539
+if you're trying to equalize the RL and pre-training time, then you should have fewer tokens in order to have the same wall time. This is all quite interesting.
+
+406
+01:28:31,539 --> 01:28:42,960
+I never thought about it in terms of equalizing data. I think starting with equalizing in cost is right, but depending on how you model the cost, this comes close to equalizing in data.
+
+407
+01:28:42,960 --> 01:28:54,245
+So for GPT to be trained optimally, every single user who uses GPT-5, the total amount of tokens that they stream should equal the total amount that has gone into pre-training.
+
+408
+01:28:54,245 --> 01:29:07,130
+And the total amount of tokens that have gone into pre-training is the sum of all human knowledge. Each model should generate the sum of human knowledge on the output that it gets on the input. Yeah.
+
+409
+01:29:07,130 --> 01:29:19,710
+Which way are people going to err? If you think that people's power of prediction is not perfect, and also you run the risk that you make a model that is not a frontier model and then you
+
+410
+01:29:19,710 --> 01:29:31,790
+just throw it away, then that changes the cost trade-off because there's some probability that applies to the inference. And you should derate the inference tokens by some amount. Right.
+
+411
+01:29:31,790 --> 01:29:46,000
+Can we back out how much more compute than Chinchilla optimal for a given sized model? I think we just have to make some real-world assumptions here in order to do that.
+
+412
+01:29:46,000 --> 01:29:56,410
+The inference tokens, we should totally be able to count, right? Let's say a few hundred million. Maybe it's five hundred million tokens a second now, I don't really know.
+
+413
+01:29:56,410 --> 01:30:20,730
+Five hundred million tokens a second times. A model is deployed for two months before it becomes obsolete? I can't do this in my head. Can you type it into a computer? 2.6 x 1015. Okay. 2.6 x 1015.
+
+414
+01:30:20,730 --> 01:30:35,389
+This number is probably too large because this is going to be multiple models in a family. Let's make it 5x smaller or 10x smaller or something like that.
+
+415
+01:30:35,389 --> 01:30:50,769
+So we're estimating maybe fifty million tokens per second, per specific model. The model is live for two months. This comes out to around two hundred trillion tokens.
+
+416
+01:30:50,769 --> 01:31:04,440
+And then we want to compare that to active parameters on a frontier model. I don't actually know the latest rumors. Do you know? Somebody told me a hundred and fifty trillion. Active parameters?
+
+417
+01:31:04,440 --> 01:31:17,660
+Sorry, I meant tokens. Trained on a hundred and fifty trillion tokens. Interesting. Which is similar. That's actually similar. So data on pre-training. This is not well-cited but it’s fine.
+
+418
+01:31:17,660 --> 01:31:34,400
+I think often the number of active parameters could be in the range of a hundred billion, something like that. Maybe a bit larger. So multiply by 20 to get the Chinchilla token count.
+
+419
+01:31:34,400 --> 01:31:53,740
+So Chinchilla, DChinchilla, would be around two trillion. We see we're about a hundred times larger than that. What does DChinchilla actually mean? The token count for pre-training
+
+420
+01:31:53,740 --> 01:32:07,460
+that the Chinchilla scaling law would recommend, I guess. Oh, I see. So how much is it over-trained? Got it. The ratio of this two hundred trillion or a hundred trillion parameters over the
+
+421
+01:32:07,460 --> 01:32:16,960
+Chinchilla optimal of two trillion, that's the amount it's over-trained. Which is a factor of a hundred over-trained. A hundred. So if you consider this right here, to the extent this is in the right
+
+422
+01:32:16,960 --> 01:32:28,150
+ballpark, just by thinking about how you want everything to be equal in terms of compute… If OpenAI also realizes that and they're serving a certain amount of
+
+423
+01:32:28,150 --> 01:32:41,709
+tokens per second, that tells you how much data went into the pre-training of GPT-5. Even if it's 50% off or something, it is wild that you can first-principles these kinds of numbers.
+
+424
+01:32:41,709 --> 01:32:51,490
+This is why you should just approximate everywhere, because there are big error bars on this. But it's kind of empowering to just set A equal to B and figure it out. That's super cool.
+
+425
+01:32:51,490 --> 01:33:03,610
+Okay, so in the spirit of trying to deduce things, we can publicly look up the API prices of these models, and maybe we can learn something from that.
+
+426
+01:33:03,610 --> 01:33:27,400
+First, with longer context, Gemini 3.1 is 50% more expensive if you go over 200k tokens than if you're below 200k tokens. At a high level, I understand why that might be, but why specifically 50%?
+
+427
+01:33:27,400 --> 01:33:46,270
+Why specifically 50%? The high level, even in the first place, is that there is some amount of increasing cost with context length. We can bring that back up. That was
+
+428
+01:33:46,270 --> 01:33:58,470
+the memory time versus the compute time. We've put up these same equations from before, of the time for memory fetches which is the weights and the KV cache, and then the time for
+
+429
+01:33:58,470 --> 01:34:05,400
+the compute which is just the matrix multiplications for the weights. I will also draw the cost curve, but this time I'll do it as a function of context length instead of batch size.
+
+430
+01:34:05,400 --> 01:34:31,420
+So this is the cost curve as a function of context length. We'll draw the compute. The cost of the compute is actually constant as a function of context length.
+
+431
+01:34:31,420 --> 01:34:48,620
+There's no dependence here on context length. In reality, there is some dependence, but it is very mild, so we'll ignore it. So this is the time for the compute.
+
+432
+01:34:48,620 --> 01:35:00,440
+Then we'll also draw the dependence of the memory fetch on context length. This starts at a large number for the weights and then grows gradually with the context length.
+
+433
+01:35:00,440 --> 01:35:18,139
+Maybe starting here, and then grow gradually with context length. And so, you take the maximum and you see there is this inflection point here. So this is the cost that Gemini might be paying.
+
+434
+01:35:18,139 --> 01:35:30,440
+And then you think, how might you put a pricing structure on top of that? You would like to ensure that no matter what the context length is, you are still profitable.
+
+435
+01:35:30,440 --> 01:35:41,049
+So we've got a two-tier pricing structure. Maybe we've got something that looks like this up to some extent. I think it says something about, given that the bump is at 200k, it
+
+436
+01:35:41,049 --> 01:35:53,750
+probably means that this is somewhat aligned with this crossover point. Maybe not exactly aligned with it. We can actually probably even complete that calculation just to see where it lands out.
+
+437
+01:35:53,750 --> 01:36:05,590
+We can solve for the number of bytes per token if we make some assumptions about the number of active parameters. So solving for the number of bytes per token, we're going to assume
+
+438
+01:36:05,590 --> 01:36:14,700
+the point where we equalize the time of memory and the time of compute is at, let's say, 200k tokens. So we equalize these two.
+
+439
+01:36:14,700 --> 01:36:25,470
+We're also going to assume that the batch size is large enough that the memory time spent on weights is negligible. So we'll forget about this, and we'll focus on the actual
+
+440
+01:36:25,470 --> 01:36:49,599
+memory time spent on KV cache. That ends up saying, copying this term over, batch times length of context times bytes per token over memory bandwidth is going to be equal to the number of activated
+
+441
+01:36:49,599 --> 01:37:28,669
+params over FLOPs. And then we're going to solve for bytes per token. Batch size was missing here. It shows up here, and then it cancels out by the time we get to here.
+
+442
+01:37:28,669 --> 01:37:40,510
+And I dropped the length of context. So we can plug in numbers. This is the reciprocal of the number that we saw before.
+
+443
+01:37:40,510 --> 01:37:54,850
+This is 1/300, which is reasonably stable across many different hardware platforms. We conjecturally said that maybe the number of activated parameters is a hundred billion.
+
+444
+01:37:54,850 --> 01:38:23,779
+The length of the context we said was 200k. Something is wrong here, though. Length of the context should be on the denominator, not the numerator. 1667. Almost two kilobytes.
+
+445
+01:38:23,779 --> 01:38:42,040
+That is plausible, actually. You said around two kilobytes. Let's just do a sanity check for what this could be. There are two mechanisms that people do attention with a
+
+446
+01:38:42,040 --> 01:38:56,469
+small number of bytes per token. One is dense attention with a lot of reuse across layers. Character AI has a blog post talking about that, alternating long and short context.
+
+447
+01:38:56,469 --> 01:39:06,790
+In the Character AI kind of model, which also showed up in the Gemma models, the global context—which is really what we're talking about here—was shared across all the layers.
+
+448
+01:39:06,790 --> 01:39:26,550
+To get this to kilobytes, you could get that, for example, as a dhead of 128, which is typical. Then the number of bytes is typically the number of attention layers
+
+449
+01:39:26,550 --> 01:39:49,139
+times two times dhead times the number of KV heads. This is the number of unique contexts per layer. Do you share the context across many layers, or do you use it only once?
+
+450
+01:39:49,139 --> 01:40:06,750
+In the Character AI-like models, this number is one. We said this is 128. This is a choice which typically ranges from one... Sorry, this is KV heads, I meant.
+
+451
+01:40:06,750 --> 01:40:17,960
+The difference between a head and a KV head is that…? The KV heads are the heads that are stored in memory, store the contents of the previous tokens. The Q heads are the retrieval heads.
+
+452
+01:40:17,960 --> 01:40:26,960
+They're only used temporarily and they’re used by the attending token. In this autoregressive context, I've got KV heads associated with all
+
+453
+01:40:26,960 --> 01:40:41,860
+of the contexts, and then Q heads associated with this new token here. But this head, the 128. Oh, sorry. This d-head is the dimension of the vector. The
+
+454
+01:40:41,860 --> 01:40:54,660
+number of KV heads is typically in the range of 1 to 8. It is totally plausible to get this by, for example, having 8 KV heads and a d-head of 128. That gives you exactly this number.
+
+455
+01:40:54,660 --> 01:41:04,889
+Or you could have fewer KV heads, but more layers. This is one way to get there via dense attention. There's also a way to get there via sparse attention, where you
+
+456
+01:41:04,889 --> 01:41:15,309
+increase all of these numbers, but then you have a 1/sparsity term. I think this number is plausible, if maybe a little bit small.
+
+457
+01:41:15,309 --> 01:41:24,240
+It's funny that they would leak so much information through their API pricing. I mean, you are incentivized to price close to your costs because otherwise someone could scoop you.
+
+458
+01:41:24,240 --> 01:41:33,380
+Maybe we can learn something about the difference in input versus output prices, and what that tells us about decode versus prefill in these models.
+
+459
+01:41:33,380 --> 01:41:42,519
+I think last I checked it's 50% more expensive or something like that? I don't remember. What I've seen in the past is 3-5x more expensive. Okay, that makes more sense.
+
+460
+01:41:42,519 --> 01:41:54,240
+So let's say it's 5x more expensive. This is the compute to process the next token in decode. Suppose you're doing prefill, where you're not just processing the most
+
+461
+01:41:54,240 --> 01:42:10,219
+recent token, you're processing all the tokens in parallel. I want to say that it would be this times length prefill? Or length of the pass in general.
+
+462
+01:42:10,219 --> 01:42:22,350
+If we can think of decode as being a pass with one, and then prefill being a pass with many. Okay. So maybe prefix? Okay, memory.
+
+463
+01:42:22,350 --> 01:42:37,710
+You're not storing the KV cache for the tokens that are the prefill tokens. Let's actually draw how prefill shows up here, if I may clarify. We do a bit of decode like this.
+
+464
+01:42:37,710 --> 01:42:48,360
+We may actually come back and do more prefill. If you think this is a chat session, the user says something, the AI generates a response, and then the user says something else and we prefill this.
+
+465
+01:42:48,360 --> 01:42:58,470
+Maybe this is the general case, rather than this. In fact, this is like you read a file or something. Read a file or the AI is responding to a user input, tool call, or
+
+466
+01:42:58,470 --> 01:43:22,099
+anything that's not AI-generated. Okay, suppose we're here. You will have calculated all of this previously. So just the KV of everything that came before. But what is the memory cost of this?
+
+467
+01:43:22,099 --> 01:43:35,850
+Well, the memory bandwidth cost of this. If you're doing flash attention, it would— It's basically temporary. It doesn't even go to main memory. Just ignore that. Exactly.
+
+468
+01:43:35,850 --> 01:43:47,770
+So then it would just be everything that came before. Is it not just that then? There's actually no adjustment at all to the memory time. Okay. Great. So it's a very trivial change to accommodate.
+
+469
+01:43:47,770 --> 01:44:06,920
+This term is making it 5x more expensive. Now, why would that be? What does that actually tell us? What variable does this help us clamp? The only thing that could have changed is that the compute is
+
+470
+01:44:06,920 --> 01:44:19,299
+5x more expensive as a result. This is the time for one pass, but actually the amount of tokens is that much larger. We want the cost per token, in fact, or the time per token.
+
+471
+01:44:19,299 --> 01:44:34,090
+I'm not sure I understood. This is for processing the next token in prefix? Well, actually for processing the entire batch. At this cost, we have processed this many tokens, the length of prefill.
+
+472
+01:44:34,090 --> 01:44:34,470
+Or I guess the length of the pass. Not this prefix, but it's this cost. Okay. Let's just do this pass. So this is 5x more expensive. Input is 5x more expensive. Output is more expensive, in fact.
+
+473
+01:44:34,470 --> 01:44:34,740
+Output is 5x more expensive. The result we want to work towards is that prefill is compute-limited and decode is memory bandwidth-limited. Why don't we do this?
+
+474
+01:44:34,740 --> 01:45:50,679
+Why don't we just chart it with len-pass on the X-axis and t on the Y-axis. We want the cost per token, so it'll be t over length of the pass. That'll be right. I guess I’m getting confused by this.
+
+475
+01:45:50,679 --> 01:46:06,120
+Len-pass is... It seems like this should be higher when you're doing prefill. Prefill has a bigger length pass. Yeah. But then why is it cheaper? Why is the cost higher?
+
+476
+01:46:06,120 --> 01:46:21,039
+It's this division by length pass. This is going to divide out, but then all of this is going to divide by length of pass, and it's going to make the memory costs cheaper. Okay.
+
+477
+01:46:21,039 --> 01:46:42,920
+Let me think about this then. Basically we'll have four different lines. Let's do prefill first... Actually, let's do decode first. Length of the pass, when it's one, that is decode.
+
+478
+01:46:42,920 --> 01:46:55,310
+When it is bigger, that is prefill. Oh, okay. I see. That makes sense. Getting back to it. So tcompute, if you have basically just this divided by len-pass, so just this amount.
+
+479
+01:46:55,310 --> 01:47:15,330
+This actually does not vary based on t, so it'll just be some flat value like this. And this is tcompute. And this is— That's decode. Decode. Right.
+
+480
+01:47:15,330 --> 01:47:33,719
+Now tmem, we have this whole thing divided by len-pass. Well, it doesn't really matter what's up there, it'll just be something that looks like this. Let's say this is tmem. This is decode again.
+
+481
+01:47:33,719 --> 01:47:51,920
+So as the length of the prefix goes up, or pass, your memory bandwidth time declines, and that means that to the extent that you were bottlenecked on
+
+482
+01:47:51,920 --> 01:48:04,010
+memory bandwidth before, you can avoid being bottlenecked on memory bandwidth. The fact that they are charging 5x less for prefill than decode does suggest that
+
+483
+01:48:04,010 --> 01:48:18,660
+they are bottlenecked on memory bandwidth to quite a degree, such that for them at least—because t is equivalent to cost, it's the cost of renting a compute—this would be at 1, and this would be at 5.
+
+484
+01:48:18,660 --> 01:48:44,270
+That's right. So it is, in fact, tremendously memory bandwidth bottlenecked. The real graph looks something like that. It still crosses, but yeah. Exactly. Let me do it this way. This is
+
+485
+01:48:44,270 --> 01:48:58,260
+the gap on decode between the memory and the compute time. Okay, interesting. Another interesting one would be why cache hits are so much cheaper.
+
+486
+01:48:58,260 --> 01:49:15,780
+If I remember correctly, cache hits are like 10x… It's more expensive to write to cache according to the pricing on all these models. But if you do hit a cache, it's 10x.
+
+487
+01:49:15,780 --> 01:49:30,530
+Presumably, this is the cost of keeping something in HBM rather than just evacuating it. But if you do keep it in HBM, then it's cheaper to load again? Right. There are two ways you can produce the KV
+
+488
+01:49:30,530 --> 01:49:45,670
+cache for a token. You can just produce it from scratch by computing it from the underlying token IDs, which are tiny. Or you can previously have produced it and stored it in a memory somewhere.
+
+489
+01:49:45,670 --> 01:49:53,360
+The cost ratio is really talking about the ratio between those two mechanisms of producing it. A cache miss means you've deleted it from all your memories, and you have to
+
+490
+01:49:53,360 --> 01:50:03,920
+recompute it from the tokens directly. You can even take that a step further and think about which memory tier you store it in. You could store it in HBM.
+
+491
+01:50:03,920 --> 01:50:17,250
+There are other slower and cheaper memories than HBM, like DDR on your host or flash as well. One of the things you can do is a calculation of where it makes sense to be
+
+492
+01:50:17,250 --> 01:50:32,139
+in each memory tier, and this is related to how long you're going to store it for. We want to look at the cost of storage in a few different memory tiers and also the cost of rematerialization.
+
+493
+01:50:32,139 --> 01:50:48,820
+Remat means the cost to rebuild all of the KV cache from scratch after you deleted it, so we rematerialize it. Basically, this is going to cost the length of the context.
+
+494
+01:50:48,820 --> 01:51:02,390
+Actually, we'll look at the cost per token, so we don't need to carry around this length of context everywhere. To rematerialize one token of KV cache, I just need to run a
+
+495
+01:51:02,390 --> 01:51:19,529
+forward pass on the whole model. This is going to be the compute time. I have to rerun the compute at whatever speed my GPU does it, and then I multiply it by my GPU dollars per second.
+
+496
+01:51:19,529 --> 01:51:39,410
+Sorry, excuse a naive question. Why is there not a quadratic term? There is a quadratic term. It shows up in the compute. As an approximation, I chose to remove it.
+
+497
+01:51:39,410 --> 01:51:52,030
+I'll just show you quickly what that looks like. If you look at the cost per token, or the number of FLOPs per token, there are the FLOPs
+
+498
+01:51:52,030 --> 01:52:01,830
+that are coming from doing the weight matrix multiplies as a function of— Which is flat. ...context length. And then there is the number of multiplies that comes from doing the
+
+499
+01:52:01,830 --> 01:52:15,140
+KV cache, which goes up linearly with the amount of stuff you attend to. The slope on this is so low that when you draw it like this, it's very well approximated by a flat line.
+
+500
+01:52:15,140 --> 01:52:22,300
+You start to notice the effect of the quadratic or the linear term up in the millions of tokens or so. So it's just not super relevant.
+
+501
+01:52:22,300 --> 01:52:31,850
+So what is the reason that there's no company which has over a million token context length, if this is true? There are two costs of long context.
+
+502
+01:52:31,850 --> 01:52:45,550
+One is the memory bandwidth cost, which we've spent a lot of time analyzing. That's this thing. The other one is the compute cost. The compute cost is almost always forced by
+
+503
+01:52:45,550 --> 01:52:56,110
+fundamental principles to be a much smaller slope than the memory bandwidth cost. The primary things that limit you to really large contexts are memory
+
+504
+01:52:56,110 --> 01:53:04,770
+bandwidth and memory capacity, which is exactly this effect. There's this idea that Dario said on the podcast, and others have said, which
+
+505
+01:53:04,770 --> 01:53:12,040
+is, "We don't need continual learning for AGI, in-context learning is enough." If you believe that, then you have to think that we have to get to a
+
+506
+01:53:12,040 --> 01:53:25,600
+hundred-million-token context length to have an employee that is the equivalent of working with you for a month. Now, maybe that's no longer true with sparse attention or something.
+
+507
+01:53:25,600 --> 01:53:36,580
+But if you think that, then some ML infra thing would have to change to allow for a hundred million, like the memory bandwidth, to allow for a hundred-million-token context lengths.
+
+508
+01:53:36,580 --> 01:53:54,650
+Sparse attention gives you a get-out for sure, because you get this square root. It gives you a big improvement. But if you look at the history of context lengths of models,
+
+509
+01:53:54,650 --> 01:54:04,840
+from earlier models like GPT-3, maybe to GPT-4—I don't remember when the transition happened exactly—they shot up from about 8K to 100-200K.
+
+510
+01:54:04,840 --> 01:54:13,430
+And then for the last year or two, they've all been hovering around there. I think that indicates that this is the reasonably balanced cost
+
+511
+01:54:13,430 --> 01:54:24,650
+point, and going massively beyond that would be cost-prohibitive. Not because of the compute cost, because of the memory bandwidth... Because of memory bandwidth cost, yeah.
+
+512
+01:54:24,650 --> 01:54:39,830
+I actually don't see a very good path to solving that. The HBM is where it is. It's not getting hugely better. And why doesn't sparse attention solve it? Sparse attention is a big improvement.
+
+513
+01:54:39,830 --> 01:54:49,500
+Maybe that is priced in already, perhaps. It's not an infinite improvement because if you go too sparse, you lose too much quality.
+
+514
+01:54:49,500 --> 01:55:00,230
+The empirical result is that the context lengths haven't been increasing that much. I think it's because there is no solution to the memory wall here.
+
+515
+01:55:00,230 --> 01:55:13,579
+Going too sparse just means you're attending to a very small subset of the tokens, and the quality will get worse. Makes sense. What is the cost of these different ways of resynthesizing the KV cache?
+
+516
+01:55:13,579 --> 01:55:39,889
+Computing it from scratch is based on my GPU time. I have to do a certain amount of multiplies, of GPU time that I spend in order to produce it. Storing in HBM. This really goes as my bytes per token.
+
+517
+01:55:39,889 --> 01:55:50,690
+I need to just have some number of bytes per token, and then I need to store this in the HBM. It's going to use up some of my HBM capacity.
+
+518
+01:55:50,690 --> 01:56:03,410
+A way to think of this is that if I have too many of these things sitting in my HBM, if I fill up my HBM with just KV caches that I'm not using, I can't use that GPU. How do I price that?
+
+519
+01:56:03,410 --> 01:56:23,799
+Maybe I say that the cost of it is proportional to the fraction of the HBM I'm using. There's also times GPU dollars. Let's just do one more memory tier and say store in DDR instead.
+
+520
+01:56:23,799 --> 01:56:35,930
+The same kind of thing goes up for flash and for DDR. I put these in the wrong columns. I meant to make two columns. The distinction I want to make is that there is the cost to
+
+521
+01:56:35,930 --> 01:56:58,560
+retrieve, and then there's a cost to hold on. This is a cost per second, whereas this is an instantaneous cost. Rematerialization has a cost to retrieve and has zero cost to
+
+522
+01:56:58,560 --> 01:57:27,920
+store it because we've deleted it. This is the one that I put in the wrong location. This is actually the cost just to hold on, so I will rewrite it.
+
+523
+01:57:27,920 --> 01:57:47,900
+If we're just storing it in HBM, it has this sort of cost profile. If we store in DDR, it's actually going to take some time. We get the same thing here: bytes per token over DDR capacity
+
+524
+01:57:47,900 --> 01:58:11,879
+times DDR cost per second. But now this has a cost to retrieve that is higher than the HBM because we need to copy it into the HBM. So this is bytes per token over DDR bandwidth.
+
+525
+01:58:11,879 --> 01:58:24,400
+And then this consumes some amount of the DDR as well. And every scale-up has DDR and flash? This is really a deployment question, so you can choose that. Nvidia does deploy in this form. It has both.
+
+526
+01:58:24,400 --> 01:58:37,200
+Why isn't the cost to retrieve HBM the bytes divided by memory bandwidth? It depends what you define a retrieve to be. Here, I'm defining retrieve to be, move it into HBM so that you can
+
+527
+01:58:37,200 --> 01:58:47,129
+start actually doing inference on it. Because if it's already in HBM, you can be doing compute while you're getting it from HBM to SRAM? Interesting. Yeah, for example.
+
+528
+01:58:47,129 --> 01:58:58,120
+These are three things, and I guess I ordered them wrong. In general, if you're balancing two costs and you've got different tiers in the memory hierarchy, you should expect as this cost
+
+529
+01:58:58,120 --> 01:59:12,500
+goes up, this cost should go down. You can kind of see where the zeros are. I should have ordered them this one first, this one second, and this one third.
+
+530
+01:59:12,500 --> 01:59:29,250
+If you're going to hold onto it for a very short amount of time, then all of this is multiplied by the hold time. This one is, and so is this one.
+
+531
+01:59:29,250 --> 01:59:41,450
+Interestingly, they have different prices to write for. Do you specify this in the API for five minutes versus an hour? Which suggests that the five minutes is HBM and the hour is DDR.
+
+532
+01:59:41,450 --> 01:59:59,320
+I think that's a pretty good assumption. If you look at the numbers, it might also turn out that it's one tier down, and it's DDR versus flash. Interesting. I'll look up the price difference.
+
+533
+01:59:59,320 --> 02:00:25,020
+The base input tokens is $5 per million tokens. Base, which means remat. This is $5. That's $5 to "retrieve". And then to write, presumably HBM, for five minutes is 6.25.
+
+534
+02:00:25,020 --> 02:00:45,440
+We might be able to determine which memory tier it is by the durations. Five minutes versus one hour. Exactly. I think this will probably end up being the drain time of the memory tier that you're in.
+
+535
+02:00:45,440 --> 02:00:58,150
+What that means is, given that I know I'm going to be holding something for five minutes, I would like to pick a memory that I can read every five minutes.
+
+536
+02:00:58,150 --> 02:01:11,629
+I can read the whole memory once per five minutes, ballpark. That is the drain time of the memory. So if I take the storage capacity over storage bandwidth,
+
+537
+02:01:11,629 --> 02:01:27,440
+I would like this to be equal to five minutes. We did this calculation for HBM. For HBM, we know that this number is 20 milliseconds. So HBM is much too small.
+
+538
+02:01:27,440 --> 02:01:42,860
+DDR could be about an order of magnitude or two off from this, so this is probably on the order of seconds, like 1 to 10 seconds. I don't have these numbers memorized, but generally, as you go to
+
+539
+02:01:42,860 --> 02:01:52,190
+slower tiers, flash is plausibly on the order of one minute. And then spinning disk, which is massively different, is on the order of one hour.
+
+540
+02:01:52,190 --> 02:02:02,390
+So this might actually identify the tiers of flash and spinning disk. Sorry, why is this the calculation? This is the storage capacity divided by the bandwidth?
+
+541
+02:02:02,390 --> 02:02:20,900
+You've got a bunch of different memory tiers, we've listed four of them. Your choice of which memory tier is about minimizing the cost. What fraction of the device are you using?
+
+542
+02:02:20,900 --> 02:02:31,190
+You're using some fraction of the device for holding onto it, and then you're using some fraction of the device to retrieve it. Let's say I'm using 10% of the device.
+
+543
+02:02:31,190 --> 02:02:47,720
+And I want to equalize those two fractions. That's a sign that I've hit the right thing. Let's say I've got some runtime here. I'm going to hold on for all of this time, so this is the time-hold.
+
+544
+02:02:47,720 --> 02:03:06,300
+And then there's going to be some amount of time here, which is time-retrieve. Basically to equalize these two costs, I want the retrieval time to be equal to the hold time
+
+545
+02:03:06,300 --> 02:03:22,900
+times the fraction of capacity. Because this is the retrieval time, this is how many other things I can hold simultaneously. Basically,
+
+546
+02:03:22,900 --> 02:03:33,000
+you want to store things in there for so long such that the amount of time it's in there is the time to get all your things in there and out. Yeah basically.
+
+547
+02:03:33,000 --> 02:03:44,030
+I think that probably indicates that the two tiers are flash and spinning disk. I'm kind of shocked to see spinning disk being used at all, because it's such an old technology. Interesting.
+
+548
+02:03:44,030 --> 02:03:52,600
+It’s also crazy that it’s so slow that it takes an hour to load its full capacity to it in. It’s a really unattractive technology but it’s useful in some places.
+
+549
+02:03:52,600 --> 02:04:01,260
+We're sitting down because I want to ask you some questions that don't need a blackboard. You have this extremely interesting blog post where you talk about how,
+
+550
+02:04:01,260 --> 02:04:11,770
+at a high level, the architecture of different cryptographic protocols looks a lot like neural networks. There's this convergent evolution where they both need to jumble
+
+551
+02:04:11,770 --> 02:04:20,559
+information across all their inputs. For cryptographic protocols, it's to make sure that each new input into a hash function will totally scramble what happens.
+
+552
+02:04:20,559 --> 02:04:32,270
+For neural networks, of course, they need to consider how this piece of information changes what you should make of this other piece of information. I thought that was an extremely interesting point.
+
+553
+02:04:32,270 --> 02:04:45,770
+At a high level, in some sense they're trying to do the inverse thing. Cryptographic protocols are trying to take information which has structure and make it look indistinguishable from randomness.
+
+554
+02:04:45,770 --> 02:04:58,780
+Neural networks are trying to take things which look random—protein sequences, DNA, garbled text—and extract higher-level structure from it.
+
+555
+02:04:58,780 --> 02:05:10,030
+They have similar high-level mechanisms, but they're actually trying to do the opposite things. I wonder what you make of that.
+
+556
+02:05:10,030 --> 02:05:21,110
+I try to look for other examples where mixing and scrambling shows up as well. There's almost a physical example where you're making a cake and you want to stir the batter.
+
+557
+02:05:21,110 --> 02:05:34,280
+Literally the idea to first stir it this way and then stir it this way is not too bad of an approach. Beyond that, back to the digital world, there are some differences, and the one you call out is
+
+558
+02:05:34,280 --> 02:05:51,684
+a pretty strong difference. The way it shows up, if you just randomly initialize a neural network, maybe it's a reasonable cipher as well because the random initialization is going to jumble
+
+559
+02:05:51,684 --> 02:05:59,080
+stuff in a complicated way. It may even do what you want. Who knows? The thing that makes it interpretable is the gradient descent.
+
+560
+02:05:59,080 --> 02:06:14,900
+You can differentiate a neural network and get a meaningful derivative. We do a lot of work to not overcomplicate the derivative, so the residual connection keeps it contained and simple.
+
+561
+02:06:14,900 --> 02:06:27,620
+And so does the LayerNorm stuff that we do. One of the biggest attacks against cryptographic ciphers is also to differentiate the cipher. Ciphers run in a different number field.
+
+562
+02:06:27,620 --> 02:06:43,310
+They run in the field of two elements, so just binary, whereas neural nets run, in theory, in the field of real numbers. You have to differentiate with respect to binary numbers, but you
+
+563
+02:06:43,310 --> 02:06:52,199
+can absolutely differentiate a cipher. This is called differential cryptanalysis. Basically, what it says is that if you take a small difference of the
+
+564
+02:06:52,199 --> 02:07:04,860
+input, it's quite difficult to make the difference of the output be small. The whole job of a well-designed cipher is to make the difference in output very large.
+
+565
+02:07:04,860 --> 02:07:22,280
+The distinction is that the optimization goals at that point are about complexifying. They don't have the same residual connections, like LayerNorms. I guess a place where the two merge is backdoors.
+
+566
+02:07:22,280 --> 02:07:31,740
+With a backdoor in an LLM, you're trying to hide… Would you consider it an input? It’s not an input into the forward pass but it’s an input into the backward pass.
+
+567
+02:07:31,740 --> 02:07:49,300
+You’re trying to hide an input into the backward pass. This is an adversarial context? This is actually a place where you get exactly the avalanche property that ciphers have as well.
+
+568
+02:07:49,300 --> 02:08:01,250
+Adversarial attacks on image classification models are about finding a very small perturbation of the image that totally changes the classification, totally changes the output.
+
+569
+02:08:01,250 --> 02:08:02,660
+That is the common case in ciphers, whereas that's the undesired case in neural nets. Interesting. Has it at all been a successful field to actually use neural networks as ciphers?
+
+570
+02:08:02,660 --> 02:08:03,010
+Almost anything you do in trying to create a cipher, if it doesn't have 10 years of scrutiny, it's probably broken. So in that direction, it's a little dangerous.
+
+571
+02:08:03,010 --> 02:08:03,280
+In the other direction, there has been at least one very clear adoption of technology. There is a construction where you take a function, an f function,
+
+572
+02:08:03,280 --> 02:08:04,690
+which is not invertible, and use that to build an invertible function. That started in ciphers. It's called a Feistel cipher or Feistel network.
+
+573
+02:08:04,690 --> 02:08:06,080
+You apply the function f—I want to write on the blackboard but I won’t—remember the input, and then you swap the two. That allows you to construct invertible layers.
+
+574
+02:08:06,080 --> 02:08:06,400
+There is a paper from 2018 or 2019 called Reversible Nets, RevNets, which does exactly this construction. In addition to your residual connection, you also remember the input from the previous layer.
+
+575
+02:08:06,400 --> 02:08:06,854
+That actually makes the entire layer reversible and almost completely eliminates your memory footprint during training. Instead of needing to save activations for the backwards pass, you can
+
+576
+02:08:06,854 --> 02:08:13,520
+run the entire network backwards and rematerialize the activations. Ok, so I was asking you, have neural networks actually been used for cryptography?
+
+577
+02:08:13,520 --> 02:08:26,160
+And we realized it may be better to just do this on the blackboard. Are they actually being used for cryptography? Using neural nets for cryptography… In general, creating a new cipher
+
+578
+02:08:26,160 --> 02:08:38,390
+is a very dangerous proposition. Almost all of them are broken. 99% of them are broken, so it’s probably a bad place to start. But the other direction has been, in at least one very
+
+579
+02:08:38,390 --> 02:08:51,620
+clear case, quite productive. There's a construction that exists in ciphers and then was imported into neural nets called a Feistel cipher, or Feistel network.
+
+580
+02:08:51,620 --> 02:09:06,690
+The idea is that you may have some function f which is not invertible, but you like the function because it does interesting things, like it does an MLP, for example.
+
+581
+02:09:06,690 --> 02:09:13,710
+Or it mixes it in an interesting way. You'd like to build something out of this that is invertible. The construction we're going to make is going to be a two-input function
+
+582
+02:09:13,710 --> 02:09:33,129
+rather than a one-input function. We're going to apply f. We need to actually remember what x was, so we're going to stick x over here so that we can work backwards, and then we also can't drop y.
+
+583
+02:09:33,129 --> 02:09:47,340
+We're going to remember y, and we're going to add them together to form this tuple. The way to invert this, if you think I have this output and I want to recover x and y, I can easily recover x.
+
+584
+02:09:47,340 --> 02:10:06,050
+That's right there, I just read it off. To recover y, if this thing was called z, I can recover y by z minus f, because I've already recovered x. That means this construction is invertible.
+
+585
+02:10:06,050 --> 02:10:16,210
+This was used in ciphers a ton and still is used. It's one of the main mechanisms of constructing ciphers. Often you want ciphers to be invertible, especially the layers of ciphers, because
+
+586
+02:10:16,210 --> 02:10:32,750
+that has better cryptographic properties. This has actually been ported over into neural nets. There's a 2017 paper called RevNets, reversible networks.
+
+587
+02:10:32,750 --> 02:10:42,860
+What it does is make the entire network invertible. You can apply it to any network, like a transformer network. I do a forwards pass, but then I can run the entire pass backwards as well.
+
+588
+02:10:42,860 --> 02:10:53,700
+The whole neural network is invertible with exactly this construction. This paper applied it to some layer, like a transformer layer, for example.
+
+589
+02:10:53,700 --> 02:11:08,150
+We've got this function f, which is our transformer layer. Normally we would have just an input and then a residual connection coming out, and it gets added over here.
+
+590
+02:11:08,150 --> 02:11:40,940
+Now, the variation of this is going to be we've got two inputs, x and y. x goes through the function, gets added to y, and then this becomes the new x, output x. Then this x becomes the output y.
+
+591
+02:11:40,940 --> 02:11:52,070
+Really what this is doing, if you think of two layers back, is the thing you mentioned before. It's doing the residual connection from two layers back.
+
+592
+02:11:52,070 --> 02:12:02,610
+This y came from the previous layer and was the residual connection there. Because of this construction, the whole thing is invertible. Why do I care? What does invertible matter for?
+
+593
+02:12:02,610 --> 02:12:13,280
+The big thing that it can be interesting for is training. If I think of a forward pass of training… Let's say I have four layers and I run them in zero, one, two, three order.
+
+594
+02:12:13,280 --> 02:12:35,730
+I have to write all of the activations to HBM. I get an HBM footprint here that is kind of linear in the number of layers. This can actually be the largest memory footprint during training.
+
+595
+02:12:35,730 --> 02:12:46,469
+This is normal training, and then I run the backwards pass and read it in reverse. The forward pass goes forward, and the backward pass goes backwards. I have to read them back out.
+
+596
+02:12:46,469 --> 02:12:56,340
+The idea of this RevNets paper is that because it's invertible, I don't need to store this at all. I can completely rematerialize it.
+
+597
+02:12:56,340 --> 02:13:08,000
+I run my forwards pass, and then when I'm running my backwards pass, I'm simultaneously in lockstep undoing all of the forwards pass steps that I did in order to have the activations that I need here.
+
+598
+02:13:08,000 --> 02:13:17,330
+This ends up being memory saving, which is a nice idea. Interesting. In some sense you're spending more compute to save memory. That's right. Interesting.
+
+599
+02:13:17,330 --> 02:13:27,009
+It's the opposite of what you're doing with the KV cache. With the KV cache, you're spending more memory to save compute. Yeah. Spending more memory to save compute is generally profitable
+
+600
+02:13:27,009 --> 02:13:38,599
+given where hardwares are. Interesting. That was super fun. Reiner, thank you so much for doing it. I feel like it really vindicated the vision behind the studio and the blackboard. Yeah.
+
+601
+02:13:38,599 --> 02:13:39,920
+Cool, thanks so much for doing it. Thanks.

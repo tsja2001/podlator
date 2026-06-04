@@ -1,0 +1,1755 @@
+1
+00:00:00,720 --> 00:00:10,400
+Today, I'm chatting with Terence Tao, who needs no introduction. Terence, I want to begin by having you retell the story of how Kepler discovered the laws of
+
+2
+00:00:10,400 --> 00:00:18,480
+planetary motion because I think this will be a great jumping off point to talk about AI for math. I've always had an amateur interest in astronomy.
+
+3
+00:00:18,480 --> 00:00:31,040
+I've loved stories of how the early astronomers worked out the nature of the universe. Kepler was building on the work of Copernicus, who was himself building on the work of Aristarchus.
+
+4
+00:00:31,040 --> 00:00:40,800
+Copernicus very famously proposed the heliocentric model, that instead of the planets and the Sun going around the Earth, the Sun was at the center of the solar system and the
+
+5
+00:00:40,800 --> 00:00:50,240
+other planets were going around the Sun. Copernicus proposed that the orbits of the planets were perfect circles. His theory fit the observations
+
+6
+00:00:50,240 --> 00:01:04,160
+that the Greeks, the Arabs, and the Indians had worked out over centuries. Kepler learned about these theories in his studies, and he made this observation that the
+
+7
+00:01:04,160 --> 00:01:20,400
+ratios of the size of the orbits that Copernicus predicted seemed to have some geometric meaning. He started proposing that if you take the orbit of the Earth and you enclose it in a cube,
+
+8
+00:01:20,400 --> 00:01:30,640
+the outer sphere that encloses the cube almost perfectly matched the orbit of Mars, and so forth. There were six planets known at the time and five gaps between them, and there were five perfect
+
+9
+00:01:30,640 --> 00:01:38,880
+Platonic solids: the cube, the tetrahedron, icosahedron, octahedron, and dodecahedron. So he had this theory, which he thought was absolutely beautiful,
+
+10
+00:01:38,880 --> 00:01:50,320
+that you could inscribe these Platonic solids between the spheres of the planets. It seemed to fit, and it seemed to him that God's design of the planets was matching this
+
+11
+00:01:50,320 --> 00:02:02,160
+mathematical perfection of the Platonic solids. He needed data to confirm this theory. At the time, there was only one really high-quality dataset in existence.
+
+12
+00:02:02,160 --> 00:02:12,560
+Tycho Brahe, this very wealthy, eccentric Danish astronomer, had managed to convince the Danish government to fund this extremely expensive observatory.
+
+13
+00:02:12,560 --> 00:02:24,480
+In fact, it was an entire island where he had taken decades of observations of all the planets, like Mars and Jupiter, at least every night for which the weather was clear, with the naked eye.
+
+14
+00:02:24,480 --> 00:02:32,240
+He was the last of the naked-eye astronomers. He had all this data which Kepler could use to confirm his theory. Kepler started working with Tycho,
+
+15
+00:02:32,240 --> 00:02:44,480
+but Tycho was very jealous of the data. He only gave him little bits of it at a time. Kepler eventually just stole the data. He copied it and had to have a fight with
+
+16
+00:02:44,480 --> 00:02:53,040
+Brahe's descendants. He did get the data, and then he worked out, to his disappointment, that his beautiful theory didn't quite work.
+
+17
+00:02:53,040 --> 00:03:02,800
+The data was off from his Platonic solid theory by 10% or something. He tried all kinds of fudges, moving the circles around, and it didn't quite work.
+
+18
+00:03:02,800 --> 00:03:15,840
+But he worked on this problem for years and years, and eventually, he figured out how to use the data to work out the actual orbits of the planets. That was an incredibly clever,
+
+19
+00:03:15,840 --> 00:03:26,640
+genius amount of data analysis. And then he worked out that the orbits were actually ellipses, not circles, which was shocking for him.
+
+20
+00:03:26,640 --> 00:03:37,040
+So he worked out the two laws of planetary motion: the ellipses, and also that equal areas sweep out equal times. Then ten years later, after
+
+21
+00:03:37,040 --> 00:03:50,800
+collecting a lot of data—the furthest planets like Saturn and Jupiter were the hardest for him to work out—he finally worked out this third law, that the time it takes for a
+
+22
+00:03:50,800 --> 00:03:59,360
+planet to complete its orbit was proportional to some power of the distance to the Sun. These are the three famous Kepler's laws of motion.
+
+23
+00:03:59,360 --> 00:04:09,520
+He had no explanation for them. It was all driven by experiment, and it took Newton a century later to give a theory that explained all three laws at once.
+
+24
+00:04:09,520 --> 00:04:22,800
+The take I want to try on you is that Kepler was a high-temperature LLM. Newton comes up with this explanation of why the three laws of planetary motion must be true.
+
+25
+00:04:22,800 --> 00:04:29,760
+Of course, the way that Kepler discovers the laws of planetary motion, or figures out the relative orbits of the different planets, is as you say a work of genius.
+
+26
+00:04:29,760 --> 00:04:38,000
+But through his career, he's just trying random relationships. In fact, in the book in which he writes down the third law of planetary motion,
+
+27
+00:04:38,000 --> 00:04:46,720
+it's an aside on The Harmonics of the World, which is just a book about how all these different planets have these different harmonies. And the reason there's so much famine
+
+28
+00:04:46,720 --> 00:04:54,240
+and misery on Earth is because the Earth is mi-fa-mi, that's the note of Earth. It's all this random astrology, but in there is the cube-square law,
+
+29
+00:04:54,240 --> 00:05:08,880
+which tells you what relationship the period has to a planet's distance from the Sun. As you were detailing, if you add that to Newton's F=ma and the equation for centripetal
+
+30
+00:05:08,880 --> 00:05:18,880
+acceleration, you get the inverse-square law. And so Newton works that out. But the reason I think this is an interesting story is that I feel LLMs can do the kind of
+
+31
+00:05:18,880 --> 00:05:27,600
+thing of trying random relationships for twenty years, some of which make no sense, as long as there's a verifiable data bank like Brahe's dataset. "Ok, I'm going to try out random
+
+32
+00:05:27,600 --> 00:05:36,960
+things about musical notes, Platonic objects, or different geometries, I have this bias that there's some important thing about the geometry of these orbits." Then one thing works. As long
+
+33
+00:05:36,960 --> 00:05:48,080
+as you can verify it, these empirical regularities can then drive actual deep scientific progress. Traditionally, when we talk about the history of science, idea generation has
+
+34
+00:05:48,080 --> 00:05:59,440
+always been the prestige part of science. A scientific problem comes with many steps. You have to identify a problem, and then you have to identify a good, fruitful problem to work on.
+
+35
+00:05:59,440 --> 00:06:07,280
+Then you need to collect data, figure out a strategy to analyze the data, and make a hypothesis. At this point, you need to propose a
+
+36
+00:06:07,280 --> 00:06:17,760
+good hypothesis, and then you need to validate. Then you need to write things up and explain. There are a dozen different components. The ones we celebrate are these eureka
+
+37
+00:06:17,760 --> 00:06:32,080
+genius moments of idea generation. Kepler certainly had to cycle through many ideas, several of which didn't work. I bet there were many that he didn't even
+
+38
+00:06:32,080 --> 00:06:41,440
+publish at all because they just didn't fit. That's an important part of the process, trying all kinds of random things and seeing if they worked.
+
+39
+00:06:41,440 --> 00:06:55,840
+But as you say, it has to be matched by an equal amount of verification, otherwise it's slop. We celebrate Kepler, but we should also celebrate Brahe for his assiduous data
+
+40
+00:06:55,840 --> 00:07:09,120
+collection, which was ten times more precise than any previous observation. That extra decimal point of accuracy was essential for Kepler to get his results.
+
+41
+00:07:09,120 --> 00:07:22,960
+He was using Euclidean geometry and the most advanced mathematics he could use at the time to match his models with the data. All aspects had to be in play: the data,
+
+42
+00:07:22,960 --> 00:07:38,400
+the theory, and the hypothesis generation. I'm not sure nowadays that hypothesis generation is the bottleneck anymore. Science has changed in the century since.
+
+43
+00:07:38,400 --> 00:07:49,920
+Classically, the two big paradigms for science were theory and experiment. Then in the 20th century, numerical simulation came along, so you can do
+
+44
+00:07:49,920 --> 00:07:59,200
+computer simulations to test theories. Finally, in the late 20th century, we had big data. We had the era of data analysis.
+
+45
+00:07:59,200 --> 00:08:09,040
+A lot of new progress is actually driven now by analyzing massive datasets first. You collect large datasets and then draw patterns from them to deduce thoughts.
+
+46
+00:08:09,040 --> 00:08:17,440
+This is a little bit different from how science used to work, where you make a few observations or have one out-of-the-blue idea, and then collect data to test your idea.
+
+47
+00:08:17,440 --> 00:08:27,760
+That's the classic scientific method. Now it's almost reversed. You collect big data first, and then you try to get hypotheses from it. Kepler was maybe one of the first early
+
+48
+00:08:27,760 --> 00:08:40,240
+data scientists, but even he didn't start with Tycho's dataset and then analyze it. He had some preconceived theories first. It seems like this is less and less the
+
+49
+00:08:40,240 --> 00:08:54,880
+way we make progress, just because the data is so much more massive and useful. Oh, interesting. I feel like the 20th-century science that you're describing actually very
+
+50
+00:08:54,880 --> 00:09:06,720
+well describes what happened with Kepler. He did have these ideas—1595 and '96 is where he comes up with the polygons and then the Platonic objects theory—but they were wrong.
+
+51
+00:09:06,720 --> 00:09:18,160
+Then a few years later, he gets Brahe's data, and it's only after twenty years of trying random things that he gets this empirical regularity. It actually feels a bit closer to Brahe's data
+
+52
+00:09:18,160 --> 00:09:28,000
+being analogous to some massive data bank of simulations, and now that you've got the data, you can keep trying random things. If it wasn't for that, Kepler would be
+
+53
+00:09:28,000 --> 00:09:39,600
+out there just writing books about harmonics and Platonic objects, and there would be nothing to actually verify against. The data was extremely important. The
+
+54
+00:09:39,600 --> 00:09:50,240
+distinction I was trying to make was that traditionally, you make a hypothesis and then you test it against data. But now with machine learning,
+
+55
+00:09:50,240 --> 00:10:03,840
+data analysis, and statistics, you can start with data and through statistics work out laws that were not present before. Kepler's third law is a little bit like this,
+
+56
+00:10:03,840 --> 00:10:13,840
+except that instead of having the thousand data points that Brahe had, Kepler had six data points. For every planet, he knew the length of the orbit and the distance to the Sun.
+
+57
+00:10:13,840 --> 00:10:24,560
+There were five or six data points, and he did what we would now call regression. He fit a curve to these six data points and got a square-cube law, which was amazing.
+
+58
+00:10:24,560 --> 00:10:37,200
+But he was quite lucky that these six data points gave him the right conclusion. That's not enough data to be really reliable. There was a later astronomer, Johann Bode,
+
+59
+00:10:37,200 --> 00:10:48,720
+who took the same data—the distances to the planets—and inspired by Kepler, he had a prediction that the distances to the planets formed a shifted geometric progression.
+
+60
+00:10:48,720 --> 00:10:57,760
+He also fit a curve, except there was one point missing. There was a big gap between Mars and Jupiter. His law predicted that there was a missing planet.
+
+61
+00:10:57,760 --> 00:11:11,040
+It was kind of a crank theory, except when Uranus was discovered by Herschel, the distance to Uranus fit exactly this pattern. Then Ceres was discovered in the asteroid belt,
+
+62
+00:11:11,040 --> 00:11:20,480
+and it also fit the pattern. People got really excited that Bode had discovered this amazing new law of nature. But then Neptune was discovered,
+
+63
+00:11:20,480 --> 00:11:34,320
+and it was way off. Basically it was just a numerical fluke. There were six data points. Maybe one reason why Kepler didn't highlight his third law as
+
+64
+00:11:34,320 --> 00:11:45,040
+much as the first two laws is that instinctively, even though he didn't have modern statistics, he kind of knew that with six data points, he had to be somewhat tentative with the conclusions.
+
+65
+00:11:45,040 --> 00:11:58,560
+To ask the question about the analogy more explicitly, does this analogy make sense if in the future we have smarter and smarter AIs? We'll have millions of them, and they can go out
+
+66
+00:11:58,560 --> 00:12:08,560
+and hunt for all these empirical irregularities. It sounds like you don't think the bottleneck in science is finding more things that are the equivalent of the third law of
+
+67
+00:12:08,560 --> 00:12:18,240
+planetary motion for each given field, so that later on somebody can say, "Oh, we need a way to explain this. Let's work out the math. Here's the inverse-square law of gravity."
+
+68
+00:12:18,240 --> 00:12:27,920
+I think AI has driven the cost of idea generation down to almost zero, in a very similar way to how the internet drove the cost of communication down to almost zero.
+
+69
+00:12:27,920 --> 00:12:39,520
+It’s an amazing thing, but it doesn't create abundance by itself. Now the bottleneck is different. We're now in a situation where suddenly people can generate thousands of
+
+70
+00:12:39,520 --> 00:12:51,840
+theories for a given scientific problem. Now we have to verify them, evaluate them. This is something which we have to change our structures of science to actually sort this
+
+71
+00:12:51,840 --> 00:13:07,680
+out. Traditionally, we build walls. In the past, before we had AI slop, we had amateur scientists have their own theories of the universe, many of which were of very little value.
+
+72
+00:13:07,680 --> 00:13:21,840
+We built these peer review publication systems to filter out and try to isolate the high signal ideas to test. But now that we can generate these
+
+73
+00:13:21,840 --> 00:13:34,560
+possible explanations at massive scale, and some of them are good and a lot are terrible, human reviewers are already being overwhelmed. Many journals are reporting that AI-generated
+
+74
+00:13:34,560 --> 00:13:46,480
+submissions are just flooding their submissions. It's great that we can generate all kinds of things now with AI, but it means that the rest of the aspects of science have to catch up:
+
+75
+00:13:46,480 --> 00:14:02,880
+verification, validation, and assessing what ideas actually move the subject forward and which ones are dead ends or red herrings. That's not something we know how to do at scale.
+
+76
+00:14:02,880 --> 00:14:10,560
+For each individual paper, we can have a debate among scientists and get to a consensus in a few years. But when we're generating a thousand of
+
+77
+00:14:10,560 --> 00:14:19,840
+these every day, this doesn't work. There's this incredibly interesting question. If you have billions of AI scientists, not only how do you gauge
+
+78
+00:14:19,840 --> 00:14:29,920
+which ones are real progress, but how do you... This is actually a question that human science has had to face and we've solved somehow, and I’m actually not sure how we solved this.
+
+79
+00:14:29,920 --> 00:14:41,200
+Let's say in the 1940s, if you're at Bell Labs and there are these new technologies coming out. Pulse-code modulation, how do you transfer signals? How do you digitize signals?
+
+80
+00:14:41,200 --> 00:14:50,800
+How do you transfer them over analog wires? There are all these papers about the engineering constraints and the details, and then there's one which comes up with the idea of the bit, which has
+
+81
+00:14:50,800 --> 00:15:00,560
+implications across many different fields. You need some system which can then look at that and say, "Okay, we need to apply this to probability. We need to apply this to computer science," et cetera.
+
+82
+00:15:00,560 --> 00:15:10,960
+In the future, the AIs are coming up with the next version of this unifying concept. How would you identify it among millions of papers that might actually constitute progress, but which
+
+83
+00:15:10,960 --> 00:15:21,200
+have much less in terms of general unifying ideas? A lot of it's the test of time. Many great ideas didn't actually get a great reception at the time they were first proposed.
+
+84
+00:15:21,200 --> 00:15:29,360
+It was only after some other scientists realized that they could take it further and apply them to their own... Deep learning itself was a
+
+85
+00:15:29,360 --> 00:15:39,440
+niche area of AI for a long time. The idea of getting answers entirely through training on data and not through first principles reasoning was very controversial,
+
+86
+00:15:39,440 --> 00:15:50,400
+and it just took a long time before it started bearing fruit. You mentioned the bit. There were other proposals for computer architectures than the zero-one that is universal today.
+
+87
+00:15:50,400 --> 00:16:03,760
+I think there were trits, three-valued logic. In an alternate universe, maybe a different paradigm would have shown up. The transformer, for example, is the foundation of
+
+88
+00:16:03,760 --> 00:16:13,200
+all modern large language models, and it was the first deep learning architecture that really was sophisticated enough to capture language. But it didn't have to be that way.
+
+89
+00:16:13,200 --> 00:16:25,600
+There could've been some other architecture that was the first to do it and once that was adopted, it would become the standard. One reason why it's hard to
+
+90
+00:16:25,600 --> 00:16:38,240
+assess whether a given idea is going to be fruitful is that it depends on the future. It depends also on the culture and society, which ones get adopted, which ones don't.
+
+91
+00:16:38,240 --> 00:16:48,000
+The base ten numeral system in mathematics is extremely useful, much better than the Roman numeral system, for instance. But again, there's nothing special about ten.
+
+92
+00:16:48,000 --> 00:16:57,040
+It's a system that is useful for us because everyone else uses it. We've standardized it. We've built all our computers and our number representation
+
+93
+00:16:57,040 --> 00:17:12,480
+systems around it, so we're stuck with it now. Some people occasionally push for other systems than decimal, but there's just too much inertia. It's not something where you can look at any given
+
+94
+00:17:12,480 --> 00:17:25,040
+scientific achievement purely in isolation and give it an objective grade without being aware of the context both in the past and the future. So it may never be something that you can
+
+95
+00:17:25,040 --> 00:17:39,840
+just reinforcement learn the same way that you can for much more localized problems. Often in the history of science when a new theory comes up that in retrospect we realize is correct,
+
+96
+00:17:39,840 --> 00:17:50,560
+it seems to make implications that either make no sense because they're wrong, and we realize later on why they're wrong, or they're correct but seem wildly implausible at the time.
+
+97
+00:17:50,560 --> 00:18:03,520
+As you talked about, Aristarchus had heliocentrism in the third century BC. The ancient Athenians were like, "This can't be because if the earth is going around the sun,
+
+98
+00:18:03,520 --> 00:18:13,440
+we should see the relative position of the stars change as we're going around the sun, and the only way that wouldn't be the case is if they're so far away that you don't notice any parallax,"
+
+99
+00:18:13,440 --> 00:18:19,360
+which is actually the correct implication. But there's times when the implication is incorrect and we just need to graduate to a better level of understanding.
+
+100
+00:18:19,360 --> 00:18:31,680
+Leibniz would chide Newton and disagree with Newton's theory of gravity on the basis that it implied action at a distance, and they didn't know the mechanism, and Newton himself
+
+101
+00:18:31,680 --> 00:18:39,360
+was sort of stunned that inertial mass and gravitational mass were the same quantity. All these things later were resolved by Einstein. But it was still progress. So
+
+102
+00:18:39,360 --> 00:18:49,920
+the question for a system of peer review for AI would be: even if you can falsify a theory, how would you notice that it still constitutes progress relative to the thing before?
+
+103
+00:18:49,920 --> 00:19:00,640
+Often, the ultimately correct theory initially is worse in many ways. Copernicus's theory of the planets was less accurate than Ptolemy's theory.
+
+104
+00:19:00,640 --> 00:19:13,920
+Geocentrism had been developed for a millennium by that point, and they had made many tweaks and increasingly complicated ad hoc fixes to make it more and more accurate.
+
+105
+00:19:13,920 --> 00:19:21,200
+Copernicus's theory was a lot simpler but much less accurate. It was only Kepler that made it more accurate than Ptolemy's theory.
+
+106
+00:19:21,200 --> 00:19:34,000
+Science is always a work in progress. When you only get part of the solution, it looks worse than a theory which is incorrect but somehow has been completed to the point
+
+107
+00:19:34,000 --> 00:19:45,760
+where it kind of answers all the questions. As you say, Newton's theory had big mysteries. They had the equivalence of mass and action at a distance, which
+
+108
+00:19:45,760 --> 00:19:59,040
+were only resolved with a very conceptually different approach centuries afterwards. Often progress has to be made not by adding more theories, but by deleting
+
+109
+00:19:59,040 --> 00:20:10,720
+some assumptions that you have in your mind. One reason why geocentrism held on for so long is we had this idea that objects naturally want to stay at rest.
+
+110
+00:20:10,720 --> 00:20:19,200
+This is the Aristotelian notion of physics, and so the idea that the Earth was moving… How come we weren't all falling over? Once you have Newton's laws of motion—an
+
+111
+00:20:19,200 --> 00:20:30,480
+object in motion remains in motion and so forth—then it makes sense. Conceptually, it's a very big leap to realize that the Earth is in motion.
+
+112
+00:20:30,480 --> 00:20:42,880
+It doesn't feel like it's in motion. The biggest advances, like Darwin's theory of evolution, is the idea that species are not static.
+
+113
+00:20:42,880 --> 00:20:57,680
+This is not obvious because you don't see evolution in your lifetime. Well, now we actually can, but it seems permanent and static.
+
+114
+00:20:57,680 --> 00:21:07,040
+Right now we're going through a cognitive version of the Copernican revolution, where we used to think that human intelligence is the center of the universe, and now we're seeing that there are
+
+115
+00:21:07,040 --> 00:21:18,960
+very different types of intelligence out there with very different strengths and weaknesses. Our assessment of which tasks require intelligence, which ones don't,
+
+116
+00:21:18,960 --> 00:21:30,160
+has to be reordered quite a bit. Trying to fit AI into our theories of scientific progress and what is hard and what is easy, we're struggling quite a lot.
+
+117
+00:21:30,160 --> 00:21:39,600
+We have to ask questions that we've never really had to ask before. Or maybe the philosophers had, but now we all have to deal with it. This brings up a topic I've been very curious about.
+
+118
+00:21:39,600 --> 00:21:47,360
+You mentioned Darwin's theory of evolution. There's this book, The Clockwork Universe by Edward Dolnick, which covers a lot of this era of history we're talking about.
+
+119
+00:21:47,360 --> 00:21:57,680
+He has this interesting observation in there. The Origin of Species was published in 1859. Principia Mathematica was published in 1687. So The Origin of Species comes out two centuries
+
+120
+00:21:57,680 --> 00:22:04,945
+after Principia. Conceptually, it seems like Darwin's theory is simpler. There's a contemporaneous biologist to Darwin,
+
+121
+00:22:04,945 --> 00:22:12,080
+Thomas Huxley, who reads The Origin of Species and he says, "How stupid not to have thought of that." Nobody ever says that about Principia, chiding themselves
+
+122
+00:22:12,080 --> 00:22:20,400
+for not having beaten Newton to gravity. So there's a question of why did it take longer? It seems like a big part of the reason is what you were saying.
+
+123
+00:22:20,400 --> 00:22:27,520
+The evidence for natural selection is overwhelming in a certain sense, but it's cumulative and retrospective, whereas Newton can just say, "Here are my equations.
+
+124
+00:22:27,520 --> 00:22:37,040
+Let me see the moon's orbital period and its distance, and if it lines up, then we've made progress." Lucretius actually had this idea that species
+
+125
+00:22:37,040 --> 00:22:48,960
+adapted to their environment in the first century BC but nobody really talks about it until Darwin because Lucretius couldn't run some experiment and force people to pay attention.
+
+126
+00:22:48,960 --> 00:23:00,000
+I wonder if we'll in retrospect end up seeing much more progress in domains which have this kind of tight data loop where you can verify them quite easily, even though
+
+127
+00:23:00,000 --> 00:23:09,360
+they're conceptually much more difficult. I think one aspect of science is that it's not just creating a new theory and validating it, but communicating it to others.
+
+128
+00:23:09,360 --> 00:23:22,560
+Darwin was an amazing science communicator. He wrote in English, in natural language. I'm speaking like a— No Lean.
+
+129
+00:23:22,560 --> 00:23:36,960
+I have to get out of my technical mindset. He spoke in plain English, didn't use equations, and he synthesized a lot of disparate facts. Little pieces of evolution had been worked out in
+
+130
+00:23:36,960 --> 00:23:49,920
+the past, but he had this very compelling vision. Again, he was still missing things. He didn't know the mechanism for heredity, he didn't have DNA.
+
+131
+00:23:49,920 --> 00:24:02,720
+But his writing style was persuasive, and that helped a lot. Newton wrote in Latin. He had invented entire new areas of mathematics just to explain what he was doing.
+
+132
+00:24:02,720 --> 00:24:11,920
+He was also from an era where scientists were much more secretive and competitive. Academia is still competitive, but it was even worse back in Newton's day.
+
+133
+00:24:11,920 --> 00:24:23,040
+He held back some of his best insights because he didn't want his rivals to get any advantage. He was also a somewhat unpleasant person from what I gather.
+
+134
+00:24:23,040 --> 00:24:39,120
+It was only a couple of decades after Newton when other scientists explained his work in much simpler terms that they became widespread. The art of exposition and making a case and
+
+135
+00:24:39,120 --> 00:24:50,320
+creating a narrative is also a very important part of science. If you have the data, it helps, but people need to be convinced, otherwise they will not push
+
+136
+00:24:50,320 --> 00:25:01,440
+it further or take the initial investment to learn your theory and really explore it. That's another thing which is really hard to reinforcement learn on.
+
+137
+00:25:01,440 --> 00:25:08,720
+How can you score how persuasive you are? Well, there are entire marketing departments trying to do this. Maybe it's good that AI is not
+
+138
+00:25:08,720 --> 00:25:23,520
+yet optimized to be persuasive. There's a social aspect to science. Even though we pride ourselves on having an objective side to it, where there's data and
+
+139
+00:25:23,520 --> 00:25:41,520
+experiment and validation, we still have to tell stories and convince our fellow scientists. That's a soft, squishy thing. It's a combination of data and painting a narrative,
+
+140
+00:25:41,520 --> 00:25:51,200
+and it's a narrative of gaps. Even with Darwin, as I said, there were pieces of his theory he could not explain. But he could still make a case that in the future,
+
+141
+00:25:51,200 --> 00:26:01,280
+people would find transitional forms, that they would find the mechanism of inheritance, and they did. I don't know how you can quantify that
+
+142
+00:26:01,280 --> 00:26:10,880
+in such a precise way that you can start doing reinforcement learning. Maybe that will be forever the human side of science.
+
+143
+00:26:10,880 --> 00:26:22,560
+One takeaway I had from reading and watching your stuff on the cosmic distance ladder… By the way, I highly recommend people watch your series with 3Blue1Brown on the cosmic distance ladder.
+
+144
+00:26:22,560 --> 00:26:33,600
+One takeaway was that the deductive overhang in many fields could be so much bigger than people realize. If you just had the right insight about
+
+145
+00:26:33,600 --> 00:26:43,120
+how to study a problem, you might be surprised at how much more you could learn about the world. I wonder if you think that's a product of astronomy at the particular times
+
+146
+00:26:43,120 --> 00:26:52,560
+in history that you're studying. Or is it just that based on the data that is incident on the Earth right now, we could actually divine a lot more than we happen to know?
+
+147
+00:26:52,560 --> 00:27:04,400
+Astronomy was one of the first sciences to really embrace data analysis and squeezing every last possible drop of information out of the information they had because data was
+
+148
+00:27:04,400 --> 00:27:20,160
+the bottleneck. It still is the bottleneck. It's really hard to collect astronomical data. Astronomers are world-class in extracting all kinds of conclusions
+
+149
+00:27:20,160 --> 00:27:31,280
+from little traces of data, almost like Sherlock. I hear that for a lot of quant hedge funds, their preferred hire is an astronomy PhD, actually. They are also very interested for other reasons
+
+150
+00:27:31,280 --> 00:27:39,040
+in extracting signals from various random bits of data. Okay, speaking of clever ideas, one of my listeners, Shawn,
+
+151
+00:27:39,040 --> 00:27:50,000
+solved the puzzle that Jane Street made for my audience and posted a great walkthrough on X. For context, Jane Street trained a ResNet, shuffled all 96 layers, and then challenged
+
+152
+00:27:50,000 --> 00:27:58,880
+people to put them back in the right order using only the model's outputs and training data. You can't brute force this – there's more possible orderings than atoms in the universe.
+
+153
+00:27:58,880 --> 00:28:06,880
+So Shawn broke the problem into two different parts. First, pair the layers into 48 different blocks. And second, put those blocks in the right order.
+
+154
+00:28:06,880 --> 00:28:16,640
+For pairing, Shawn realized that in a well-trained ResNet, the product of two weight matrices in a residual block should have a distinctive negative diagonal pattern.
+
+155
+00:28:16,640 --> 00:28:23,440
+This arises as a way for the model to keep the residual stream from growing out of control. From this insight, he was able to recover the right pairings.
+
+156
+00:28:23,440 --> 00:28:31,680
+For ordering, Shawn noticed that the model seemed to improve if he sorted the blocks by the size of their residual contributions. Starting with that rough approximation,
+
+157
+00:28:31,680 --> 00:28:39,120
+he combined a clever ranking heuristic with local swaps to recover the exact right order. His full walkthrough is linked in the description.
+
+158
+00:28:39,120 --> 00:28:44,960
+Don't worry if you didn't get to this puzzle in time, though. There's still one up about backdoored LLMs that even Jane Street doesn't know how to solve.
+
+159
+00:28:44,960 --> 00:29:00,640
+You can find it at janestreet.com/dwarkesh. Alright, back to Terence! We do under-explore how to extract extra information from various signals.
+
+160
+00:29:00,640 --> 00:29:12,480
+Just to pick one random study, I remember reading once that people were trying to measure how often scientists actually read the papers that they cite. How do you measure
+
+161
+00:29:12,480 --> 00:29:28,000
+this? You could try to survey different scientists, but they had a clever trick. Many citations have little typos, like a number is wrong or punctuation is almost wrong.
+
+162
+00:29:28,000 --> 00:29:40,880
+They measured how often a typo got copied from one reference to the next, and they could infer whether an author was just copying and pasting a reference without actually checking it.
+
+163
+00:29:40,880 --> 00:29:54,160
+From that, they were able to infer some measure of how much attention people were paying. So there are some clever tricks to extract… These questions you posed earlier of how
+
+164
+00:29:54,160 --> 00:30:12,240
+we can assess whether a scientific development is fruitful, interesting, or represents real progress… Maybe there are really useful metrics or footprints of this phenomenon in data.
+
+165
+00:30:12,240 --> 00:30:25,440
+We can examine citations and how often something is mentioned in a conference. Maybe there's a lot of sociology of science research to be done that could actually
+
+166
+00:30:25,440 --> 00:30:36,960
+detect these things. Maybe we should get some astronomers on the case, actually. That brings us nicely to the progress that, from
+
+167
+00:30:36,960 --> 00:30:44,800
+the outside, it seems like AI for math is making. You had a post recently where you pointed out that over the last few months, AI programs have solved fifty
+
+168
+00:30:44,800 --> 00:30:55,360
+out of the eleven hundred odd Erdős problems. I don’t know if it’s still correct, but as of a month ago you said that there had been a pause because the low-hanging fruit had been picked.
+
+169
+00:30:55,360 --> 00:31:07,360
+First of all, I'm curious if that is still the case, that we have picked the low-hanging fruit and now we're at this plateau currently. It does seem so. Fifty-odd problems have
+
+170
+00:31:07,360 --> 00:31:17,600
+been solved with AI assistance, which is great, but there's like six hundred to go. People are still chipping away at one or two of these right now.
+
+171
+00:31:17,600 --> 00:31:28,400
+We're seeing a lot fewer pure AI solutions now where the AI just one-shots the problem. There was a month where that happened and that has stopped, not for lack of trying.
+
+172
+00:31:28,400 --> 00:31:38,800
+I know of three separate attempts to get frontier model AIs to just attack every single one of the problems simultaneously. They pick out some minor observations,
+
+173
+00:31:38,800 --> 00:31:50,560
+or maybe they find that some problem was already solved in the literature, but there hasn't been any further purely AI-powered solution yet. People are using AI a lot currently.
+
+174
+00:31:50,560 --> 00:32:01,600
+Someone might use AI to generate a possible proof strategy, and then another person will use a separate AI tool to critique it, rewrite it, generate some numerical data for it,
+
+175
+00:32:01,600 --> 00:32:11,520
+or do a literature survey. Some problems have been solved by an ongoing conversation between lots of humans and lots of AI tools.
+
+176
+00:32:11,520 --> 00:32:27,120
+But it does seem like it was this one-off thing. Maybe one analogy for these problems is that you're in some sort of mountain range with all kinds of cliffs and walls.
+
+177
+00:32:27,120 --> 00:32:39,120
+Maybe there's a little wall which is three feet high, and one that's six feet high, and then there's fifteen feet high, and then there are some mile-high cliffs.
+
+178
+00:32:39,120 --> 00:32:46,880
+You're trying to climb as many of these cliffs as possible, but it's in the dark. We don't know which ones are tall, which ones are short.
+
+179
+00:32:46,880 --> 00:32:56,960
+So we try to light some candles and make some maps, and slowly we figure out some of them are climbable. Some of them we can identify a partial
+
+180
+00:32:56,960 --> 00:33:06,960
+track in the wall that you can reach first. These AI tools, they're like jumping machines that can jump two meters in the air, higher than any human.
+
+181
+00:33:06,960 --> 00:33:18,800
+Sometimes they jump in the wrong direction, and sometimes they crash, but sometimes they can reach the tops of the lowest walls that we couldn't reach before.
+
+182
+00:33:18,800 --> 00:33:32,880
+We've just set them loose in this mountain range, hopping around. There was this exciting period where they could actually find all the low ones and reach them.
+
+183
+00:33:32,880 --> 00:33:48,320
+Maybe the next time there's a big advance in the models, they will try it again, and a few more will be breached. But it's a different style of doing mathematics.
+
+184
+00:33:48,320 --> 00:34:02,640
+Normally we would hill climb, make little markers, and try to identify partial things. These tools either succeed or they fail. They've been really bad at creating partial
+
+185
+00:34:02,640 --> 00:34:14,800
+progress or identifying intermediate stages that you should focus on first. Going back to this previous discussion, we don't have a way of evaluating partial progress
+
+186
+00:34:14,800 --> 00:34:23,040
+the same way we can evaluate a one-shot success or failure of solving a problem. There's two different ways to think through what you've just said.
+
+187
+00:34:23,040 --> 00:34:29,920
+One of them is more bearish on AI progress, and one of them is more bullish. The bearish one being, "Oh, they're only getting to a certain height of wall,
+
+188
+00:34:29,920 --> 00:34:41,840
+which is not as high as humans are reaching." The second is that they have this powerful property that once they achieve a certain waterline, they can fill every single problem
+
+189
+00:34:41,840 --> 00:34:49,840
+that is available at that waterline, which we simply can't do with humans. We can't make a million copies of you and give each of them a million dollars
+
+190
+00:34:49,840 --> 00:35:00,640
+of inference compute and have you do a hundred years of subjective time research on a million different problems at the same time. But once AIs reach Terence Tao-level,
+
+191
+00:35:00,640 --> 00:35:09,520
+they could do that. Once they reach intermediate levels, they could do the intermediate version of that. The same reason that we should be bearish now is
+
+192
+00:35:09,520 --> 00:35:15,040
+the reason we should be especially bullish. Not even when they achieve superhuman intelligence, but just when they achieve human-level intelligence,
+
+193
+00:35:15,040 --> 00:35:24,320
+because their human-level intelligence is qualitatively wider and more powerful than our human-level intelligence. I agree. They excel at breadth,
+
+194
+00:35:24,320 --> 00:35:37,520
+and humans excel at depth, human experts at least. I think they're very complementary. But our current way of doing math and science is focused on depth because that's where human
+
+195
+00:35:37,520 --> 00:35:51,120
+expertise is, because humans can't do breadth. We have to redesign the way we do science to take full advantage of this breadth capability that we now have.
+
+196
+00:35:51,120 --> 00:36:01,440
+We should have a lot more effort in creating very broad classes of problems to work on rather than one or two really deep, important problems. We should still have the deep, important problems,
+
+197
+00:36:01,440 --> 00:36:16,000
+and humans should still be working on them. But now we have this other way of doing science. We can explore entirely new fields of science by first getting these broad,
+
+198
+00:36:16,000 --> 00:36:29,120
+moderately competent AIs to map it out and make all the easy observations. And then identify certain islands of difficulty, which human experts can then come and work on.
+
+199
+00:36:29,120 --> 00:36:41,920
+I see very much a future of very complementary science. Eventually, you would hope to get both breadth and depth and somehow get the best of both worlds.
+
+200
+00:36:41,920 --> 00:36:54,000
+But we need practice with the breadth side. It's too new. We don't even have the paradigms to really take full advantage of it. But we will, and then science will be
+
+201
+00:36:54,000 --> 00:37:05,680
+unrecognizable after that, I think. To this point about complementarity, programmers have noticed that they're way more productive as a result of these AI tools.
+
+202
+00:37:05,680 --> 00:37:16,320
+I don't know if you as a mathematician feel the same way, but it does seem like one big difference between vibe coding and vibe researching is that with software,
+
+203
+00:37:16,320 --> 00:37:25,040
+the whole point is to have some effect on the world through your work. If it leads to you better understanding a problem or coming up with some clean
+
+204
+00:37:25,040 --> 00:37:34,560
+abstraction to embody in your code, that is instrumental to the end goal. Whereas with research, the reason we care about solving the Millennium Prize Problems
+
+205
+00:37:34,560 --> 00:37:45,840
+is that presumably that in the process of solving them, we discover new mathematical objects or new techniques that advance our civilization's understanding of mathematics.
+
+206
+00:37:45,840 --> 00:37:57,040
+So the proof is instrumental to the intermediate work. I don't know if you agree with that dichotomy or if that in any way will explain the relative
+
+207
+00:37:57,040 --> 00:38:06,320
+uplift we'll see in software versus research. Certainly in math, the process is often more important than the problem itself. The problem is kind of a proxy
+
+208
+00:38:06,320 --> 00:38:15,120
+for measuring progress. I think even in software, there are different types of software tasks. If you just create a webpage that does the same
+
+209
+00:38:15,120 --> 00:38:24,000
+thing that a thousand other webpages do, there's no skill to be learned. Well, there is still some skill maybe that the individual programmer could pick up.
+
+210
+00:38:24,000 --> 00:38:39,040
+But for boilerplate-type code, it's something that you should definitely offload to AI. Sometimes once you make the code, you still have to maintain it.
+
+211
+00:38:39,040 --> 00:38:50,800
+There are issues with upgrading it and making it compatible with other things. I've heard programmers report that even if an AI can create the first prototype
+
+212
+00:38:50,800 --> 00:39:03,520
+of a tool, making it mesh with everything else and making it interact with the real world in the way they want is an ongoing process. If you don't have the skills that you pick up from
+
+213
+00:39:03,520 --> 00:39:19,440
+writing the code, that may impact your ability to maintain it down the road. So yes, certainly mathematicians, we've used problems to build intuition and to train people
+
+214
+00:39:19,440 --> 00:39:35,280
+to have a good idea of what's true, what to expect, what is provable, and what is difficult. Just getting the answers right away may actually inhibit that process.
+
+215
+00:39:35,280 --> 00:39:46,160
+I made a distinction between theory and experiment before. In most sciences, there's an equal division between the theoretical side and the experimental side. Math has been unique in
+
+216
+00:39:46,160 --> 00:39:59,120
+that it's almost entirely theoretical. We place a premium on trying to have coherent, clean theories of why things are true and false. We haven't done many experiments as to,
+
+217
+00:39:59,120 --> 00:40:07,920
+if we have two different ways to solve a problem, which is more effective. We have some intuition, but we haven't done large-scale studies where we take a thousand
+
+218
+00:40:07,920 --> 00:40:19,520
+problems and just test them. But we can do that now. I think AI-type tools will actually revolutionize the experimental side of math,
+
+219
+00:40:19,520 --> 00:40:30,000
+where you don't care so much about individual problems and the process of solving them, but you want to gather large-scale data about what things work and what things don't.
+
+220
+00:40:30,000 --> 00:40:39,280
+The same way that if you're a software company and you want to roll out a thousand pieces of software, you don't really want to handcraft each one and learn lessons from each.
+
+221
+00:40:39,280 --> 00:40:53,360
+You just want to find what workflows let you scale. The idea of doing mathematics at scale is at its infancy. But that's where AI is really going to revolutionize the subject.
+
+222
+00:40:53,360 --> 00:41:06,000
+I feel like a big crux in these conversations about how good AI will be for science is, I think you said this, that they're using existing techniques and modifying them.
+
+223
+00:41:06,000 --> 00:41:15,760
+It would be interesting to understand how much progress one can make simply from using existing techniques. If I looked at the top math journals, how many of
+
+224
+00:41:15,760 --> 00:41:27,200
+the papers are coming up with a new technique, whatever that means, versus using existing techniques on new problems? What is the overhang? If you just applied every known technique to every
+
+225
+00:41:27,200 --> 00:41:38,640
+open problem, would that constitute a humongous uplift in our civilization's knowledge, or would that not be that impressive and useful? This is a great question, and we don't
+
+226
+00:41:38,640 --> 00:41:50,560
+have the data to fully answer it yet. Certainly, a lot of work that human mathematicians do… When you take a new problem, one of the first things we do is we look at all
+
+227
+00:41:50,560 --> 00:41:59,920
+the standard things that have worked on similar problems in the past, and we try them one by one. Sometimes that works, and that's still worth publishing because the question was important.
+
+228
+00:41:59,920 --> 00:42:08,880
+Sometimes they almost work, and you have to add one more wrinkle to it, and that's also interesting. But the papers that go into the top journals
+
+229
+00:42:08,880 --> 00:42:21,760
+are usually ones where the existing methods can kind of solve 80% of the problem, but then there is this 20% which is resistant and a new technique has to be invented to fill in the gaps.
+
+230
+00:42:21,760 --> 00:42:32,880
+It's very rare now that a problem gets solved with no reliance on past literature, where all the ideas come out of nowhere. That was more common in the past,
+
+231
+00:42:32,880 --> 00:42:49,360
+but math is so mature now that it's just so much of a handicap to not use the literature first. AI tools are getting really good at the first part of that, just trying all the
+
+232
+00:42:49,360 --> 00:43:04,720
+standard techniques on a problem, often making fewer mistakes in applying them than humans. They still make mistakes, but I've tested these tools on little tasks that I can do,
+
+233
+00:43:04,720 --> 00:43:17,280
+and sometimes they pick up errors that I make. Sometimes I pick up errors that they make. It's about a tie right now. But I haven't yet seen them take the next step.
+
+234
+00:43:17,280 --> 00:43:31,200
+When there are holes in the argument where none of the things are working, then what do you do? They can suggest random things, but often I find that trying to chase them down to
+
+235
+00:43:31,200 --> 00:43:42,720
+make them work, and finding they don't work, wastes more time than it saves. I think some fraction of problems that we currently think are hard will fall
+
+236
+00:43:42,720 --> 00:43:53,600
+from this method, especially the ones that haven't received enough attention. With the Erdős problems, almost all of the 50 problems that were solved by AIs were ones for
+
+237
+00:43:53,600 --> 00:44:03,920
+which there was basically no literature. Erdős posed the problem once or twice. Maybe some people tried it casually and couldn't do it, but they never wrote up anything.
+
+238
+00:44:03,920 --> 00:44:12,720
+But it turned out that there was a solution, and it was just combining this one obscure technique that not many people know about with some other result in the literature.
+
+239
+00:44:12,720 --> 00:44:24,320
+That's the median level of what AI can accomplish, and that's really great. It clears out 50 of these problems. So I think you will see some isolated successes.
+
+240
+00:44:24,320 --> 00:44:32,320
+But what we found… Some people have done large-scale sweeps of these Erdős problems. If you only focus on the success stories, the ones that get broadcast
+
+241
+00:44:32,320 --> 00:44:40,720
+on social media, it looks amazing. All these problems that haven't been solved for decades, now they're falling. But whenever we do a systematic study,
+
+242
+00:44:40,720 --> 00:44:50,800
+on any given problem an AI tool has a success rate of maybe 1% or 2%. It's just that they can buy scale, and you just pick the winners. It looks great. I
+
+243
+00:44:50,800 --> 00:45:03,760
+think there'll be a similar thing happening with the hundreds of really prestigious, difficult math problems out there. Some AI may get lucky and actually solve them,
+
+244
+00:45:03,760 --> 00:45:12,880
+and there will be some backdoor to solve the problem that everyone else missed. That will get a lot of publicity. But then people will try these fancy
+
+245
+00:45:12,880 --> 00:45:28,720
+tools on their own favorite problem, and they will again experience the 1% to 2% success rate. There'll be a lot of noise amongst the signal of when they're working and when they're not.
+
+246
+00:45:28,720 --> 00:45:38,160
+It will be increasingly important to collect these really standardized datasets. There are efforts now to create a standard set of challenge problems for AIs to solve, and not just
+
+247
+00:45:38,160 --> 00:45:48,480
+rely on the AI companies to only publish their wins and not disclose their negative results. That will maybe give more clarity as to where we're actually at.
+
+248
+00:45:48,480 --> 00:45:58,080
+Although I think it's worth emphasizing how much progress in AI it constitutes already, to have models that are capable of applying some technique that nobody had written down
+
+249
+00:45:58,080 --> 00:46:05,280
+as applicable to this particular problem. The progress is simultaneously amazing and disappointing. It is a very strange
+
+250
+00:46:05,280 --> 00:46:18,160
+feeling to see these tools in action. But people also acclimatize really quickly. I remember when Google's web search came out 20 years ago. It just blew all the other searches out of the water.
+
+251
+00:46:18,160 --> 00:46:26,240
+You're getting relevant hits on the front page, exactly what you wanted. It was amazing, and then after a few years, you just took for
+
+252
+00:46:26,240 --> 00:46:42,160
+granted that you could Google anything. 2026-level AI would be stunning in 2021. A lot of it—face recognition, natural speech, doing college-level math problems—we just
+
+253
+00:46:42,160 --> 00:46:53,280
+take for granted now. Speaking of 2026 AI, you made a prediction in 2023 that by 2026 it would be like a colleague in mathematics?
+
+254
+00:46:53,280 --> 00:47:04,000
+A trustworthy co-author if used correctly. Which is looking pretty good in retrospect. Yeah, I'm pretty pleased. So let's see if you can continue this streak.
+
+255
+00:47:04,000 --> 00:47:19,280
+You personally are 2x more productive as a result of AI. What year would you say that? Productivity, I think, is not quite a one-dimensional quantity. I'm definitely noticing that the style
+
+256
+00:47:19,280 --> 00:47:29,040
+in which I do mathematics is changing quite a bit, and the type of things I do. For example, my papers now have a lot more code, a lot more pictures,
+
+257
+00:47:29,040 --> 00:47:37,120
+because it's so easy to generate these things now. Some plot which would have taken me hours to do, now I can do in minutes. But in the past, I just wouldn't have
+
+258
+00:47:37,120 --> 00:47:50,640
+put the plot in my paper in the first place. I would just talk about it in words. So it's hard to measure what 2x means. On the one hand, I think the type of
+
+259
+00:47:50,640 --> 00:48:06,800
+papers that I would write today, if I had to do them without AI assistance, would definitely take five times longer. But I would not write my papers that way. 5x? Yeah, but these are auxiliary tasks.
+
+260
+00:48:06,800 --> 00:48:24,640
+Things like doing a much deeper literature search or supplying a lot more numerics. They enrich the paper. The core of what I do, actually solving the most difficult part of a
+
+261
+00:48:24,640 --> 00:48:35,760
+math problem, hasn't changed too much. I still use pen and paper for that. But there's lots of silly things. I use an AI agent now to reformat.
+
+262
+00:48:35,760 --> 00:48:46,800
+Sometimes if all my parentheses are not quite the right size, I used to manually change them by hand, and now I can get an AI agent to do all that quite nicely in the background.
+
+263
+00:48:46,800 --> 00:49:00,800
+They've really sped up lots of secondary tasks. They haven't yet sped up the core thing that I do, but it's allowed me to add more things to my papers.
+
+264
+00:49:00,800 --> 00:49:11,600
+By the same token, if I were to write a paper I wrote in 2020 again—and not add all these extra features, but just have something of the same level of functionality—it actually
+
+265
+00:49:11,600 --> 00:49:22,160
+hasn't saved that much time, to be honest. It's made the papers richer and broader, but not necessarily deeper. You made this distinction between
+
+266
+00:49:22,160 --> 00:49:40,080
+artificial cleverness and artificial intelligence. I would like to better understand those concepts. What is an example of intelligence that is not just cleverness?
+
+267
+00:49:40,080 --> 00:49:53,440
+Intelligence is famously hard to define. It's one of these things that you know when you see it. But when I talk to someone and we're trying to collaboratively solve a math problem together,
+
+268
+00:49:53,440 --> 00:50:06,400
+there's this conversation where neither of us knows how to solve the problem initially. One of us has some idea and it looks promising, so then we have some sort of prototype strategy.
+
+269
+00:50:06,400 --> 00:50:18,240
+We test it, and it doesn't work, but then we modify it. There's adaptivity and continual improvement of the idea over time.
+
+270
+00:50:18,240 --> 00:50:30,720
+Eventually, we've systematically mapped out what doesn't work and what does work, and we can see a path forward, but it's evolving with our discussion.
+
+271
+00:50:30,720 --> 00:50:44,320
+This isn't quite what the AIs do. The AIs can mimic this a little bit. To go back to this analogy of these jumping robots, they can jump and fail, and jump and fail.
+
+272
+00:50:44,320 --> 00:50:58,560
+But what they can't do is jump a little bit, reach some handhold, stay there, pull other people up, and then try to jump from there. There isn't this cumulative process
+
+273
+00:50:58,560 --> 00:51:17,520
+which is built up interactively. It seems to be a lot more trial and error and just repetition: brute force. It scales, and it can work amazingly well in certain contexts. But this idea of building
+
+274
+00:51:17,520 --> 00:51:29,760
+up cumulatively from partial progress is what's still not quite there yet. Interesting. You're saying if Gemini 3 or Claude 4.5, whatever, solves a problem,
+
+275
+00:51:29,760 --> 00:51:36,880
+it is not the case that its own understanding of math has progressed. No. Or even if it works on a problem without solving it, it's not that its own understanding of math has progressed.
+
+276
+00:51:36,880 --> 00:51:49,840
+Yeah. You run a new session and it's forgotten what it just did. It has no new skills to build on related problems. Maybe what you just did is 0.001% of the
+
+277
+00:51:49,840 --> 00:51:58,000
+training data for the next generation. So maybe eventually some of it gets absorbed. So Terence talks about the importance of decomposing particularly gnarly
+
+278
+00:51:58,000 --> 00:52:07,840
+problems into a series of easier chunks. Even if this doesn't result in the full solution, approaching problems in this way helps you build up the intuitions and practice the techniques
+
+279
+00:52:07,840 --> 00:52:14,720
+that you'll need to keep making progress. But models today tend to struggle with these kinds of problem-solving techniques. That's where Labelbox comes in.
+
+280
+00:52:14,720 --> 00:52:24,160
+Labelbox helps you train models not just to get the right answer, but to think the right way. They've operationalized these reasoning behaviors into rubrics, giving you the ability to evaluate
+
+281
+00:52:24,160 --> 00:52:31,840
+every important dimension of a model's output. These rubrics go beyond simple correctness. Did the model reach for the right tools? Did it check its own work and
+
+282
+00:52:31,840 --> 00:52:40,560
+explore alternative paths? How clear was its response? These skills are useful across domains: math, physics, finance, psychology, and more.
+
+283
+00:52:40,560 --> 00:52:48,800
+And they're becoming increasingly important as models take on harder, open-ended problems, some of which have multiple solutions and some of which we don't even know the solutions to.
+
+284
+00:52:48,800 --> 00:53:00,640
+Labelbox can get you rubrics tailored to your domain, helping you systematically measure and shape how your models think. Learn more at labelbox.com/dwarkesh.
+
+285
+00:53:00,640 --> 00:53:12,000
+One big question I have is how plausible is it that if we just keep training AIs—they get better and better at solving problems in Lean—that they will continue to solve more and more impressive
+
+286
+00:53:12,000 --> 00:53:22,000
+problems, and then we will be surprised at how little insight we got from some Lean solution to proving the Riemann hypothesis or something. Or do you think it is a necessary condition of
+
+287
+00:53:22,000 --> 00:53:32,880
+solving the Riemann hypothesis, even by an AI that is doing it entirely in Lean, that the constructions and definitions created in the Lean program have to
+
+288
+00:53:32,880 --> 00:53:44,320
+advance our understanding of mathematics? Or could it just be assembly code gobbledygook? We don't know. Some problems have been basically solved by pure brute force.
+
+289
+00:53:44,320 --> 00:53:56,400
+The four color theorem is a famous example. We have still not found a conceptually elegant proof of this theorem, and maybe we never will. Some problems may only be solvable by splitting
+
+290
+00:53:56,400 --> 00:54:08,560
+into an enormous number of cases and doing brute force, uninsightful computer analysis on each case. Part of the reason we prize problems like
+
+291
+00:54:08,560 --> 00:54:18,960
+the Riemann hypothesis is that we're pretty sure a new type of mathematics has to be created, or a new connection between two previously unconnected areas of mathematics
+
+292
+00:54:18,960 --> 00:54:30,400
+has to be discovered to make this work. We don't even know what the shape of the solution is, but it doesn't feel like a problem that will be solved just by exhaustively checking cases.
+
+293
+00:54:30,400 --> 00:54:42,320
+Or it could be false actually. Okay, there is an unlikely scenario that the hypothesis is false, and you can just compute a zero off the line,
+
+294
+00:54:42,320 --> 00:54:59,200
+and a massive computer calculation verifies it. That would be very disappointing. I do feel that fully autonomous, one-shot approaches are not the right approach for these problems.
+
+295
+00:54:59,200 --> 00:55:14,560
+You'll get a lot more mileage out of the interplay of humans collaborating with these tools. I can see one of these problems being solved by smart humans
+
+296
+00:55:14,560 --> 00:55:24,480
+assisted by extremely powerful AI tools. But the exact dynamic may be very different from what we envision right now. It could be a collaboration of
+
+297
+00:55:24,480 --> 00:55:41,920
+a type that just doesn't exist yet. There may be a way to generate a million variants of the Riemann zeta function and do AI-assisted data analysis to discover some pattern connecting
+
+298
+00:55:41,920 --> 00:55:51,200
+them that we didn't know about before. This lets you transform the problem into a different area of mathematics. There could be all kinds of scenarios.
+
+299
+00:55:51,200 --> 00:56:04,720
+Suppose the AI figures it out, and latent in the Lean is some brand-new construction which, if we realized its significance, we would be able to apply in all these different situations.
+
+300
+00:56:04,720 --> 00:56:17,040
+How would we even recognize it? Again, a very naive question, but if you come up with the equivalent of Descartes' idea that you can have a coordinate system unifying algebra
+
+301
+00:56:17,040 --> 00:56:26,160
+and geometry, in Lean code it would just look like R→R, and it wouldn't look that significant. I'm sure there are other constructions which have this kind of property.
+
+302
+00:56:26,160 --> 00:56:39,040
+The beauty of formalizing a proof in something like Lean is that you can take any piece of it and study it atomically. When I read a paper which solves some
+
+303
+00:56:39,040 --> 00:56:48,480
+difficult problem, there's often a big sequence of lemmas and theorems. Ideally, the author will talk their way through what's important and what's not.
+
+304
+00:56:48,480 --> 00:56:59,360
+But sometimes they don't reveal what steps were the important ones and which ones were just boilerplate, standard steps. You can study each lemma in isolation.
+
+305
+00:56:59,360 --> 00:57:06,320
+Some of them I can see look fairly standard and resemble something I'm familiar with. I'm pretty sure there's nothing interesting going on there.
+
+306
+00:57:06,320 --> 00:57:21,280
+But this other lemma, that's something I haven't seen before, and I can see why having this result would really help prove the main result. You can assess whether a step is really key
+
+307
+00:57:21,280 --> 00:57:29,520
+to your argument or not, and Lean really facilitates that. The individual steps are identified really precisely.
+
+308
+00:57:29,520 --> 00:57:41,120
+I think in the future, there will be entire professions of mathematicians who might take a giant Lean-generated proof and do some ablation on it, trying to remove parts of
+
+309
+00:57:41,120 --> 00:57:52,160
+it and find more elegant ways. They might get other AIs to do some reinforcement learning to make the proof more elegant, and maybe other AIs will grade
+
+310
+00:57:52,160 --> 00:58:01,920
+whether this proof looks better or not. One thing that will change quite a bit in the near future is how we write papers. Until recently, writing papers was the most
+
+311
+00:58:01,920 --> 00:58:14,560
+time-consuming and expensive part of the job. So you did it very rarely. You only wrote up your results once all the other parts of your argument were checked out, because
+
+312
+00:58:14,560 --> 00:58:24,960
+rewriting and refactoring was just a total pain. That's become a lot easier now with modern AI tools. You don't have to have just one version of your paper. Once you have one,
+
+313
+00:58:24,960 --> 00:58:35,360
+people can generate hundreds more. One giant messy Lean proof may not be very meaningful or understandable on its own, but other people can
+
+314
+00:58:35,360 --> 00:58:47,840
+refactor it and do all kinds of things with it. We've seen this with the Erdős problem website. An AI will generate a proof, and here are 3,000 lines of code that verify the proof.
+
+315
+00:58:47,840 --> 00:59:00,480
+Then people got other AIs to summarize the proof, and people write their own proofs. There's actually post-processing. Once you have one proof, we have a lot of
+
+316
+00:59:00,480 --> 00:59:12,000
+tools now to deconstruct and interpret it. It's a very nascent area of mathematics, but I'm not as worried about it. Some people are concerned about what happens if
+
+317
+00:59:12,000 --> 00:59:20,640
+the Riemann hypothesis is proven with a completely incomprehensible proof. I think once you have the artifact of a proof, we can do a lot of analysis on it.
+
+318
+00:59:20,640 --> 00:59:28,960
+You posted recently that it would be helpful to have a formal or semi-formal language for mathematical strategies as opposed to just mathematical proofs,
+
+319
+00:59:28,960 --> 00:59:37,840
+which is what Lean specializes in. I would love to learn more about what that would involve or look like. We don't really know. We've been very
+
+320
+00:59:37,840 --> 00:59:47,920
+lucky in mathematics that we have worked out the laws of logic and mathematics, but this is a fairly recent accomplishment. It was started by Euclid two millennia ago,
+
+321
+00:59:47,920 --> 01:00:00,400
+but only in the early 20th century did we finally list out the axioms of mathematics, the standard axioms of what we call ZFC, the axioms of first-order logic, and what a proof is.
+
+322
+01:00:00,400 --> 01:00:14,080
+This we've managed to automate and have a formal language for. There could be some way to assess plausibility. You have a conjecture that something is true,
+
+323
+01:00:14,080 --> 01:00:24,560
+you test a few examples, and it works out. How does this increase your confidence that the conjecture is true? We have a few sort of mathematical ways to model
+
+324
+01:00:24,560 --> 01:00:44,880
+this, like Bayesian probability, for example. But you often have to set certain base assumptions, and there's a lot of subjectivity still in these tasks.
+
+325
+01:00:44,880 --> 01:00:59,840
+This is more of a wish than a plan to develop these languages, but just seeing how successful having a formal framework in place, like Lean, has made deductive proofs so much easier to automate
+
+326
+01:00:59,840 --> 01:01:16,880
+and train AI on… The bottleneck for using AI to create strategies and make conjectures is we have to rely on human experts and the test of time to validate whether something is plausible or not.
+
+327
+01:01:16,880 --> 01:01:32,240
+If there was some semi-formal framework where this could be done semi-automatically in a way that isn't easily hackable... It's really important with these formal
+
+328
+01:01:32,240 --> 01:01:44,960
+proof assistants that there are no backdoors or exploits you can use to somehow get your certified proof without actually proving it, because reinforcement learning is
+
+329
+01:01:44,960 --> 01:02:01,280
+just so good at finding these backdoors. If there's some framework that mimics how scientists talk to each other in a semi-formal way, using data and argument,
+
+330
+01:02:01,280 --> 01:02:18,160
+but also constructing narratives... There's some subjective aspect of science that we don't know how to capture in a way that we can insert AI into it in any useful way.
+
+331
+01:02:18,160 --> 01:02:35,440
+This is a future problem. There are research efforts to try to create automated conjectures, and maybe there are ways to benchmark these and simulate this, but it's all very new science.
+
+332
+01:02:35,440 --> 01:02:56,240
+Can you help me get some intuition? I have two sub-questions. One, it would be very helpful to have a specific example of what something like this would look like, the way scientists
+
+333
+01:02:56,240 --> 01:03:10,160
+communicate that we can't formalize yet. Two, it seems almost definitionally paradoxical to say you're building up some narrative or natural language explanation and then also having
+
+334
+01:03:10,160 --> 01:03:20,400
+something which you could have formalized. I'm sure there's some intuition behind where that overlap is, and I'd love to understand that better.
+
+335
+01:03:20,400 --> 01:03:31,760
+An example of a conjecture: Gauss was interested in the prime numbers and created one of the first mathematical datasets. He just computed the first 100,000 prime numbers
+
+336
+01:03:31,760 --> 01:03:41,120
+or so, hoping to find patterns. He did find a pattern, but maybe not the pattern he was expecting. He found a statistical pattern in the primes
+
+337
+01:03:41,120 --> 01:03:54,080
+that if you count how many primes there are up to 100, 1,000, one million, and so forth, they get sparser and sparser, but the drop-off in the density was inversely proportional to
+
+338
+01:03:54,080 --> 01:04:05,120
+the natural logarithm of the range of numbers. So he conjectured what we now call the prime number theorem: the number of primes up to X is X divided by the natural log of X.
+
+339
+01:04:05,120 --> 01:04:19,520
+He had no way to prove this. It was data-driven. This was a conjecture. It was revolutionary for its time because it was maybe the first really important conjecture
+
+340
+01:04:19,520 --> 01:04:27,600
+of math that was statistical in nature. Normally you're talking about a pattern, like maybe the spacing between the primes has a certain regularity.
+
+341
+01:04:27,600 --> 01:04:42,640
+But this didn't tell you exactly how many primes there were in any given range. It just gave you an approximation that got better and better as you went further and further out.
+
+342
+01:04:42,640 --> 01:04:51,040
+It started the field of what we call analytic number theory. It was the first in many conjectures like this, many of which got proved,
+
+343
+01:04:51,040 --> 01:05:03,360
+which started consolidating the idea that the prime numbers didn't really have a pattern, that they behaved like random sets of numbers with a certain density.
+
+344
+01:05:03,360 --> 01:05:14,160
+They had some patterns, like they're almost all odd. They're also not actually random, they're what's called pseudo-random. There's no random number generation involved in creating the prime numbers.
+
+345
+01:05:14,160 --> 01:05:26,000
+But over time, it became more and more productive to think of the primes as if they were just generated by some god rolling dice all the time and creating this random set.
+
+346
+01:05:26,000 --> 01:05:32,640
+This allowed us to make all these other predictions. There's a still-open conjecture in number theory called the twin prime conjecture, that
+
+347
+01:05:32,640 --> 01:05:41,040
+there should be infinitely many pairs of primes that are twins just two apart, like 11 and 13. We can't prove that, and there are good reasons why we can't prove it.
+
+348
+01:05:41,040 --> 01:05:51,680
+But because of this statistical random model of the primes, we are absolutely convinced it's true. We know that if the primes were generated by flipping coins, we would just—by random chance
+
+349
+01:05:51,680 --> 01:06:02,320
+like infinite monkeys at a typewriter—see twin primes appear over and over again. We have over time developed this very accurate conceptual model of what the primes should behave
+
+350
+01:06:02,320 --> 01:06:12,400
+like based on statistics and probability. It's mostly heuristic and non-rigorous, but extremely accurate. The few times when we actually
+
+351
+01:06:12,400 --> 01:06:21,600
+can prove things about the primes, it has matched up with the predictions of what we call the random model of the primes. We have this conjectural concept
+
+352
+01:06:21,600 --> 01:06:29,680
+framework for understanding the primes that everyone believes in. It's the same reason why we believe the Riemann hypothesis is true, and why we
+
+353
+01:06:29,680 --> 01:06:40,800
+believe that cryptography based on the primes is mathematically secure. It's all part of this belief. In fact, one reason why we care
+
+354
+01:06:40,800 --> 01:06:49,920
+about the Riemann hypothesis is that if the Riemann hypothesis failed, if we knew it was false, it would be a serious blow to this model.
+
+355
+01:06:49,920 --> 01:06:58,080
+It would mean there's a secret pattern to the primes that we were not aware of. I think we would very rapidly abandon any cryptography based on the primes,
+
+356
+01:06:58,080 --> 01:07:07,680
+because if there was one pattern that we didn't know about, there are probably more, and these patterns can lead to exploits in crypto. It would be a big shock.
+
+357
+01:07:07,680 --> 01:07:20,320
+So we really want to make sure that doesn't happen. We've been convinced of things like the Riemann hypothesis over time.
+
+358
+01:07:20,320 --> 01:07:30,000
+Some of it is experimental evidence, and some is that the few times we've been able to make theoretical results, they've always aligned. It is possible that the consensus is wrong and
+
+359
+01:07:30,000 --> 01:07:40,480
+we've all just missed something very basic. There have been paradigm shifts in the past in scientific history. But we don't really have a way of
+
+360
+01:07:40,480 --> 01:07:53,600
+measuring this, partly because we don't have enough data on how math or science develops. We have one timeline of history, and we have maybe 100 stories of turning points in history.
+
+361
+01:07:53,600 --> 01:08:04,720
+If we had access to a million alien civilizations, each with a different development of history and science in different orders, then maybe we'd actually have a decent
+
+362
+01:08:04,720 --> 01:08:18,319
+shot at understanding how we measure what progress is and what is a good strategy. We could maybe start formalizing it and actually having a framework.
+
+363
+01:08:18,319 --> 01:08:30,240
+Maybe what we need to do is start creating lots of mini-universes or simulations of AI solving very basic problems in arithmetic or whatever, but coming up with their
+
+364
+01:08:30,240 --> 01:08:39,520
+own strategies for doing these things and having these little laboratories to test. There are people who investigate what's the smallest neural network that can do
+
+365
+01:08:39,520 --> 01:08:50,880
+10-digit multiplication and things like that. I think we could learn a lot just from evolving small AIs on simple problems. I was super excited when Mercury
+
+366
+01:08:50,880 --> 01:08:56,720
+reached out about sponsoring the podcast because I've been banking with them for years. I think I opened my first account with them in 2023.
+
+367
+01:08:56,720 --> 01:09:03,439
+Something I've come to appreciate over the last few years is that Mercury is constantly updating things and adding new features. Take their newest feature, Insights.
+
+368
+01:09:03,439 --> 01:09:11,680
+Insights summarizes your money in and out, showing you your biggest transactions and calling out anything that deserves extra attention. Like maybe your revenue from a particular partner
+
+369
+01:09:11,680 --> 01:09:19,200
+has gone down, or you've got a big uncategorized purchase that needs to be investigated. It's a super low-friction way for me to keep tabs on my business and make quick decisions.
+
+370
+01:09:19,200 --> 01:09:26,880
+For example, I try to invest any cash that I don't need on hand to keep running the business. With Insights, with just a couple of clicks, I was able to see exactly how much money I
+
+371
+01:09:26,880 --> 01:09:35,040
+spent in each month of 2025 and that lets me know exactly how much cash I'll need for the next year or so of operations. And then I can go invest the rest.
+
+372
+01:09:35,040 --> 01:09:42,960
+Mercury just keeps adding new features like this. Go to mercury.com to check it out. Mercury is a fintech company, not an FDIC Insured Bank.
+
+373
+01:09:42,960 --> 01:09:53,439
+Banking services provided through Choice Financial Group and Column NA, members FDIC. You have to learn about new fields not only very rapidly, but deeply enough
+
+374
+01:09:53,439 --> 01:10:04,800
+to contribute to the frontier. So in some sense, you're also one of the world's greatest autodidacts. What is your process of learning about a new
+
+375
+01:10:04,800 --> 01:10:19,360
+subfield in math? What does that look like? We talked about depth and breadth before. It's not a purely human-AI distinction. Humans also, I think it was Berlin who
+
+376
+01:10:19,360 --> 01:10:32,240
+split them into hedgehogs and foxes. The hedgehog knows one thing very well, and a fox knows a little bit about everything. I definitely think of myself as a fox.
+
+377
+01:10:32,240 --> 01:10:43,280
+I work with hedgehogs a lot, and sometimes I can be a hedgehog if need be. I've always had a little bit of an obsessive streak.
+
+378
+01:10:43,280 --> 01:10:53,680
+If there's something I read about which I feel like I have the capability to understand, but I don't understand why it works and there's some magic in it… Someone was able
+
+379
+01:10:53,680 --> 01:11:01,440
+to use a type of mathematics I'm not familiar with and get a result I would like to prove. I can't do it myself, but they could do it by their method,
+
+380
+01:11:01,440 --> 01:11:10,960
+and I want to find out what their trick was. It bugs me that someone else can do something I think I can do, but I can't. I've always had that obsessive,
+
+381
+01:11:10,960 --> 01:11:23,840
+completionist streak. I've had to wean myself off computer games because if I start a game, I want to play it to completion, through all the levels.
+
+382
+01:11:23,840 --> 01:11:35,520
+That's one way I learn new fields. I collaborate with a lot of people who have taught me other types of mathematics. I just make friends with another mathematician
+
+383
+01:11:35,520 --> 01:11:44,480
+working on another area of mathematics. I find their problems interesting, but they have to teach me some of the basic tricks, what's known, and what's not known.
+
+384
+01:11:44,480 --> 01:11:58,320
+I learn a lot from that. I found that writing about what I've learned helps. I have a blog where I sometimes record things I've learned. In the past when I was younger,
+
+385
+01:11:58,320 --> 01:12:07,440
+I would learn something, do this cool trick, and say, "Okay, I'm going to remember this." Then six months later, I'd forgotten it. I remember remembering it,
+
+386
+01:12:07,440 --> 01:12:16,960
+but I can't reconstruct my arguments. The first few times, it was so frustrating to have understood something and then lost it. I resolved I should always write down
+
+387
+01:12:16,960 --> 01:12:27,840
+anything cool that I've learned. That's part of how this blog came about. How long does it take you to write a blog post? It's something I often do when I don't want
+
+388
+01:12:27,840 --> 01:12:42,400
+to do other work. There's some referee report or something that feels slightly unpleasant for me to do at the time. Writing a blog feels creative and fun. It's something I do for myself.
+
+389
+01:12:42,400 --> 01:12:58,000
+Depending on the topic, it could be a quick half an hour or several hours. Because it's something I do voluntarily, time flies when I write these things down, as
+
+390
+01:12:58,000 --> 01:13:07,760
+opposed to doing something I have to do for administrative reasons that is just drudgery. Those are tasks, by the way, that AI is really helping with nowadays.
+
+391
+01:13:07,760 --> 01:13:22,480
+If civilization could from first principles decide how to use Terry Tao's time, as a limited resource, what is the biggest difference? What if the veil of ignorance got to decide how to
+
+392
+01:13:22,480 --> 01:13:34,720
+use Terry Tao's time versus what it does now? This podcast wouldn't be happening. As much as I complain about certain tasks that I don't want to do, but have to do… As you get
+
+393
+01:13:34,720 --> 01:13:47,680
+more senior in academia, you get more and more responsibilities, more committees, and whatever. I have also found that a lot of events I reluctantly went to because I was
+
+394
+01:13:47,680 --> 01:13:57,520
+obliged to for one reason or another… Because it's outside my comfort zone, it often results in interactions with people I wouldn't normally talk to, like you for instance.
+
+395
+01:13:57,520 --> 01:14:08,160
+I would learn interesting things and have interesting experiences. I would have opportunities to then network with other people that I never would have before.
+
+396
+01:14:08,160 --> 01:14:25,280
+So I do believe a lot in serendipity. I do optimize portions of my day where I schedule very carefully. But I am willing to leave some portions just
+
+397
+01:14:25,280 --> 01:14:38,160
+to do something that is not my usual thing. Maybe it'll be a waste of my time, but maybe I will learn something. More often than not, I get a positive
+
+398
+01:14:38,160 --> 01:14:50,080
+experience that I wouldn't have planned for. So I believe a lot in serendipity. Maybe there's a danger in modern societies, not just with AI, that we've
+
+399
+01:14:50,080 --> 01:15:07,920
+become really good at optimizing everything. We’re not optimizing our own optimization. With COVID, for example, we switched a lot to remote meetings, so everything was scheduled.
+
+400
+01:15:07,920 --> 01:15:22,640
+We kept busy in academia. We met almost the same number of people we met in person, but everything had to be planned in advance. What we lost out on was the casual knocking
+
+401
+01:15:22,640 --> 01:15:37,200
+on a hallway door, just meeting someone while getting a coffee. Those serendipitous interactions may not seem optimal, but they are actually really important.
+
+402
+01:15:37,200 --> 01:15:46,960
+When I was a grad student, I would go to the library to look for a journal article. You had to physically check out the journal and read the article.
+
+403
+01:15:46,960 --> 01:15:56,960
+You could browse through and sometimes the next article was also interesting. Sometimes it wasn’t, but you could accidentally find interesting things.
+
+404
+01:15:56,960 --> 01:16:06,480
+That has basically been lost now. If you want to access an article, you just type it into a search engine or an AI, and you get exactly what you want instantly.
+
+405
+01:16:06,480 --> 01:16:23,920
+But you don't get the accidental things you might have found if you'd done it more inefficiently. I spent a year once at the Institute for Advanced Study, which is
+
+406
+01:16:23,920 --> 01:16:33,120
+a great place with no distractions. You're there just to do research. The first few weeks you're there, it's great. You're getting all these papers written up that
+
+407
+01:16:33,120 --> 01:16:39,040
+you've been wanting to do for a long time. You think about problems for blocks of hours at a time. But I find if I stay there for more
+
+408
+01:16:39,040 --> 01:16:50,080
+than several months, I run out of inspiration. I get bored. I surf the internet a lot more. You actually do need a certain level of distraction in your life.
+
+409
+01:16:50,080 --> 01:17:08,000
+It adds enough randomness and high temperature. I don't know the optimal way to schedule my life. It just seems to work. I'm very curious when you expect AIs
+
+410
+01:17:08,000 --> 01:17:21,360
+that can actually do frontier math at least as well as the best human mathematicians. In some ways, they're already doing frontier math that is super intelligent that humans can't do,
+
+411
+01:17:21,360 --> 01:17:29,440
+but it's a different frontier from what we're used to. You could argue that calculators were doing frontier math that humans could not accomplish,
+
+412
+01:17:29,440 --> 01:17:50,800
+but it was number crunching. But replacing Terry Tao completely. I mean, what do you want me for? You'll just go on all the podcasts after.
+
+413
+01:17:50,800 --> 01:18:06,320
+It might not be the right question to ask. I think within a decade, a lot of things that math students currently do—what we spend the bulk of our time doing and a lot of stuff we
+
+414
+01:18:06,320 --> 01:18:20,400
+put in our papers today—can be done by AI. But we will find that that actually wasn't the most important part of what we do. A hundred years ago, a lot of mathematicians
+
+415
+01:18:20,400 --> 01:18:33,200
+were just solving differential equations. Physicists needed some exact solution to some system, and they hired a mathematician to laboriously go through the calculus and work out
+
+416
+01:18:33,200 --> 01:18:46,320
+the solution to this fluid equation, whatever. A lot of what a 19th-century mathematician would do, you could make a call to Mathematica, Wolfram Alpha, a computer algebra package, or now more
+
+417
+01:18:46,320 --> 01:18:59,120
+recently to an AI, and it would just solve the problem in a few minutes. But we moved on. We worked on different types of problems after that. Once computers came along—computers
+
+418
+01:18:59,120 --> 01:19:05,920
+used to be human. People used to laboriously create log tables and work out primes as Gauss did, and that has all been outsourced
+
+419
+01:19:05,920 --> 01:19:23,440
+to computers. But we moved on. In genetics, to sequence the genome of a single organism, that was an entire PhD of a geneticist, carefully separating all the chromosomes and whatever.
+
+420
+01:19:23,440 --> 01:19:31,040
+Now you can just spend $1,000 and send it to a sequencer and get it done. But genetics is not dead as a subject. You move to a different scale.
+
+421
+01:19:31,040 --> 01:19:38,320
+Maybe you study whole ecosystems rather than individuals. I take your point but when is most mathematical progress, or almost
+
+422
+01:19:38,320 --> 01:19:49,840
+all mathematical progress, happening by AI? If you find out this year a Millennium Prize Problem has been solved, you would put 95% odds that an AI did it autonomously.
+
+423
+01:19:49,840 --> 01:20:04,720
+Surely there will be such a year. I guess I do believe that hybrid human plus AIs will dominate mathematics for a lot longer. It will depend. It will require
+
+424
+01:20:04,720 --> 01:20:16,560
+some additional breakthroughs beyond what we already have, so it's going to be stochastic. I think AIs currently are very good at certain things, but really terrible at others.
+
+425
+01:20:16,560 --> 01:20:33,360
+While you can add more and more frameworks on top to reduce the error rates and make them work with each other a bit more, it feels like we don't have all the ingredients to really have a truly
+
+426
+01:20:33,360 --> 01:20:54,320
+satisfactory replacement for all intellectual tasks. It is complementary currently. It's not a replacement. Because current level AIs will accelerate science in so many ways,
+
+427
+01:20:54,320 --> 01:21:07,200
+hopefully new discoveries and new breakthroughs will happen more quickly. It's also possible that by destroying serendipity we actually inhibit certain types of progress.
+
+428
+01:21:07,200 --> 01:21:16,400
+Anything is possible at this point. I think the world is very, very unpredictable at this point in time. What is your advice to somebody who would
+
+429
+01:21:16,400 --> 01:21:27,680
+consider a career in math or is early in a career in math, especially in light of AI progress? How should they be thinking about their career differently, if at all,
+
+430
+01:21:27,680 --> 01:21:48,240
+as a result of AI progress? We live in a time of change. As I said, we live in a particularly unpredictable era. Things that we've taken for granted for centuries may not hold anymore.
+
+431
+01:21:48,240 --> 01:22:03,280
+The way we do everything, and not just mathematics, will change. In many ways, I would prefer the much more boring, quiet era where things are much the
+
+432
+01:22:03,280 --> 01:22:18,560
+same as they were 10 years ago, 20 years ago. But I think one just has to embrace that there's going to be a lot of change. The things that you study, some of them
+
+433
+01:22:18,560 --> 01:22:37,680
+may become obsolete or revolutionized, but some things will be retained. You always have to keep an eye on opportunities for things that you wouldn't be able to do before.
+
+434
+01:22:37,680 --> 01:22:46,160
+In math, you previously had to go through years and years of education and be a math PhD before you could contribute to the frontier of math research.
+
+435
+01:22:46,160 --> 01:22:52,320
+But now it's quite possible at the high school level, or whatever, that you could get involved in a math project and actually make a real contribution because of all
+
+436
+01:22:52,320 --> 01:23:06,640
+these AI tools, Lean, and everything else. There will be a lot of non-traditional opportunities to learn, so you need a very adaptable mindset.
+
+437
+01:23:06,640 --> 01:23:17,440
+There will be room for pursuing things just for curiosity and for playing around. You still need to get your credentials. For a while it will still be important to
+
+438
+01:23:17,440 --> 01:23:37,360
+go through traditional education and learn math and science the old-fashioned way. But you should also be open to very different ways of doing science, some of which don't exist yet.
+
+439
+01:23:37,360 --> 01:23:43,280
+It's a scary time, but also very exciting. That's a great note to close on. Terence, thanks so much. Pleasure.

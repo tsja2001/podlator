@@ -142,12 +142,94 @@ async def run(state: PodlatorState) -> dict[str, Any]:
 |---|---|---|
 | `fetch_metadata` | 抓取标题、时长、发布时间 | yt-dlp / feedparser |
 | `download_audio` | 下载音频文件 | yt-dlp |
-| `transcribe` | STT 转写 | Deepgram (主) / mlx-whisper (备) |
+| `transcribe` | STT 转写 | 外部 `speech-transcriber` CLI |
 | `diarize` | 说话人分离（如 STT 未自带）| pyannote.audio |
 | `chapter_split` | 按主题切分章节 | DeepSeek V4-Flash |
 | `summarize_chapters` | 章节翻译精简（并发）| DeepSeek V4-Flash |
 | `polish_final` | 全局润色 + 引言/结论 | Claude Opus 4.7（第三方 OpenAI 兼容 API）|
 | `export_markdown` | 导出 Markdown 文件 | — |
+
+### 当前优先使用的播客生成工作流
+
+当前项目最常用的路径不是一键 URL 简报，而是从用户手动下载的英文 SRT 字幕生成中文播客口播稿：
+
+```text
+SRT 字幕
+  → parse-srt
+  → assign-speakers（可跳过）
+  → douyin-script
+  → 手动整理播客标题 / 简介 / 开场白
+  → 外部 speech-transcriber synthesize 分别生成开场和正片 MP3
+  → 手动拼接最终音频
+```
+
+相关 CLI：
+
+```bash
+uv run podlator pipeline-douyin "episode.srt" \
+  -o "抖音解说稿.md" \
+  --title "Episode Title" \
+  --target-words 3000
+```
+
+分步调试时使用：
+
+```bash
+uv run podlator parse-srt "episode.srt" -o transcript.json --title "Episode Title"
+uv run podlator assign-speakers transcript.json -o transcript.speakers.json
+uv run podlator douyin-script transcript.speakers.json -o "抖音解说稿.md" --title "Episode Title"
+```
+
+注意：
+
+- `pipeline-douyin` 只覆盖 SRT → 口播稿，不生成发布标题、简介、开场白，也不做 TTS 或音频拼接。
+- `douyin-script` 输出的是口语化中文解说稿，不是逐字翻译、全文翻译或中文简报。
+- 旧的 `download` / `transcribe` / `split` / `render` / `polish` / `run` 能力仍然保留，用于 URL 下载转写、中文简报和全文翻译工作流。
+
+### 手动 TTS 工作流
+
+Podlator 当前不内置 TTS 节点。把中文稿件、开场文案或解说稿转成播客音频时，必须调用外部
+`speech-transcriber` 项目的 `synthesize` CLI，由该项目负责火山引擎 Seed TTS 2.0 的请求、
+音色、用量统计和 `.env` 配置。
+
+当前机器默认外部项目目录：
+
+```text
+/Users/mac/Project_Personal/speech-transcriber
+```
+
+推荐命令：
+
+```bash
+cd /Users/mac/Project_Personal/speech-transcriber
+
+uv run speech-transcriber synthesize \
+  --text-file "/Users/mac/Project_Personal/podlator/project/08How Microsoft thinks about AGI/抖音剪辑版/开场文案.md" \
+  --output-file "/Users/mac/Project_Personal/podlator/project/08How Microsoft thinks about AGI/抖音剪辑版/开场文案.mp3" \
+  --speech-rate 8 \
+  --json
+```
+
+也可以使用：
+
+```bash
+uv run --project /Users/mac/Project_Personal/speech-transcriber \
+  speech-transcriber synthesize \
+  --text-file "/path/to/script.md" \
+  --output-file "/path/to/script.mp3" \
+  --speech-rate 8 \
+  --json
+```
+
+**重要约束**：
+
+- 不要用 macOS `say`、临时 Python 脚本或其他非项目约定工具替代这个流程。
+- 不要在 Podlator 工作目录直接运行 `speech-transcriber synthesize`，否则可能误读
+  Podlator 的 `.env`，导致配置校验失败或使用错误配置。
+- 如果用户提到 `/Users/yangzhuoran/program/speech-transcriber` 或
+  `/Users/yangzhuoran/program/penglin-skill`，在当前机器上优先映射到
+  `/Users/mac/Project_Personal/speech-transcriber` 和
+  `/Users/mac/Project_Personal/penglin-skill`，并以实际存在路径为准。
 
 ---
 

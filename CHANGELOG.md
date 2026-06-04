@@ -5,6 +5,8 @@
 ## [Unreleased]
 
 ### Added
+- README 和 CLAUDE.md 新增手动 TTS 工作流说明：中文稿件转语音必须调用外部
+  `speech-transcriber synthesize`（火山引擎 Seed TTS 2.0），并明确工作目录和路径映射约束。
 - **抖音解说稿生成能力**：新增 `douyin-script` 和 `pipeline-douyin` CLI 命令。
   - `douyin-script`：Transcript JSON → 口语化中文解说稿 Markdown。
   - `pipeline-douyin`：SRT 字幕 → 解说稿全自动流水线（parse-srt → assign-speakers → douyin-script）。
@@ -17,6 +19,8 @@
 - **三个播客的抖音解说稿产出**（`project/*/抖音剪辑版/`）。
 
 ### Changed
+- README 重写为以当前“英文 SRT 字幕 → 中文口播稿 → 外部 TTS → 拼接音频”工作流为主的简明说明，并保留旧的简报、全文翻译、URL 下载转写等 CLI 能力概览。
+- CLAUDE.md 补充当前优先使用的 `pipeline-douyin` 播客生成工作流，并纠正 `transcribe` 节点当前依赖外部 `speech-transcriber` CLI 的说明。
 - `assign-speakers` 重构：抽取 `_parse_llm_content`、`_shard_segments`、`_process_shard`、`_normalize_labels_across_shards`、`_merge_shard_results` 函数。
 - 新增 `shard_size`、`shard_overlap` 参数。
 - Step Registry 新增 `douyin_script` 条目。

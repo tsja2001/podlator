@@ -613,21 +613,54 @@ def douyin_script(
     ] = None,
     provider: Annotated[
         str | None,
-        typer.Option("--provider", help="LLM provider 名称（默认 claude，质量更高）"),
+        typer.Option(
+            "--provider",
+            help="单段式（--simple）的 LLM provider（默认 claude）",
+        ),
+    ] = None,
+    blueprint_provider: Annotated[
+        str | None,
+        typer.Option(
+            "--blueprint-provider",
+            help="两段式 Stage1 蓝图 provider（默认 deepseek）",
+        ),
+    ] = None,
+    finalize_provider: Annotated[
+        str | None,
+        typer.Option(
+            "--finalize-provider",
+            help="两段式 Stage2 定稿 provider（支持 claude_cli / codex_cli）",
+        ),
     ] = None,
     target_words: Annotated[
         int,
-        typer.Option("--target-words", help="目标字数（默认 3000）"),
-    ] = 3000,
+        typer.Option("--target-words", help="目标字数（默认 6000）"),
+    ] = 6000,
+    simple: Annotated[
+        bool,
+        typer.Option("--simple", help="使用单段式生成（不拆 blueprint + finalize）"),
+    ] = False,
 ) -> None:
     """生成抖音解说稿：Transcript JSON → 口语化中文解说稿 Markdown。
 
-    产出风格：钩子开场、解说者视角、按主题重组、术语白话化、
-    穿插外部知识、口语化有节奏。
+    默认两段式：先用便宜模型出「解说蓝图」，再用强 CLI 模型（claude -p / codex exec）
+    据蓝图扩写定稿到约 6000 字。使用 --simple 回到原始单段式。
 
     建议先用 assign-speakers 标注说话人，效果更好。
+    支持 provider: deepseek / claude / claude_cli / codex_cli。
     """
-    asyncio.run(_douyin_script_cmd(transcript, output, title, provider, target_words))
+    asyncio.run(
+        _douyin_script_cmd(
+            transcript,
+            output,
+            title,
+            provider,
+            blueprint_provider,
+            finalize_provider,
+            target_words,
+            simple,
+        )
+    )
 
 
 async def _douyin_script_cmd(
@@ -635,7 +668,10 @@ async def _douyin_script_cmd(
     output: Path,
     title: str | None,
     provider: str | None,
+    blueprint_provider: str | None,
+    finalize_provider: str | None,
     target_words: int,
+    simple: bool,
 ) -> None:
     from podlator.config import Settings
     from podlator.steps.douyin_script import generate_douyin_script
@@ -657,6 +693,9 @@ async def _douyin_script_cmd(
             provider_name=provider_name,
             settings=settings,
             target_words=target_words,
+            simple=simple,
+            blueprint_provider=blueprint_provider,
+            finalize_provider=finalize_provider,
         )
         write_markdown(output, script)
     except ValueError as e:
@@ -695,15 +734,22 @@ def pipeline_douyin(
     ] = None,
     script_provider: Annotated[
         str | None,
-        typer.Option("--script-provider", help="解说稿 LLM provider（默认 claude）"),
+        typer.Option(
+            "--script-provider",
+            help="解说稿 LLM provider（支持 claude_cli / codex_cli）",
+        ),
     ] = None,
     target_words: Annotated[
         int,
-        typer.Option("--target-words", help="目标字数（默认 3000）"),
-    ] = 3000,
+        typer.Option("--target-words", help="目标字数（默认 6000）"),
+    ] = 6000,
     skip_speakers: Annotated[
         bool,
         typer.Option("--skip-speakers", help="跳过说话人分离（SRT 已标注或只有单人）"),
+    ] = False,
+    simple: Annotated[
+        bool,
+        typer.Option("--simple", help="使用单段式生成（不拆 blueprint + finalize）"),
     ] = False,
 ) -> None:
     """一键流水线：SRT 字幕 → 抖音解说稿 Markdown。
@@ -711,7 +757,10 @@ def pipeline_douyin(
     自动执行：
     1. parse-srt（解析字幕）
     2. assign-speakers（说话人分离，可用 --skip-speakers 跳过）
-    3. douyin-script（生成解说稿）
+    3. douyin-script（默认两段式生成约 6000 字）
+
+    默认两段式：便宜模型出蓝图 → 强 CLI 模型（claude -p / codex exec）定稿。
+    --simple 回到单段式。支持 --script-provider claude_cli / codex_cli。
     """
     asyncio.run(
         _pipeline_douyin_cmd(
@@ -722,6 +771,7 @@ def pipeline_douyin(
             script_provider,
             target_words,
             skip_speakers,
+            simple,
         )
     )
 
@@ -734,6 +784,7 @@ async def _pipeline_douyin_cmd(
     script_provider: str | None,
     target_words: int,
     skip_speakers: bool,
+    simple: bool,
 ) -> None:
     from podlator.config import Settings
     from podlator.steps.assign_speakers import assign_speakers
@@ -779,7 +830,8 @@ async def _pipeline_douyin_cmd(
         typer.echo(f"  识别到 {len(unique_speakers)} 位说话人: {speakers_str}")
 
     # Step 3: douyin-script
-    typer.echo(f"[3/3] 生成解说稿 (provider: {sc_provider})")
+    mode_label = "单段式" if simple else "两段式"
+    typer.echo(f"[3/3] 生成解说稿 ({mode_label}, provider: {sc_provider})")
     try:
         script = await generate_douyin_script(
             doc,
@@ -787,6 +839,8 @@ async def _pipeline_douyin_cmd(
             provider_name=sc_provider,
             settings=settings,
             target_words=target_words,
+            simple=simple,
+            finalize_provider=sc_provider if not simple else None,
         )
         write_markdown(output, script)
     except ValueError as e:

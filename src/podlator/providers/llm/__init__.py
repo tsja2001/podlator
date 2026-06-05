@@ -27,4 +27,10 @@ def get_llm_provider(provider_name: str, settings: Settings) -> LLMProvider:
             model=settings.claude_model,
             max_tokens=settings.claude_max_tokens,
         )
+    if provider_name in ("claude_cli", "codex_cli"):
+        from podlator.providers.llm.cli_tool import CLIToolProvider
+
+        backend = "claude" if provider_name == "claude_cli" else "codex"
+        return CLIToolProvider(settings, backend=backend)
+
     raise ConfigError(f"Unknown LLM provider: {provider_name}")

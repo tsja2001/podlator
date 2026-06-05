@@ -80,6 +80,16 @@ class Settings(BaseSettings):
     tencent_cos_presigned_expires_seconds: int = 21600
     tencent_cos_delete_after_transcribe: bool = True
 
+    # ── CLI Tool Provider（本机 CLI 唤起的强模型）──
+    # backend: "claude" | "codex" — 用哪个 CLI 工具
+    cli_tool_backend: str = "claude"
+    # Claude CLI 模型（如 claude-sonnet-4-6 / claude-opus-4-8）
+    cli_tool_claude_model: str = "claude-sonnet-4-6"
+    # Codex CLI 模型（留空用默认 gpt-5.5；ChatGPT 账号不支持 gpt-5）
+    cli_tool_codex_model: str = ""
+    # 子进程超时（秒）
+    cli_tool_timeout_s: int = 600
+
     # ── Speech Transcriber（外部 CLI 工具）──
     speech_transcriber_project_dir: str = (
         "/Users/mac/Project_Personal/speech-transcriber"

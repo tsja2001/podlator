@@ -168,23 +168,45 @@ SRT 字幕
 ```bash
 uv run podlator pipeline-douyin "episode.srt" \
   -o "抖音解说稿.md" \
-  --title "Episode Title" \
-  --target-words 3000
+  --title "Episode Title"
 ```
+
+`pipeline-douyin` 默认两段式生成：便宜模型（DeepSeek）出「解说蓝图」→ 强 CLI 模型定稿
+（默认 `claude`，可在 `.env` 中设为 `claude_cli` / `codex_cli`），目标字数 **6000**。
+使用 `--simple` 回到原始单段式。
 
 分步调试时使用：
 
 ```bash
 uv run podlator parse-srt "episode.srt" -o transcript.json --title "Episode Title"
 uv run podlator assign-speakers transcript.json -o transcript.speakers.json
-uv run podlator douyin-script transcript.speakers.json -o "抖音解说稿.md" --title "Episode Title"
+
+# 两段式（默认，推荐）
+uv run podlator douyin-script transcript.speakers.json \
+  -o "抖音解说稿.md" --title "Episode Title"
+
+# 指定 CLI 强模型定稿
+uv run podlator douyin-script transcript.speakers.json \
+  -o "抖音解说稿.md" --title "Episode Title" \
+  --finalize-provider claude_cli
+
+# 单段式（--simple，旧行为）
+uv run podlator douyin-script transcript.speakers.json \
+  -o "抖音解说稿.md" --title "Episode Title" --simple
 ```
+
+涉及的 prompt 文件：
+
+- `douyin_blueprint.md` — Stage1：解说蓝图（结构化拆解 + 字数预算）
+- `douyin_finalize.md` — Stage2：据蓝图成稿（沿用 `douyin_script.md` 风格规范）
+- `douyin_script.md` — 单段式 prompt（`--simple` 模式使用），也是 finalize prompt 的风格基础
 
 注意：
 
 - `pipeline-douyin` 只覆盖 SRT → 口播稿，不生成发布标题、简介、开场白，也不做 TTS 或音频拼接。
 - `douyin-script` 输出的是口语化中文解说稿，不是逐字翻译、全文翻译或中文简报。
 - 旧的 `download` / `transcribe` / `split` / `render` / `polish` / `run` 能力仍然保留，用于 URL 下载转写、中文简报和全文翻译工作流。
+- `claude_cli` / `codex_cli` 通过本机已登录的会员态调用官方强模型（不走第三方 API），自动在临时空目录中运行以避免项目 CLAUDE.md 污染 prompt。详见 `src/podlator/providers/llm/cli_tool.py`。
 
 ### 手动 TTS 工作流
 

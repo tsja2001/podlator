@@ -69,9 +69,12 @@ async def test_polish_final_success(state: dict) -> None:
 
 @pytest.mark.asyncio
 async def test_polish_final_falls_back_to_deepseek_on_retryable_claude_error(
-    state: dict,
+    state: dict, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Claude 可重试失败时，使用 DeepSeek 兜底完成润色。"""
+    # 强制主 provider 为 claude，确保进入降级路径
+    monkeypatch.setenv("LLM_PROVIDER_POLISH", "claude")
+
     claude = AsyncMock()
     claude.complete.side_effect = ProviderError(
         "claude",

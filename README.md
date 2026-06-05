@@ -36,8 +36,7 @@ project/08How Microsoft thinks about AGI/Satya Nadella – How Microsoft thinks 
 uv run podlator pipeline-douyin \
   "project/08How Microsoft thinks about AGI/Satya Nadella – How Microsoft thinks about AGI.srt" \
   -o "project/08How Microsoft thinks about AGI/抖音剪辑版/抖音解说稿_Microsoft_AGI.md" \
-  --title "Satya Nadella - How Microsoft is preparing for AGI" \
-  --target-words 3000
+  --title "Satya Nadella - How Microsoft is preparing for AGI"
 ```
 
 它会自动执行：
@@ -45,6 +44,9 @@ uv run podlator pipeline-douyin \
 ```text
 parse-srt -> assign-speakers -> douyin-script
 ```
+
+默认两段式生成约 6000 字口播稿：便宜模型（DeepSeek）出蓝图 → 强模型定稿。
+如需控制字数，加 `--target-words 4000` 等。使用 `--simple` 回到原始单段式。
 
 如果字幕已经有说话人，或只有单人内容，可以跳过说话人推断：
 
@@ -68,14 +70,27 @@ uv run podlator parse-srt "episode.srt" \
 uv run podlator assign-speakers "transcript.json" \
   -o "transcript.speakers.json"
 
-# Transcript JSON -> 中文口播稿，默认用 polish provider，一般是 Claude
+# Transcript JSON -> 中文口播稿，默认两段式，约 6000 字
+uv run podlator douyin-script "transcript.speakers.json" \
+  -o "抖音解说稿.md" \
+  --title "Episode Title"
+
+# 用本机 claude -p 强模型定稿（需已登录 Claude Code 会员）
 uv run podlator douyin-script "transcript.speakers.json" \
   -o "抖音解说稿.md" \
   --title "Episode Title" \
-  --target-words 3000
+  --finalize-provider claude_cli
+
+# 单段式（旧行为，一次 LLM 调用）
+uv run podlator douyin-script "transcript.speakers.json" \
+  -o "抖音解说稿.md" \
+  --title "Episode Title" \
+  --simple
 ```
 
 `douyin-script` 的输出不是逐字翻译，也不是简报，而是适合中文播客/短视频口播的解说稿：钩子开场、人物背景、按主题重组、术语白话化、补充必要外部背景。
+
+支持的 provider：`deepseek` / `claude`（第三方 API）/ `claude_cli`（本机 Claude Code）/ `codex_cli`（本机 Codex CLI）。
 
 ### 4. 整理播客发布文案
 
@@ -226,7 +241,7 @@ data/briefs/{task_id}/
 | 命令 | 输入 | 输出 | 说明 |
 |---|---|---|---|
 | `pipeline-douyin` | `.srt` | `.md` 口播稿 | 当前最常用：字幕到中文口播稿 |
-| `douyin-script` | `transcript.json` | `.md` 口播稿 | 只生成口播稿 |
+| `douyin-script` | `transcript.json` | `.md` 口播稿 | 两段式，支持 claude_cli/codex_cli |
 | `parse-srt` | `.srt` | `transcript.json` | 纯解析，不调 LLM |
 | `assign-speakers` | `transcript.json` | `transcript.json` | LLM 推断说话人 |
 | `download` | URL | 音频 + metadata | 下载音频 |
@@ -328,9 +343,15 @@ cp .env.example .env
 DEEPSEEK_API_KEY=
 CLAUDE_API_KEY=
 LLM_PROVIDER_SUMMARIZE=deepseek
-LLM_PROVIDER_POLISH=claude
+LLM_PROVIDER_POLISH=claude          # 也可设为 claude_cli / codex_cli
 SPEECH_TRANSCRIBER_PROJECT_DIR=/Users/mac/Project_Personal/speech-transcriber
 SPEECH_TRANSCRIBER_PROVIDER=tencent_cloud
+
+# 如果用 claude_cli / codex_cli 定稿（可选，不设则用上面的 POLISH）
+# CLI_TOOL_BACKEND=claude
+# CLI_TOOL_CLAUDE_MODEL=claude-sonnet-4-6
+# CLI_TOOL_CODEX_MODEL=gpt-5
+# CLI_TOOL_TIMEOUT_S=600
 ```
 
 TTS 相关配置在外部 `speech-transcriber/.env` 中维护，不在 Podlator 的 `.env` 里维护。

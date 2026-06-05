@@ -5,8 +5,25 @@
 ## [Unreleased]
 
 ### Added
-- README 和 CLAUDE.md 新增手动 TTS 工作流说明：中文稿件转语音必须调用外部
-  `speech-transcriber synthesize`（火山引擎 Seed TTS 2.0），并明确工作目录和路径映射约束。
+- **CLI Tool Provider**：新增 `CLIToolProvider(LLMProvider)`，通过本机 `claude -p` / `codex exec`
+  调用官方强模型（会员 OAuth 认证，不走第三方 API）。支持 cwd 隔离（临时空目录运行，防止
+  CLAUDE.md 污染 prompt）、超时保护、失败降级。
+- **两段式口播稿生成**（M3 优化生成效果）：`douyin-script` 默认改为两段式 ——
+  Stage1 便宜模型（DeepSeek）出「解说蓝图」，Stage2 强 CLI 模型据蓝图扩写定稿到 6000 字。
+  - 新增 `douyin_blueprint.md` prompt（Stage1 蓝图）
+  - 新增 `douyin_finalize.md` prompt（Stage2 据蓝图成稿）
+  - 字数补足回路：成稿不足 `min_words` 时自动续写补足（最多 2 轮）
+  - `--simple` 保留原始单段式行为
+- 新增配置：`cli_tool_backend`、`cli_tool_claude_model`、`cli_tool_codex_model`、
+  `cli_tool_reasoning_effort`、`cli_tool_timeout_s`
+- 新增 `claude_cli` / `codex_cli` LLM provider 工厂注册
+
+### Changed
+- **默认目标字数翻倍**：`--target-words` 默认值 3000 → **6000**
+- `douyin-script` / `pipeline-douyin` CLI 新增 `--simple`、`--blueprint-provider`、
+  `--finalize-provider` 选项
+- `generate_douyin_script()` 签名扩展：新增 `simple`、`blueprint_provider`、`finalize_provider` 参数
+- 默认 `max_input_chars` 30000 → 36000
 - **抖音解说稿生成能力**：新增 `douyin-script` 和 `pipeline-douyin` CLI 命令。
   - `douyin-script`：Transcript JSON → 口语化中文解说稿 Markdown。
   - `pipeline-douyin`：SRT 字幕 → 解说稿全自动流水线（parse-srt → assign-speakers → douyin-script）。

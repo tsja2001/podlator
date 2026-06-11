@@ -15,7 +15,8 @@
       "Bash(git commit -m 'docs: 丰富 CLI 步骤文档 — 每个命令加中文注释，扩展为 6 个典型工作流场景 *)",
       "Bash(ffmpeg *)",
       "Read(//private/tmp/**)",
-      "Bash(claude -p \"只回复两个字：你好\" --output-format json)"
+      "Bash(claude -p \"只回复两个字：你好\" --output-format json)",
+      "Bash(uv sync *)"
     ]
   }
 }

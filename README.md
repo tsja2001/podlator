@@ -92,6 +92,9 @@ uv run podlator douyin-script "transcript.speakers.json" \
 
 支持的 provider：`deepseek` / `claude`（第三方 API）/ `claude_cli`（本机 Claude Code）/ `codex_cli`（本机 Codex CLI）。
 
+Codex CLI 非交互式调用、联网搜索和 Podlator 接入方式见
+[`docs/CODEX_CLI_NON_INTERACTIVE.md`](docs/CODEX_CLI_NON_INTERACTIVE.md)。
+
 ### 4. 整理播客发布文案
 
 目前标题、简介、开场白没有单独的 Podlator 命令。当前做法是根据口播稿和原始节目手动整理，例如第 08 期：
@@ -249,6 +252,7 @@ data/briefs/{task_id}/
 | `split` | `transcript.json` | `chapters.json` | 章节切分 |
 | `render` | transcript + chapters | `.md` | 中文摘要或全文翻译 |
 | `polish` | `.md` | `.md` | 简报润色 |
+| `eval` | `.md` | `.review.json` | 程序 lint + LLM judge 自动评分 |
 | `run` | URL | `.md` 简报 | 早期一键 LangGraph 简报 pipeline |
 
 查看完整参数：

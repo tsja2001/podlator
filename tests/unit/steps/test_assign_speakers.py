@@ -454,3 +454,101 @@ class TestAssignSpeakersSharding:
         assert len(result.segments) == 160
         # 第一片的 speaker 应该保留
         assert result.segments[0].speaker is not None
+
+
+class TestM50TruncationHardening:
+    """M5.0 截断加固相关测试。"""
+
+    def test_default_shard_size_is_50(self) -> None:
+        """验证默认分片大小已从 80 降到 50。"""
+        from podlator.steps.assign_speakers import DEFAULT_SHARD_SIZE
+
+        assert DEFAULT_SHARD_SIZE == 50
+
+    def test_parse_salvages_truncated_json(self) -> None:
+        """截断 JSON 应能正则抢救完整对象。"""
+        from podlator.steps.assign_speakers import _parse_llm_content
+
+        result = _parse_llm_content(
+            '[{"index":0,"speaker":"HOST"},{"index":1,"speaker":"GU'
+        )
+        assert result is not None
+        assert result == {0: "HOST"}
+
+    def test_parse_salvage_logs_warning(self) -> None:
+        """截断抢救时应有 assign_speakers_salvaged_partial_json 警告日志。"""
+        import structlog
+
+        from podlator.steps.assign_speakers import _parse_llm_content
+
+        cap = structlog.testing.capture_logs()
+        with cap as captured:
+            _parse_llm_content('[{"index":0,"speaker":"HOST"},{"index":1,"speaker":"GU')
+
+        salvage_events = [
+            e
+            for e in captured
+            if e.get("event") == "assign_speakers_salvaged_partial_json"
+        ]
+        assert len(salvage_events) == 1
+        assert salvage_events[0]["recovered"] == 1
+
+    def test_parse_unsalvageable_returns_none(self) -> None:
+        """完全无法抢救时返回 None（行为同旧版，保护回归）。"""
+        from podlator.steps.assign_speakers import _parse_llm_content
+
+        result = _parse_llm_content("not valid json!!!")
+        assert result is None
+
+    @pytest.mark.asyncio
+    async def test_process_shard_truncation_keeps_partial(self) -> None:
+        """截断后仍能救回已完成的标注，缺失的保持 None。（3 条里救回 2 条）"""
+        import structlog
+
+        from podlator.config import Settings
+        from podlator.steps.assign_speakers import _process_shard
+
+        transcript = _make_long_transcript(3)
+        # 构造 3 条 JSON：前 2 条完整对象 + 第 3 条已截断（缺闭标签）
+        truncated_json = (
+            '[{"index":0,"speaker":"HOST"},'
+            '{"index":1,"speaker":"GUEST"},'
+            '{"index":2,"speaker":"HO'
+        )
+        mock_llm = AsyncMock()
+        mock_llm.complete = AsyncMock(
+            return_value=LLMResult(
+                content=truncated_json,
+                model="test",
+                provider_name="deepseek",
+                tokens_in=200,
+                tokens_out=8192,
+                duration_ms=1000,
+                cost_usd=0.01,
+                finish_reason="length",
+            )
+        )
+
+        settings = Settings()
+        cap = structlog.testing.capture_logs()
+        with patch(
+            "podlator.steps.assign_speakers.get_llm_provider",
+            return_value=mock_llm,
+        ):
+            with cap as captured:
+                speaker_map = await _process_shard(
+                    transcript.segments,
+                    provider_name="deepseek",
+                    settings=settings,
+                )
+
+        # index 0 和 1 被救回（完整对象），index 2 丢失（已截断）
+        assert speaker_map.get(0) == "HOST"
+        assert speaker_map.get(1) == "GUEST"
+        assert 2 not in speaker_map
+
+        # 断言出现 assign_speakers_shard_truncated
+        truncation_events = [
+            e for e in captured if e.get("event") == "assign_speakers_shard_truncated"
+        ]
+        assert len(truncation_events) == 1

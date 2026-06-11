@@ -1,0 +1,77 @@
+{
+  "rubric_version": "v3",
+  "total_score": 84.0,
+  "dimensions": [
+    {
+      "dimension": "信息覆盖度",
+      "score": 18.0,
+      "max_score": 20,
+      "evidence": ["引用：关于 GPU 部署的讨论覆盖了 EOS 到 SpaceX 全链路"],
+      "issues": []
+    },
+    {
+      "dimension": "信息忠实度",
+      "score": 9.0,
+      "max_score": 10,
+      "evidence": ["引用：Musk 提到的 1TW 数据与原文一致"],
+      "issues": []
+    },
+    {
+      "dimension": "外部知识质量",
+      "score": 12.0,
+      "max_score": 15,
+      "evidence": ["引用：ASML 30 年研发史类比"],
+      "issues": ["第 3 处外部知识未标注来源"]
+    },
+    {
+      "dimension": "钩子开场",
+      "score": 8.0,
+      "max_score": 10,
+      "evidence": ["引用：以 Musk 在 EOS 的冲突场景开场"],
+      "issues": []
+    },
+    {
+      "dimension": "结构与递进",
+      "score": 10.0,
+      "max_score": 12,
+      "evidence": ["引用：四大赌注标签清晰"],
+      "issues": []
+    },
+    {
+      "dimension": "人物与现场感",
+      "score": 6.0,
+      "max_score": 8,
+      "evidence": ["引用：对 Musk 的人物介绍"],
+      "issues": []
+    },
+    {
+      "dimension": "口语自然度",
+      "score": 8.0,
+      "max_score": 10,
+      "evidence": ["引用：'你想想' 等引导词自然分布"],
+      "issues": []
+    },
+    {
+      "dimension": "节奏与听感",
+      "score": 7.0,
+      "max_score": 8,
+      "evidence": ["引用：长短句交错有呼吸感"],
+      "issues": []
+    },
+    {
+      "dimension": "术语白话化与数字可感",
+      "score": 6.0,
+      "max_score": 7,
+      "evidence": ["引用：GPU 数量换算成可感量级"],
+      "issues": []
+    }
+  ],
+  "revision_directives": [
+    {
+      "target": "「第二条 GPU 时间幻觉」一节",
+      "problem": "该节只有一句话数据型外部知识，缺深度叙事",
+      "instruction": "在 Alchian-Allen 效应处补充一段 80-150 字的真实历史案例叙事，需标注来源"
+    }
+  ],
+  "verdict": "pass"
+}

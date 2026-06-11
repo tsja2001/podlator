@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import json
+import re
 
 from podlator.config import Settings
 from podlator.logging import get_logger
@@ -37,8 +38,16 @@ Output ONLY a JSON array:
 [{{"index": 0, "speaker": "HOST"}}, {{"index": 1, "speaker": "GUEST"}}, ...]"""
 
 # 默认分片参数
-DEFAULT_SHARD_SIZE = 80
+DEFAULT_SHARD_SIZE = 50  # 从 80 降到 50：每片输出更短，天然不易触顶
 DEFAULT_SHARD_OVERLAP = 10
+
+# 每个分片 LLM 调用的 max_tokens 上限（50 条 JSON 标注绰绰有余）
+_SPEAKER_SHARD_MAX_TOKENS = 8192
+
+# 正则：匹配一个完整的 {"index": N, "speaker": "X"} 对象（容忍空白）
+_SPEAKER_OBJ_RE = re.compile(
+    r'\{\s*"index"\s*:\s*(\d+)\s*,\s*"speaker"\s*:\s*"([^"]*)"\s*\}'
+)
 
 
 def _format_segment_for_prompt(
@@ -57,6 +66,8 @@ def _format_segment_for_prompt(
 def _parse_llm_content(content: str) -> dict[int, str] | None:
     """解析 LLM 返回的 JSON，返回 {index: speaker} 映射。
 
+    JSON 截断时（finish_reason=length），用正则抢救所有完整对象，不再整片丢弃。
+
     Returns:
         解析成功返回 dict，失败返回 None。
     """
@@ -68,11 +79,19 @@ def _parse_llm_content(content: str) -> dict[int, str] | None:
 
     try:
         assignments = json.loads(clean)
-    except json.JSONDecodeError as e:
+    except json.JSONDecodeError:
+        # 截断抢救：正则提取所有完整对象，能救多少救多少
+        salvaged = {int(idx): spk for idx, spk in _SPEAKER_OBJ_RE.findall(clean)}
+        if salvaged:
+            logger.warning(
+                "assign_speakers_salvaged_partial_json",
+                recovered=len(salvaged),
+                content_preview=content[:200],
+            )
+            return salvaged
         logger.warning(
             "assign_speakers_parse_failed",
             content_preview=content[:200],
-            error=str(e),
         )
         return None
 
@@ -143,7 +162,7 @@ async def _process_shard(
             prompt,
             system=_SPEAKER_SYSTEM_PROMPT,
             temperature=0.2,
-            max_tokens=4096,
+            max_tokens=_SPEAKER_SHARD_MAX_TOKENS,
         )
     except Exception as e:
         logger.error(
@@ -153,6 +172,13 @@ async def _process_shard(
             exc_info=True,
         )
         return {}
+
+    if result.finish_reason == "length":
+        logger.warning(
+            "assign_speakers_shard_truncated",
+            shard_size=len(shard),
+            max_tokens=_SPEAKER_SHARD_MAX_TOKENS,
+        )
 
     speaker_map = _parse_llm_content(result.content)
     if speaker_map is None:
@@ -288,7 +314,7 @@ async def assign_speakers(
             prompt,
             system=_SPEAKER_SYSTEM_PROMPT,
             temperature=0.2,
-            max_tokens=4096,
+            max_tokens=_SPEAKER_SHARD_MAX_TOKENS,
         )
 
         speaker_map = _parse_llm_content(result.content)

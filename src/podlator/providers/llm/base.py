@@ -17,6 +17,7 @@ class LLMResult:
     tokens_out: int
     duration_ms: float
     cost_usd: float
+    finish_reason: str | None = None  # "stop" | "length" | None（CLI 无元数据时）
 
 
 class LLMProvider(ABC):

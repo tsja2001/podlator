@@ -106,3 +106,17 @@ register(
     input_type=TranscriptDocument,
     output_type=str,  # Markdown
 )
+
+register(
+    name="lint_script",
+    description="口播稿 → 程序化统计 + 硬伤指令（零 LLM）",
+    input_type=str,  # Markdown/plain text
+    output_type=str,  # JSON 统计
+)
+
+register(
+    name="evaluate_script",
+    description="口播稿 → LLM judge 评分 + lint（自动合并）",
+    input_type=str,
+    output_type=str,  # JSON 评分报告
+)

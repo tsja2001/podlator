@@ -1,0 +1,2294 @@
+{
+  "schema_version": 1,
+  "source": {
+    "title": "Demis Hassabis, Alison Noble and Paul Nurse discuss the future of science with AI",
+    "duration_seconds": 4036.08
+  },
+  "provider": {
+    "name": "srt",
+    "cost_usd": 0.0
+  },
+  "text": "Demis, if we could start with you. Um, so you are CEO and co-founder of Google DeepMind. You're also CEO and co-founder of Isomorphic Labs. And you like you have used this phrase that what we're witnessing is science at the at digital speed. Mhm. So perhaps just it would be nice to again set the scene to bring us up to speed very quickly with what we've seen so far. What AI has done to science so far? Yeah, that that phrase I use science at digital speed. I sort of coined it after seeing AlphaFold in 2020, 2021. We we spent about a year folding all 200 million proteins sort of known to science. And that's when it struck me that we were using the sorts of techniques and and methods that we used in technology areas and engineering, but now this was a scientific subject that we were applying it to. And I kind of mean it in three different ways, two originally and I think one that's coming in now. One is the the the the the speed of the solution itself. So AlphaFold just using that as an example, but obviously I'm meaning this more generally. Not only was it very accurate, accurate enough for biologists for it to be useful for for experimentalists. Obviously not perfect, but accurate enough. It was also able to fold an average protein in a few seconds. Right, so it's very fast. The second way I meant science at digital speed was the dissemination of the solution. So if you invent a new method, let's say even like something really famous like CRISPR or one a sort of experimental method, it takes a while for that to percolate through even the biggest discoveries into the wet labs, into the scientific process, and then become a kind of standard tool maybe a PhD student would use. Maybe it's a 10 10 plus year kind of process. But with with AlphaFold we with once we folded these structures, we would just we were able to obviously work in collaboration with the European Bioinformatics Institute, part of EMBL, amazing collaboration we did, and just put it on a database very quickly in a few month couple of months. And then it's just a it's as simple as a keyword search, and there it is. And and now over 3 million researchers around the world have used AlphaFold and the structures from 190 countries. So, it doesn't matter where you are, of course, you don't even have to have a wet lab. You can access these structures and then build on top of it. So, that was pretty fascinating. That's more like um a piece of technology, like an application, something you would be more used to in big tech. Um but here again in appearing in science. And then the final way, which I think is becoming more apparent now, is obviously AI itself accelerating so you know, AI is sort of accelerating scientific discovery itself and the pace of that. And that's what I think we're in the the beginnings of feeling now. I was quoting this phrase last week at the big Google annual event of we're in the foothills of the singularity, which caused a bit of a stir, but I really mean that that that sort of I can feel it. If we look back in 10 years, I think we'll start feeling this this period now around now next year, this agentic era that Allison was mentioning, which is really actually coming to the fore now and actually really working for the first time. We predicted it for a a while, but it's really working now. Um that's going to be the beginnings of it and uh when we look back. And I think it's going to be monumental that change. Um you know, I think I think this is the whole reason I worked on AI my whole life is is it's my expression of what I can contribute to science as a kind of meta contribution of building the the ultimate tool to help scientific discovery and and science and medicine. And I think AI and AGI is that. Um and I think we're starting to see the beginnings of that now and more and more people able to see what we saw, you know, 20 years ago. Mhm. Mhm. Well, there's an awful lot of what you just said. The choice of the word singularity, foothills of the singularity is an interesting one. It is. I mean, because the reason I used that phrase is is it's not just it's it's the it's the wider milieu around the technology. So we call the technology AGI, artificial general intelligence. That was co- coined by my co-founder, Shane Legg. And but but obviously that's just the technology. What what's going to happen to society including science and economics and everything. I think it's going to affect everything, clearly. And I think more and more people agree with that. So it's that's it refers to that era that we're about to start to live through now. I I want others to jump in, but may I just when you talk about AI actually contributing to the discovery process, for instance, there were two papers published in Nature last week, one of them from Google DeepMind. Um where AI has conducted experiments and made hypotheses. You Does the the pace that you mentioned of scientific discoveries filtering out into the into the general into general use and general acceptance is one of the strengths in a way of science that it takes time to assess things. You need time to find out whether something is real and works. Do you feel that people have that time anymore or is are things just moving so fast that it becomes a little difficult? I'd like us to have more time so that we could apply as a field that that it's up to my AI now that the scientific method more rigorously. It'd be better if we understood the systems we're building. They're not they're just black boxes, but understood the deep details of how they work. People are working on that, but it's lagging behind the pace of the actual progress of the performance. And obviously now it's become a commercial technology with, you know, chatbots and LLMs. That's just added fuel to the fire in terms of the pace of progress of the engineering ahead of the science. So I'd love to see the science catch up with the engineering. I'm both a scientist and an engineer as how I consider myself. But that's just the nature of the market forces that are currently pushing that. And it's it's amazing for producing progress, but uh especially when we apply it to scientific areas, it would be better if we could be more considered and perhaps more thoughtful about how it gets deployed. But having said that, you know, it's we don't have a lot of time before I think AGI arrives. I think we're only a few years out now, and society's had I think had a lot of time to sort of advance warning of this in a sense. So, I think it's time for all of us to take this more seriously, not just those people building the technologies. And I mean economists, social scientists, but also scientists of the of the society. AlphaFold was finished in 2020. So, it's actually like ancient era of AI if you think about it. It's 10 years since AlphaGo. I just came back from Korea, you know, to meet the president and other things celebrating the 10-year anniversary of the match, which really was the if you look back on it now, was sort of the marking of the beginning of the modern era of AI. And so, we've had time. So, it's not like a surprise like it those are people who've been paying attention have had we've had time to I don't know if we wisely spent that five six years as a society, but there's been a sort of warning shot. And I think a lot of people perhaps thought it was an anomaly or it's a outlier. And it and it was. I mean, it's a long time ahead of its time given that nothing else of that significance happened in the following five years. But these general systems are getting really good now, and we should take that very seriously. Thank you. Alison, do you want to jump in and then go? Alison, please. All right. Now, what I was going to say is one of the challenges of trying to everyone wanting to be first is one of our problems. We do not reward people for for take a slowing down, particularly in academia. You will not get a paper published, particularly if you think about if if you're not first. And I think that we do need to think about this as well, about reward systems that will reward people who do go in and explore and understand these methodologies and that that is is important for going forward and we will learn from that as well. That that was the point I wanted Thank you. Nice point. Thank you. Before we you come in, I should also just take a we should take a little breather, a bit like the music. You two, you're both fellows of the Royal Society, you're both Nobel laureates. It seems utterly right that you're sitting here together, but you also have a long history together. You've known each other a long time. We we do. We even sort of dress the same. Exactly. I was thinking as we came up, you know, he was a chess master and what we got here the black piece and the white piece, but anyway, that's a Um Yes, maybe Dennis can remind me exactly, but I think we spoke first spoke when you were probably just still an undergraduate Cambridge or just after. I think we talked about a PhD, but you wanted to set up a gaming company. Yeah, which she disapproved of, I think. Well, I I thought I can't have a longer plan. Yes. I thought I can't handle that. I can't handle it. So, this is nearly 30 years or maybe over 30 years. Yes, and Paul's basically I consider him to be my mentor in biology. We've talked about things like virtual cells, which I'm sure we'll come to that in later for the 30 years now, Paul, so We have. We haven't got very far, but  it says that we we will do soon. We will do soon. Yeah. Yeah, that's true. But it was clear Dennis was very interesting at the time.  You can spot them. But not that they're in the lab. For sure. Yeah. Okay. So, but let's continue with this discussion of of what's been happening or what is going to happen. What sort of problem um is amenable, is tractable to the approach that you are spirited and I'd like everyone's input and for instance on Isomorphic Labs, which is a very ambitious project to reinvent drug discovery, you're an advisor, Paul, so um that would be good to have your thoughts, too. Well, maybe I'll just explain that in the general case. So, this really was sort of dawned on me after we did AlphaGo. So, that the program that that beat the world champion at at at the game of Go, much more complex than chess, and hopefully you've all you've all heard about that. So, I won't I won't explain that part. But that that that what you can what that that the sorts of problems that the methods we developed are useful for, I can describe in a very general way. Basically, you have a huge combinatorial space. Um the number of moves in Go is more than there are atoms in the universe. So, you can't you can't solve it in a brute force way. Same with the number of confirmations of a protein. You know, it's estimated 10 to the 300 or something enormous. Um and there were and so that's the first part. That's that's I like those problem spaces cuz they can't be done with some kind of brute force method. Second thing is you need a clear objective function. Um you trying to win a game? You trying to find the best move? Are you trying to minimize the free energy in a system? Uh so, that's that's that's the second thing. So, in order to hill climb towards that solution. And then the third thing is you need some sort of data. Um and and that can be real data, or it could be an accurate simulator. Ideally, you have both. And and there's really interesting interactions between using the data you have to create a simulator to create synthetic data, additional synthetic data. And actually, that's what we had to do with AlphaFold. There weren't the 150,000 proteins in the PDB were not enough on their own. We had to create an early version of AlphaFold a million proteins and then select 2 300,000 extra ones that we thought were at least AlphaFold thought was it was confident was accurate, and then sort of put that back in. And you have to be very careful with that, obviously, with synthetic data that it actually the distribution matches. But if you have those three things, and you or you could couch the problem in in in that way, then I think the current methods we have where you use a deep learning model to learn a a of the domain, and that of guides a search process um to be able to make that intractable combinatorial space tractable. Uh and that's basically what AlphaGo and AlphaFold did. Uh to find the kind of needle in the haystack that would be impossible to find otherwise. Uh and drug discovery and Isomorphic I feel is a continuation of that kind of problem. There's um you know, there is a compound out there in the in the you know, laws of physics, the laws of chemistry 10 to the 50 or however you want to say how many are there of the sort of mole, you know, drug compound size, and one of or more of them may fit the properties that you're looking for in terms of the disease profile and so on. Then it's a question of can you find it, can you synthesize it, and so on. So, Isomorphic you can think of us developing half a dozen more AlphaFold systems that of course AlphaFold's one component, the protein structure, but it's only one small component of the whole drug discovery process. And you can think of we're looking at biochemistry and chemistry things to predict, you know, toxicity and admin properties, and so on. I I wanted to sort of um go back a bit. I'm a wet scientist, so to speak, and I'm now in no sense an AI um specialist like my two colleagues here. So, what has it done for me, we could ask. And what it's done for my lab, we start with actually rather simple things, machine learning. We shouldn't just sort of disregard this type of thing. I mean, um we now can analyze images in minutes, which used to take us days. It saves an awful lot of time to actually uh be able to do it. Um we can do a media survey in a minute or two. It's pretty boring what you get back with the large language models, if I can be blunt with you, but it gets you started. So, that sort of actually um helps as well. Where now, and this is what Demis is referring to, I think, is how can we now implant beyond those sort of rather simple things, which I don't want to um denigrate. They're very important. And by the way, I should say AlphaFold has been amazing, you know. We do experiments. We can try and imagine what mechanism there might be. We can put it through AlphaFold. We can see what might touch something else. It may or may not do that, but it immediately creates ideas and hypotheses. All of that is great. So, what about the next steps? And the next steps I think people are thinking about is how can we apply a sort of connected loop of of ways of working in a laboratory where AI can help at every stage as we go around. So, it's not just simply a particular technique, but it's integrated in the process by which we can actually work. Now, various places in the world are thinking about this and thinking about doing it. And I mean, there's difficulties in part of it. Part of it is the type of data you have to analyze. Um AlphaFold worked with extremely useful data. I mean, immense amounts of data collected in the same way, in a public database, by the way. Should I mean, for those who wonder why do we do public funded science, AlphaFold would have been totally impossible without that. And we uh They open-sourced it afterwards. Absolutely. And by the way, they did it very decently, if I can say that. Um but it was a consequence of that access to public data curated in exactly the same sort of way. Much of the biological data, where I think this is going to be useful, isn't actually collected in that way. So, we need to get and then this may have views about it, ways of analyzing it, which is of a different type. What we tend to have is, if you like, depth rather than lots of similar data like this, we have sort of wells in different places and different lengths. And somehow we've got to connect all this sort of thing together. And at this moment, I think that's a bit tricky. And we need to get the methods there. But I think the idea is how we can connect all the stages of data, hypothesis, hypothesis testing, generating an idea, back producing more data, and going round that cycle, and how AI can actually help us. With in my view, the ultimate objective of understanding life. And we start there with the cell. How do we understand the cell? Thank you. We'll come on to building a virtual cell in a minute, but Alice, did you want to chip in on this point or Well, I I guess in my space, it's very very similar. If you work If you pick up an ultrasound probe and you want to scan, we can't You can't do that with a robot. You can't actually You require the human expertise. So, now people are very much thinking about having solved these individual little tasks, which is what we start with, is how can we now put them together and integrate um every step. So, pick up, you move the probe, um you apply certain pressure, and how do we Some of it you can understand what to do. Some of it humans just do. And it's that It's that fine what we call fine grain information that is very difficult to be able to model at the moment. So, the ultimate would be able to get a robot to be able to perform all these tasks and integrate them together. And that's That's what people are working. I think 5 years ago, we would say that's a dream. Now people think that that's That's possible. Things are moving so fast because now we're You're talking about AI and humans working together beautifully integrating workflows, it helping each other. But already people are worrying about what will happen next. Young scientists coming up through the through the through on the starting out career paths, I think are uh uh increasingly asking, \"Where will it be when I'm trying to set up my own lab? What what will the status be? And what will the role of the creative scientist be?\" And this is a whole another topic, but I'd like to explore it. Well, the first thing to realize is doing research in a wet lab is enormously boring. I mean, it really is boring. We spend most of our time transferring little volumes of liquid from one tube to another. And there is no way to excite anybody, let alone their intellect, okay? So, we could work on how we can get robots to do much of that. And in the Crick Institute, where I I work, we have very good technical cores, which are not yet doing this in a way that is integrated in in what we would like. But we have the resources and the way of thinking that would allow it. The reason I said it's boring is I think most of my colleagues in the lab wouldn't mind if they didn't have to do all of that all the time. However, what we do need to keep and to to actually develop is creative thinking. So, I think the focus here should be, \"How can we turn these tools into assist the human being to be more creative in thought?\" Now, large language models are not creative in in thought. They might sort of push you in certain directions. But working, I think, with AI processes, where you as your human mind is involved in different parts of this, may actually provide a way of operating in this sort of way of thinking about experiments, which is is which could be very productive. Because what switches us on? It isn't transferring little volumes of liquid from one tube to another. It is a creative idea, most of which are wrong, of course, and but which you can then prove um are wrong and sort of move on. So, that's what excites me, working with the machine, if I can put it this way, to generate creative thought. But, yes. Although it's true that a lot of time when you're doing pipetting and just watching the meniscus and that's a good time to be thinking about your experiment. Back in the '70s, I mean, when I could did you know, I didn't even do that. I was just looking at things and Um I had a lot of time to think. There is a problem, though. W- When we use complex technology, you spend all your time getting the damn technology to work. I mean, you And and you stop thinking about the process, the biological process you're trying to study. If the technology is simple, it has to be said, you do have a lot of time for thinking. But, if the robot does it, maybe we have enough time to think, too. What do you think, Dennis? I agree with what Paul said and um it's one of the reasons you couldn't attract me into the wet lab back in the back in the day, Paul. I kind of understood that. Yes. So, I would stay in the digital world, but look, I think um if I totally agree with you, I think that this what these technologies should should be enable, if used correctly, is give us more time back for the creative thinking that this you know, the kind of taste that we talk about with great scientists have, setting the hypothesis or the choosing the right problem, even asking the right question. I always think asking the right question is much harder than solve It's like, what is actually the right question? And how can you state it in a really concrete way, the controls around it? You know, all of that is is that you know, the current AI systems have you know, no no way of doing that today. want to support that. It's asking the question, the agency of the right question. And actually, whether you're even asking the right question, asking endless Yeah. questions, which which sometimes just come to you from over here. And I don't think the ways we we do it can to deliver that it No, not at the moment. I mean, one day I think AI systems is I don't think it's impossible for them to do that, but certainly not in the next, you know, 5 10 years. Probably the next the next bit we can see. I think it will enable this. Um I think the other thing is it will it should enable much faster iteration. If you think about it, right? So, through your idea space, um maybe we can again a little bit more like how engineering is today. You you you quickly prototype something and then you move, you know, you test it and then you move on. This going to be an interesting new way of of of bringing that into more more scientific disciplines, I would say, that type of approach. I think it will also free up PhD students and postdocs to um to do higher level work, let's say, instead of let's say you're doing an image something to do with imaging like I was doing fMRI and neuroscience at UCL. You know, a lot of that analysis of the images will be done by the AI systems. You don't have to painstakingly write the support vector machines and other things we used to do back 20 years ago. And then instead, we can use that time to maybe think about the experimental side of what would be a good next question or hypothesis. Um I think in terms of I think the the amount that a single student, for example, will be able to do is is going to be incredible. That's what I'd recommend in general outside of science even for the youth of today is I think there's the the the the kind of cat is out of the bag in the sense like AI is not going back into the box. But what you can do like I did in my generation in the '90s is growing up with computer home computers sort of in the first generation and then the internet is lean into that and get incredibly au fait with the technologies and including understanding how they work. So, STEM subjects, all of that I still recommend to the students of today because you'll still you'll be able to use, even if you might not be coding as much, you'll be able to use the coding tools way better if you understand it. And I think the output of what you might be able to do uh, as a PhD student in the future in a few years time, is like what a whole lab would have needed before. So, that for the for the enterprising students, the really smart ones, the go-getting ones, the very motivated ones, that could be hugely empowering. And of course, it might be available all around the world. You don't have to cuz these tools are basically distributed everywhere, like like phones and and apps and so, you can maybe access some of the most advanced technology in the world from wherever, whichever country you're in. So, that could be pretty exciting from encouraging, you know, the most talented, most motivated students from anywhere around the world could maybe do cutting-edge science, which would not be possible today. You'd have to go to one of the, you know, relocate and find your way to one of the top centers around the world. Um, so I think there's lots of really interesting ways things are going to change. And in terms of using the paper cutting time for thinking, um, I think we can replace that with something else, and go for a long walk in the in the country, you know, and and I but I do think this is an important point in general. One thing I want to do with our Gemini, you know, chatbot so, LLM side of the house that I have to that I also run at Google is, um, one of my dreams is that when those become really capable assistants, which we're maybe a couple of years away from, um, I would love it that we can then use technology less. Not more, less. Because I think today we're just bombarded by these unintelligent systems that are trying to hack our attention, whether it's social media or whatever, just the torrent of it. And what I but we have to dip into that torrent because we need the information, the knowledge, and whatever it is that you're looking for that's useful out of that noisy stream. But if you had an AI system that you could effectively worked on your behalf, you could sort of delegate it to that, and just say, \"Look, I'm I'm going to do some deep thinking now between 10:00 and 6:00 p.m. And don't just don't interrupt me. Summarize what's happening in the world, you know, these things I'm interested in at the end of the day.\" And you could really rely on it to do that. So, I think that could actually sort of protect our mind space and attention space. That's what I dream of doing is getting getting through this period and then having technology that's actually smart and personalized and knows what you need and you can sort of delegate that aspect, the information gathering aspect to it. So, you've got more time to think if you're a scientist or, you know, do the things that you're interested in if as a general citizen. It's a nice I'm just trying to imagine my graduate student wanting to leave. I'm just off now to do my deep thinking. Yes, that's exactly it. There was There was a lot in what Demis said. Do you want Did you want to comment on the engineering question or was it as a professor of biological engineering? I was going to say I think he's he's um said it well. I think for in in my own group the the what I'm already seeing is postdocs who who's computational postdocs who now it's just amazing how they can program and get assistance with their their their software. And that that is what they say. They have more time to think. They have more time to be creative. And um come up with with um much more advanced solutions where you would normally uh just a few years ago you would probably had a few master students as well. We need to be careful here because we do treat that all as part of training. So, we mustn't forget that we do need to think about the education as well. But, I do think that these tools are very accessible. So, we are are just going to see as you say more more done by a PhD student. Um and the notion of a team is although I mentioned it earlier, the the notion of who will be in a team, you you still need interdis disciplinarity in to understand how to build the appropriate models. But, maybe they're small teams and not the large teams. So, there there were many directions we could go from you said. Uh one thing to pick up on is perhaps that that just the deluge of information that's coming out. Now, you mentioned that they these systems should in the right hands be making people more creative. But, there is I'd be interested in your opinions of whether in general the way that AI is rolling out at the moment in science is is leading to lots more creative science or a great mix of people doing creative things and people doing things because you can and because grant grant awarding bodies and journals are wanting to see new ways of working.  Um and also then coming back to the point you made earlier about about public the publication system a whole different question of how the how how we can communicate science effectively if there's just so much more going on and resources are still stretched. So there's a lot there. Sorry. I don't Who wants to? You Oh, yeah. Say something about I think the technology has got dangerously seduced in some ways. If I look at some of our high-profile journals now, they will invent some way of looking at a problem and accumulate a lot of data. And it's clever. It's expensive. So only a few people can actually do it. But it doesn't actually come to very firm conclusions about anything of interest. In fact, I sense they're not even interested in coming to conclusions of great interest cuz they're so full of themselves of having developed this technology to do something. It's actually something I'm beginning to worry me. There's a journal called Cell which used to be a great journal. I can't bear to read it anymore because it's just full of this stuff and they just have no conclusion cuz they are not thinking about what it all means. And um I think we've got to get thinking and asking the questions back into this because I think the seduction of the technologies is a problem and it won't be solved by the computate cuz it's actually a human problem that they need to think. The objective of all of this is to understand and not just collect data. Yeah, I agree with that and um there's there's some areas of science which I I wasn't going to name them, but then you named cells, so maybe I shouldn't have. I I where I think it is an exercise in let let's just get as much data as possible without really thought about how it tells us anything about functionality and other things, you know, I think the early days of connectomics maybe was like that when I was looking at that as a postdoc in MIT. I was like, well, what is this actually going to tell us functionally about the brain? Um and but it's obviously a very seductive data gathering, you know, approach. And I think there's many areas like that where we need to think about the the the the scientific question. Um it's sort of I see this in a different ways as AI I I we already were being deluged by this idea of big data, right? That was the That was the buzzword if you remember in the early 2000s. It was big data. Now the buzzword is obviously AI, but I I I used to pitch what we were doing at DeepMind as big data is the problem, AI is the solution. That's you should to That was one way I used to try and describe what we were doing to early early So So early early venture capitalists. They were still a bit confused about about what we were trying to do, obviously, like solve intelligence. What does this mean? But I I think um you know, big data is the problem and it's increasingly, you know, if you view it as the deluge of information we're creating as a society, obviously in science, uh we have these big machines, large hadron colliders, all these things, uh and there's it's just producing reams of data where maybe there's some insight in it, maybe not or some structure or some pattern, but it's beyond maybe not enough scientists are actually thinking about it. So, first of all, more we need more scientists to do that, um perhaps even before they generate that data, but certainly uh it's sort of the complexity is beyond the level any human mind, even the smartest minds we have can probably comprehend. And they're usually in areas which um are not amenable to making into kind of elegant mathematical equations. Right, so I That's why I always used to say that AI is the perfect description language for biology, but just like math was for physics. Because Because biology, I think, you know, a lot of people try to I don't think we're going to get Newton's three laws of motion for a cell. It's just too emergent. It's too dynamic. Doesn't mean there aren't rules and there aren't things to discover and understand about it, but I think it's going to be more like a simulation, which is why we're thinking about virtual cells. And And so And I think if you think about wider than that, economics, you know, such an emergent dynamic system. Obviously, you know, with humans as the as the atomic unit, which are already unbelievably complicated. You know, how are we going to actually understand those types of systems? How does one do science on those types of systems? And I have all sorts of ideas about that, but it involves using AI to try and make sense of data and find the structure, maybe build a simulator on top of that like we've done with weather systems. Is this definitely possible? We've shown it in many directions. Obviously, with AlphaFold, but also more recently with predicting hurricanes and which direction they go. The Met Office is using that. You know, that's super complicated. You used to have to have supercomputers doing fluid dynamics calculations for 2 weeks. Now, we can build a model that is, you know, as accurate, maybe more accurate, and it'll give you the result back in few hours, which is a huge difference if you want to warn a country about the hurricane path, right? Like we did last year actually for Hurricane Melissa. And And so I think this is just we're just scratching the surface of what really is going to be possible. And just to answer your your first question about that, I think there's going to take time for science to adapt to how to best use these tools. I think in a lot of cases, the tools are not being used in very useful ways, or it's pretty mundane ways. Still useful. Again, not to not to cast any any doubt on that. It's like it's very useful for dealing with, you know, paperwork that we have to do every day or just gathering, you know, interpreting images, but that's really step one. So, we should do that right now. That's clearly useful, but it's it's it's in itself a creative process to understand how should you want to apply these tools to the question that you have in mind. And I also I think that holds for business as well as science. Now, I get, you know, CEOs for last couple of years they've, you know, it's virtually few years ago they went from not hearing about AI to what is that to like, oh, we need something on AI. And then they're like looking around and they're running an insurance company or whatever it is, and it's like, oh, we've just got to apply AI to something. And and I often used to say to them, look, you don't when I looked into the problem, it's like, no, you just need to use stats for that. It's fine. You don't you don't you don't need AI to do whatever it was you doing. And and and and so in fact, if you try to use one of the latest systems, it would actually get in the way of that problem. It's just not the right problem for the the the proposed method. And I think it's going to that in itself is a taste question issue. Not only do you can you come up with the right question, can you can you you can you come up with the right question that will and use the tools in the right way in service of that question. And that's again on the part of the scientist. You know, you've got to understand your domain really well and and work and and also understand machine learning well or get students who understand it and then shape that correctly for that for that new world. I think that's part of this going to be this new taste that is required. Thank you. I'm going to we we've mentioned the virtual cell a few times and I think we should step up the ambition level and talk about the the simulation of the virtual cell. A dream of your that you share. Yeah. Well, I'll start. I mean, this is complicated. Um people do have a go at it. They'll they'll take a simplified cell, um bacterial cell, reduce it to 4 500 genes, so they the problem is better than 4,000. And then they'll do some in they'll probably try and um um identify all the reactions, uh build 400 differential equations, put it all together, and predict something. Now, my comment there is if you have 400 differential equations and you can't predict whatever you like, um you're not very good at differential equations. So, I I actually think um it's a nonsense to start with. I don't want to say you shouldn't do it cuz we should, you know, let people try it cuz I could um certainly could be wrong, but I think it's exceedingly unlikely to work, especially given that all of these kinetics have been determined almost certainly in vitro and almost certainly won't work like that in in vivo. Now, I give that example simply to say we are nowhere near dealing with this problem. Now, um let's think what we got. We have disorder around us. Within a cell, we have order, and the physicists worry about that a little bit cuz of the second law of thermodynamics, but as soon as it's all explained, it's isolated and you put energy in, they lose interest cuz they can see it's not uh contradicting the um second law of thermodynamics. But, it isn't just creating order, it's creating um order with purpose. Order with purpose. Purpose to for the entity, the cell to survive and also to reproduce in a way upon which natural selection can work. This is ferociously difficult. And I struggle with it cuz I can't quite see how to do it. The The nearest um I've got, which um I don't think it's a good idea, but it's the best I could is to see whether we can divide up um the cell into domains, like a number of black boxes where we don't really care what's going on in the box. We just need to know what are the critical inputs and the critical outputs and see whether that simplification might um uh produce something. Now, I've done My lab's done an experiment which is something which I just wanted to explain because it I think it it could be telling us something. We measured the rate of protein synthesis in the cell. Now, that's simple, you know, let's not worry about how we do it. If we have one culture and we measure it and it's the same culture here, the mean will be absolutely identical. If we look in the population, the variability is incredibly high. So, there will be a lot of cells that will be 50% of the normal level and more 50% more, okay? Now, us biologists think everything is tightly regulated. Actually, it isn't tightly regulated. It's very floppy or very sloppy. Furthermore, if you have a bell curve and you're out here, 10 minutes later, you go back to the mean. Now, this is weird cuz you'd think hundreds of reactions are required in protein synthesis. It'd all average itself out and it'd be all tight, but it isn't. It's very, very floppy. Now, I think this may be telling us something in all of this because we biologists too much think everything is highly controlled. But if it's highly controlled, um if you get into a funny part of control space, you may never escape from it. Look, how often does our computer do something weird? What do we do? We switch it off and switch it back on again. We don't know why it's gone wrong. We just switch it off and switch it on. Now, cells can't do that. But if they're floppy and sloppy, if you see what I mean, maybe they never get stuck in the wrong place. This could be all hooey, okay? But thinking like this with assistance of uh with the sort of stuff that Demis is doing is the way I would try and approach this problem. Well, this is Sorry, I didn't This is the key. Bringing thinking like this, or thinking like you did when you did your work that was originally awarded the Nobel that was eventually awarded the Nobel Prize, where you just scattered human genes on yeast cells that weren't replicating, which is kind of crazy. No, I don't think any anyone thinking about it very hard would have done that, but it worked.  Well, what you're saying is you have to be a bit crazy. And maybe you need to have you know, an input from on your models create you know, the craziness which dial up the craziness. That's just the right amount of crazy. Yeah. So, I I think Paul's right in that when we first talked about this maybe I mean gosh, this maybe even 30 years ago. I would I would have when I was an undergrad I was I would have tried to do it in the maybe heuristic way of like a bunch of differential equations or some other rules. That's how AI systems were built back then like chess computers like Deep Blue. But it it was very obvious to me actually during my undergrad that this was not going to work to get to general intelligence or even understand language or any of those things. You can't you know, we were taught at Cambridge like first order logic is basically is it's language as is first order logic rules. It's obviously wrong because half the time we don't speak I don't speak grammatically and you know, we we still understand each other even if it doesn't obey the the logic system. So, we're obviously doing something else, you know, without at least the human brain was. And and then I sort of realized and I completely confirmed my suspicions of that with our early work at DeepMind of learning systems. And then eventually AlphaGo. Like well, you can't program directly heuristics for a Go a Go system that would be world champion level. It's impossible because too esoteric and it's too intuitive. It's too about patterns. There's no there's no easy things to write heuristics about like material that that the value of material because every piece in Go is worth the same. Right? So, that all the things that worked in chess do not work in Go. And so, it had to be learned direct from experience and direct from data. The system playing against itself figuring out its own You know, intuitive heuristics, let's say, about about about the game and about what was useful what were useful strategies. And in fact, it did discover famously like new strategies that had never been discovered by human players even though we played Go for 2,000 plus years now. And so, that was kind of extraordinary as well. Like, not only can it model something that was otherwise intractable, it can actually potentially you could use it to go beyond what we currently know as humans. And that makes sense because a chess computer or something that's programmed or scientific system that's programmed directly with equations we already know about, it's quite hard for that to go then beyond the knowledge that the creators of that system had. Right? Because obviously with the what capacity has it got to do that? So, that's quite That's one of the very exciting things that we got very excited and obviously everyone's realizing now about these new modern systems. They're learning, they're general. So, that means they have potentially the capacity to go beyond with the help of human experts beyond our current level of knowledge, which was never true before of any other tools we've ever built as a species. Right? You're not going to Your car isn't suddenly going to just spontaneously fly. Right? When you've designed the car, you know, the engine of the car, it's like it's going to It might not work in how you imagined it when the early car makers. But it's not going to suddenly do some some capability you didn't design for it. So, it's a very unusual type of machine and system. I would say it's unique, which is why I was so fascinated by it since since I was a kid. Cuz it's obviously different. And then with simulations, I do think the issue there and with the cell is and what we've wrestled over and over the many years about discussing is, well, what is good circumscribed system? This It comes down to two things. Can you Unless you're going to simulate the entire planet down to quantum level, which maybe one day we will do, then you're going to have to describe some some siloed self-contained system that you can approximate everything outside of it, right? In some way. And then the second question you have to answer is what granularity do you need to model the system in inside to for it to be valuable for your for your predictions you're interested in. And and chemistry is a great example of that. Like it's amazing to me there's that that there's room between physics and biology for chemistry, if you actually think about it, right? Like actually, I mean, some of my best friends are chemists from from Cambridge, and we talked about this quite a lot. It's like, how can there be a subject, chemistry? It's like where you can sort of abstract away the physics and the quantum physics and everything, and you don't have to get as complicated as these amazing emergent systems that life has, and it's sort of studyable on its own without And you can sort of separate it or approximate it up and down. It's kind of amazing, actually, if you stop to think about it. And maybe there are other ways to to do that with other parts of science. So, my current thinking, which we haven't had time to discuss yet, but might as well tell you now, is to maybe we can do like cell nucleus. Perhaps that's a that's a good starting point that that Zico and I are working on, and we'll talk about that afterwards, but that maybe that's a like maybe that's a good subunit. Very complex. Yeah, probably still too complex. Yeah. So many places to go, so little time. Alison, one thing that Dennis mentioned was the potential for everybody around the world to benefit from these technologies that can be distributed, but you also mentioned the barrier to access of compute power. Um How do But we have to be brief with the subjects we're going to cover now, but how do we How do you ensure that the rest of the world can participate rather than just be carried along? I think the well, people are working on this. For example, there are there are a few if the work depends on on computers that are that high performance, then how do you do computation differently so it doesn't depend on the large the large computes? Then access providing access as well. Um and then using techniques which is still requires computation but using things like federated analysis where you can share the the compute and then bring the results back. So, but some of this depends on the question you're looking at, um the fidelity that you need to be able to build a model. But I think there are a variety of of ways that people are are moving forward. And that that is just evolution of tech technological solutions. Yeah, I okay, I think we've got to sort out the computing problem and and I think it's I it's also part of it's a a energy cost problem in this country. I think we we've got to get energy basically means intelligence now in in effect, you know, via chips and data centers. You can sort of it's going to basically be a one-to-one correlation. So, we have some of the most expensive energy in the world here which is the trickiest you know, for us to then scale up what we need. Um having said all of that, I do think this is a creativity and imagination problem. So, yes, you need tens of billions of dollars of compute if you want to like build the latest frontier model. But just like if you're in academia or like or an institute, there's no way you should be thinking about doing that. This is pointless. Just And there's there's you can't you won't be able to keep up with that and all the people that you need. And also it's not the thing to be doing. There's enough companies doing that, right? There's like five in the US, there's three in China. Like what it is is like that we've been talking about black boxes and other things. If I I've I've said this to many departments and with varying degrees of of success. But like they always ask me like well, what should we work on here as professors of computer science at wherever, whichever top university?\" And if I was in academia, I would be looking at the analysis, the understanding of the black boxes, the the the the stress testing of what they can do, the limits of that, what God, how can we actually put um uh uh uh monitoring tools? There's so many things that need to be done, benchmarks for that that don't require a lot of compute. Um because of what I would do is there's open-source models like we have Gemma 4, there's Chinese models models, very good ones. They're only like 6 months off to a year off the frontier. Literally, like this time last year, they would have been frontier capability. They're tiny in size, so our model Gemma 4, for example, is built to run on a single laptop, even, right? Let alone a small university cluster. Easily can run many instances of these things. Same with the China the smaller Chinese models. And you could do plenty of great science of on AI and also use it for plenty of great science, you know, applying that kind of AI to another field. I mean, you literally wouldn't have had that a year ago. So, it's just a bit of sort of miss FOMO of missing out on there's something exciting over here. But, you but the best scientists, in my opinion, if you believe in what you're doing, you block out the noise. Just like we did back in 2010, when no one was working on AI. Literally, nobody. And everyone thought we were mad and and like you know, even in academia, it was considered to be a kind of like a dead end. Like, we don't we know it? You know what I mean? We tried AI in the '90s, it doesn't work. Um and but if you really believe in what you're doing and you're passionate about it, you should be able to block out that noise and just uh go in your lane where you think you have unique advantages to contribute. And I think multidisciplinary is one of those areas. And I actually believe that's one of the great things of um the new era. It's it's never going to be an easier time to do multi-discipline proper multi-disciplinary work because we can use these tools. You could use them to get up to reasonable speed on a number of other areas that are not your domain, far faster than you ever could before. And so, I I think there's plenty there to be done inter disciplinary, but also the the science of AI as well. Um I just think is there's so there's just a kind of lack of creative imagination, I would say. Thank you. I will turn to some of these questions. Um the there were a lot of people interested in AGI and whether um systems will become conscious and what that means and it's a very complicated thing to talk about. I Could I I mean, I know that you're you set out to create AGI and to use AGI to solve world problems. That was your sort of that's your sort of direction. Let's that that maybe that could be talked about in another time, but now do you see is there anything that worries you about any of this? We've talked about small worries like but what worries you? Well, there's huge worries. So, obviously we talked about the opportunity obviously the reason I spent my whole career building this is I want to advance science and especially medicine actually with AI. So, that's clear with the work I've directly used these tools for myself, right? With AlphaFold and AlphaFold Isomorphic. Um but there are a couple of worries and I can happy to touch on the conscious question as well, but the two main worries are kind of you can think of like this. Bad actors repurposing general purpose technologies for harmful ends. And those bad actors could be individual rogue people, uh but you know, bioterrorists, this type of thing to rogue states. Um so, that's one. Second one is the technical about AGI risk. So, as the system become more autonomous and um obviously that'll be more useful. That's why we're all moving towards a genetic era. This is the first step of that, but they'll become more autonomous, more powerful. Um will uh can we make sure the guardrails we set them uh are strong enough to to to constrain the behavior of those systems to what we originally intended. And that's a super hard problem, too. Um so, there's that's two problems. Then either that I kind of classify those as technical problems. Um and then beyond that, even if we solve that, there's the economics problem of how do we share the benefits as widely as possible to as many people to benefit as many people and countries as possible. And then finally, there'll be the If we solve that, there'll be the philosophical question about meaning and purpose. So, not to So, there's just a lot of things to solve. I I I have I'm still very optimistic because I'm a huge believer in human ingenuity, and if we put our minds to it, especially in acute times of stress, I think humanity has always stepped up to the plate. But, it's going to be I think first of all, we need to recognize what the challenges are, and I'm surprised, for example, there aren't more of my economist friends working, taking this seriously, and working on what would be a post-AGI uh economic system that would work, for example. Do you think we can ever build a system where the guardrails just cannot be will be simply removed? Do you think it is possible? That's the big question. So, you know, assuming a system gets more intelligent than than us, or which is, you know, or AGI would be, how would How does keep guardrails on something like that? That's an an extremely hard, but also very interesting research problem. And as one example of, I think, the sort of research that could be being done in academia or civil society. In fact, might be better to be done there rather than the big tech companies sort of marking their own homework. Uh is is is that exact question. I I I suspect, just from looking at how steerable our current systems is, I'm sort of um optimistic about that. But, it's it's an unsolved problem. It's called the alignment problem. And it's uh it's it's for for sure not solved. And anyone thinks it's like simple as like, \"Where's the off switch?\" You just have Just do some reading around it. There's just There isn't this It's going to get around that if This is what Asimov wrote and warned about with all his robot stories. The The whole point about that was a warning, like the three laws of robotics don't work. And adding a zero flaw also doesn't work cuz it gets misinterpreted uh in certain contexts. But, it is there the bandwidth for people to actually do this work while everything's developing so fast? Does it is a slow down needed? And if there was a slow down needed, what would it look like? This this isn't the the the way I imagined it 20 years ago in terms of like the technologies where it's at, but it what I what I what what I always hoped it would do in things like AlphaFold and and and and trying to advance medicine. But, it would be much better in my opinion if we'd been doing the basic research in a more scientific way like a CERN like international collaboration like that. And then you could still move very fast with the applications. So, things like AlphaFold or you could try and kill cancer for that before AGI arrived. But, we wouldn't have to deal with the existential question until we were ready as a society. It just the technology hasn't gone like that because the language what changed all that was the language bots, the chatbots becoming possible and also very commercial. So, that's not going back in the box now. So, we have to think of some other ways of how can we get international collaboration around maybe standards or certification processes. And it has to be international, which is really hard right now with the geopolitics and the fragmentation of our international institutes. So, it's a sort of bad confluence of just at the moment we need strong international institutions and collaboration, we're sort of in the nadir of that phase. So, I have some ideas. I don't think I think but it's going to be it's a tricky you know needle to thread here. So, sorry Dennis, I don't want to keep coming coming to you, but since you mentioned you talk about consciousness and people do like to hear about it. Just very quickly, do you think that everything that the human brain can do is computable? Well, my all-time hero is Turing. So, I I would say and I loved, you know, his Turing machines and studying all of that at college. And I think the evidence I mean, I've talked a lot with people like Roger Penrose and obviously he would disagree and he thinks there's something quantum in the brain and Stuart Hameroff. I don't think there's any evidence of that so far. I feel like it's sort of here's two strange things we don't fully understand. Let's put them together. But anyway, I I don't want I don't want to I don't want to, you know, we shouldn't Rogers is an amazing guy, so he maybe he's right. But I think my I haven't seen any evidence in all my neuroscience work. So my assumption would be that most things in the brain are everything is computable in the limit. That doesn't mean that but I think this this adventure we're on, uh one of the reasons I wanted to build AI was to help use it to as a tool to help neuroscience, but also maybe as a comparator to help us as a control really to see what was special about the mind, if anything. And so we'll we'll come to that. Sorry, one problem here is that we don't really know what consciousness is. I mean, so we don't even know quite what we're what we're It's not a well-defined problem. Yeah. And but I think but we have some aspects of it that are probably required, but you know, you know, necessary but not not sufficient, right? Like self-awareness, a sense of identity, these types of things. And my view is and has always been AGI. The reason we coined the term AGI rather than use the old term strong AI. So it used to be called strong and weak AI. And I didn't like strong AI because it implied consciousness. So it was conflated. Intelligent like a sort of general intelligence with consciousness. I think those are dissociable properties, would be my guess. In fact, if you look also animals, you know, our pet dogs and cats, they feel There's a lot of things about them that feel pretty conscious, but they're not as smart as humans. So it feels like there's a gradation and it could my view could be separable. And and I don't feel like at least the tools we're building are in any way conscious yet, by whatever we mean by that definition. I don't feel they have a semblance of that, but I think they could. And and so my recommendation, if I could wave a magic wand, is let's cross one Rubicon first, which is the, you know, AGI and these really smart and precision super capable tools. Um and then use that give ourselves time as as a society and use those tools as well to maybe better pose this question of what is consciousness, do some neuroscience with that. I think given 10 years with those kind of tools we would be able to. And then maybe that'll be the next question for societies, do we want to cross the second Rubicon of actually trying to create, you know, conscious entities. And in my view, I don't think we want to those are big enough challenges in themselves. Do we really want to conflate that and cross both of them at the same time? Allison, I guess that all scientists get involved in these conversations about consciousness sometime. Do you Do you want to chip in here? Um well, I I guess my work I try and steer away from that actually from it but being what working in the applied area but yes, of course it it it it comes up in the in the conversation and also how how would you use that capability going back in the context of science is how how would that actually help you as well? I think it's a full circle one as well. Um Yes, yes, indeed. Yes, indeed. One of the advantages of getting questions from the audience is they take you in places where that you wouldn't necessarily have gone. And you mentioned philosophy already but a nice question is what is the role of philosophy of science in the future of science? And a lot of conversations between scientists about where science is going happen without philosophers being involved. So, does anyone want to Well, I think philosophy is quite important in thinking about science, I have to say. And and what knowledge is and what you can test and what you can't test. So, I I find as I've already said Popper useful here in the sense that you don't really prove something's right, you only prove that it's wrong. And after a while you sort of accept that it might be right because of the the the problem of, you know, what is deduction versus induction and so on. So, I think you do end up in a bit of a tangle. But what we don't teach properly is um the is thinking about science and thinking how you do science, which does have a philosophical basis. Now, the philosophers get a bit, you know, tangled up with things. I mean, I think we should read them, but not actually, you know, be totally driven by them. But, we don't act It's difficult to quite say we don't know what the scientific method is. I mean, you know, we can say general things, you know, that we should collect data, it should be reliable, it should be reproduceable, we should challenge our own ideas. We can do a list of attributes. I mean, for sure. But, I think that and I think actually we need to teach that because it it it helps us in in doing it. But, I really do push back in that there is some sort of gold standard scientific method of doing things because it differs from area to area. How you do science in physics is different from how you do it in biology or climatology. Some of the greatest physicists in the world were hopeless in thinking about climate because they simply thought about they had to have complete understanding from A to Z about something. And so, they criticize it because you weren't producing that. But, that is because they tried to translate how they did their science and that's what Roger does into some extent to how people do science in other areas. So, it's it's a complicated thing. It It is something that we can deal with. We just have to recognize it and describe it. I Let's keep Yeah, I I just want to say on that I think the philosophers philosophy's time has come. I would I would say if I was philosopher right now, this would be the most exciting time ever cuz you not only do you need a new philosophy of science or updated one because we touched on all the things that need updating. Like, how were we supposed to use simulations, you know, or or black boxes, reverse engineering them, you know, that needs to be included as part of the scientific method. Yes, and what is understanding now? Because also these black boxes can be I I think potentially backed out into mathematical equations if that's what we wanted to do. Um so maybe it's a it's a it's a two-step process. Um so I think there's a new philosophy there. And then more broadly, I think uh we need some the time is now for some great new philosophers like a Kant or Wittgenstein or Spinoza, some of the my favorites from old the the ancient times of like, well, okay, so what is going to be new ethical philosophy and virtue and purpose and all these things that we just discussed. If we get all the other technical things right, those are going to be the most important questions. And um I think we're going to need a a some new philosophies of the human condition. If it's Wittgenstein, we'll just be silent all the time. Okay, two last things. One more question from here, and this one is for Alison and Paul. Um possibly from a young scientist, is there a possibility that AI will help us improve research culture and especially the kind of harassment of young scientists? What do you mean by research culture? I mean the culture of research that happens in laboratories around the world. And and can you could you could you see a way that AI can just make it make it nicer to be a young researcher? You know, it's not so horrible as people make it out. We've talked We've talked about it all in glowing terms for our and a half, and I just feel you do hear Well, look, you know, scientists are bad just like everybody else. So sometimes they misbehave and so on. I just don't think we should sort of get so tangled up with it that we'll absolutely I do think the media love making thing, you know, that they're all making stuff up and so on. It's rare. It's rare. And so our culture isn't too bad. It's always improvable. I don't want to sound as if Of course it is, but let's not beat ourselves up too much over it, I would say. Alice? Well, if if they mean um in terms of there seems to be lots of pressure. Um and being and to produce results now and they're worrying because on archive their work might have been published. You can see that there's a lot of stress on the current um young young scientists. But I think we've also talked talked about this to um now, you know, they they should maybe pause and reflect and think about what what a being a scientist is and what scientists should be doing. But that is that's attention that if publications matter and what's on their CV all the time, then it's up to more senior people to stand up and say, \"No, I want you to be the best scientist regardless of the number of publications.\" And and to come out with a few outstanding papers rather than think about um the volume of of work. Volume doesn't matter at all. Exactly. What matters is quality of what you produce all the time. Not not quantity. And it it uh uh so obvious. It just is astonishing that people don't don't realize it, really. Thank you very much indeed. I'd like to reiterate that the questions that you submitted have really helped inform this discussion. And so I hope I've represented at least some of your thinking in in in this conversation. Uh just to finish, um Demis, when when AlphaGo beat Lee Sedol in 2016, he retired from the game saying, \"It's not the same game anymore.\" And I just wanted to And then he  Well, it's been more comfortable. Exactly. Um but um I Okay, maybe a uh constructed premise for a last question. But the is science the same game with AI attached? Has something changed? And I'd like you all to just talk about that. Yeah, I think something will change. Look, I saw Lee Sedol recently when I went out to Korea. It was really nice to catch up with him. He's He's doing great. He's you you he's talking about he I mean, in a way he has visceral experience of what it's like for AI to encroach on his area and I think the whole world can probably learn from that now. He was near the end of his career anyway, that's just something to I mean, he was I used to describe him as the Roger Federer of of Go, which is what he was. He was, you know, 18-time world champion, but he was the strongest person of the, you know, player of the pre of the previous 10 years. Still at top of his game, but he was getting towards the end of his career. Um so, those things got a little bit conflated. But there is was some bittersweetness and sadness for me even with the AlphaGo match, especially as a as a games player myself, you know, I used to play chess very professionally when I was young and we we had a chat actually on the eve of the match where we both joked and he likes technology and computers. We could have been, but for some different events in our lives, maybe we could have been on the opposite sides of the of the board, right? Cuz I at one point I was going to be a professional, you know, chess player. Um but uh so, I I this I really respect that art and it is art and that that skill and that mastery. And there's no doubt that when a AI system comes along, it changes that, like it did with chess and it changes the relationship. But having said that, chess is more popular than ever now, you know, to watch and people don't care about watching chess computers play each other, just like we don't care about, you know, we we still care about 100 m uh sprinter Usain Bolt, even though we have cars and things that can go faster than a human can, but who you know, we don't care about that. We want to see what what our fellow human beings can do. So, there's I think in those areas there's there's part of that. The only other thing I would say, which is probably relevant to science, is Go players used to describe I mean, they still I think describe it and Go is regarded as more than just a game in Asia. It's a sort of mystical art and um some of the mysteries of the universe are thought to be embodied in the game cuz it's it's just such a beautiful kind of yin-yang game. And um and and and of course, they the best Go players used to tell me and I have a lot of friends who are professional gamers in various sports go as well, that they want to know the mystery of the game. But do they really? Is the question, right? So, and I think that's the same with science. I have an insatiable curiosity, that's what's driven me. It's maybe pathological. It's like driven me my whole life and AI is and most of us in the room who are scientists have that, otherwise we wouldn't be scientists. And so we we're striving I think to understand the laws of nature and the laws of the universe and in my my opinion like my my personal nature of reality, um these big questions, we would love to understand those answers. Um and AI will definitely help with that. But it will come at a cost. Awesome. Thank you very much, Dennis. Awesome. I was going to say something similar in the sense AI is definitely a tool that can help you will be helping you do science in different ways. But that's a positive, it's not a negative. The driver in science I think for um the you know, a scientist is to understand something that we didn't understand before. Our motivation is curiosity about the unknown. Frankly, the tools we use to really back up what's just been said are important, but I don't think they change the character of that fundamental aspect of science, it's understanding the world. Maybe I could just finish on a optimistic note. I mean, I I am for sure very sure about in the next 10 years we are going to be entering what I feel like is a new renaissance. It'll be a new golden age of scientific discovery. I don't know what happened beyond that, maybe something else will happen, there'll be a new sort of era. But I think at least we're going to I think we're going to sort of live through a kind of golden age the next 10 20 years and hopefully when we look back AlphaFold will just be one example of the things that we were able to crack with the help of AI. Thank you very much indeed. Thank you all of you. It's been an enormous pleasure listening to you and it's been a pleasure being here with this audience. I'd just like to say thank you all very much indeed.",
+  "segments": [
+    {
+      "index": 0,
+      "start": 0.48,
+      "end": 12.0,
+      "text": "Demis, if we could start with you. Um, so you are CEO and co-founder of Google DeepMind. You're also CEO and co-founder of Isomorphic Labs. And you like you have used this phrase"
+    },
+    {
+      "index": 1,
+      "start": 12.0,
+      "end": 24.12,
+      "text": "that what we're witnessing is science at the at digital speed. Mhm. So perhaps just it would be nice to again set the scene to bring us up to speed very quickly with what we've seen"
+    },
+    {
+      "index": 2,
+      "start": 24.12,
+      "end": 39.8,
+      "text": "so far. What AI has done to science so far? Yeah, that that phrase I use science at digital speed. I sort of coined it after seeing AlphaFold in 2020, 2021. We we spent about a year folding all 200"
+    },
+    {
+      "index": 3,
+      "start": 39.8,
+      "end": 55.6,
+      "text": "million proteins sort of known to science. And that's when it struck me that we were using the sorts of techniques and and methods that we used in technology areas and engineering, but now this was a"
+    },
+    {
+      "index": 4,
+      "start": 55.6,
+      "end": 67.76,
+      "text": "scientific subject that we were applying it to. And I kind of mean it in three different ways, two originally and I think one that's coming in now. One is the the the the the speed of the solution"
+    },
+    {
+      "index": 5,
+      "start": 67.76,
+      "end": 77.12,
+      "text": "itself. So AlphaFold just using that as an example, but obviously I'm meaning this more generally. Not only was it very accurate, accurate enough for biologists for it to be"
+    },
+    {
+      "index": 6,
+      "start": 77.12,
+      "end": 88.16,
+      "text": "useful for for experimentalists. Obviously not perfect, but accurate enough. It was also able to fold an average protein in a few seconds. Right, so it's very fast. The second way I meant science at"
+    },
+    {
+      "index": 7,
+      "start": 88.16,
+      "end": 99.72,
+      "text": "digital speed was the dissemination of the solution. So if you invent a new method, let's say even like something really famous like CRISPR or one a sort of experimental method, it takes a while"
+    },
+    {
+      "index": 8,
+      "start": 99.72,
+      "end": 110.48,
+      "text": "for that to percolate through even the biggest discoveries into the wet labs, into the scientific process, and then become a kind of standard tool maybe a PhD student would use. Maybe it's a 10"
+    },
+    {
+      "index": 9,
+      "start": 110.48,
+      "end": 121.04,
+      "text": "10 plus year kind of process. But with with AlphaFold we with once we folded these structures, we would just we were able to obviously work in collaboration with the European"
+    },
+    {
+      "index": 10,
+      "start": 121.04,
+      "end": 130.96,
+      "text": "Bioinformatics Institute, part of EMBL, amazing collaboration we did, and just put it on a database very quickly in a few month couple of months. And then it's just a it's as simple as a keyword"
+    },
+    {
+      "index": 11,
+      "start": 130.96,
+      "end": 141.12,
+      "text": "search, and there it is. And and now over 3 million researchers around the world have used AlphaFold and the structures from 190 countries. So, it doesn't matter where you are, of course,"
+    },
+    {
+      "index": 12,
+      "start": 141.12,
+      "end": 149.959,
+      "text": "you don't even have to have a wet lab. You can access these structures and then build on top of it. So, that was pretty fascinating. That's more like um a piece of technology, like an application,"
+    },
+    {
+      "index": 13,
+      "start": 149.959,
+      "end": 160.72,
+      "text": "something you would be more used to in big tech. Um but here again in appearing in science. And then the final way, which I think is becoming more apparent now, is obviously AI itself accelerating"
+    },
+    {
+      "index": 14,
+      "start": 160.72,
+      "end": 169.56,
+      "text": "so you know, AI is sort of accelerating scientific discovery itself and the pace of that. And that's what I think we're in the the beginnings of feeling now. I was quoting this phrase last week at the"
+    },
+    {
+      "index": 15,
+      "start": 169.56,
+      "end": 178.4,
+      "text": "big Google annual event of we're in the foothills of the singularity, which caused a bit of a stir, but I really mean that that that sort of I can feel it. If we look back in 10 years, I think"
+    },
+    {
+      "index": 16,
+      "start": 178.4,
+      "end": 187.84,
+      "text": "we'll start feeling this this period now around now next year, this agentic era that Allison was mentioning, which is really actually coming to the fore now and actually really working for the"
+    },
+    {
+      "index": 17,
+      "start": 187.84,
+      "end": 198.84,
+      "text": "first time. We predicted it for a a while, but it's really working now. Um that's going to be the beginnings of it and uh when we look back. And I think it's going to be monumental that change."
+    },
+    {
+      "index": 18,
+      "start": 198.84,
+      "end": 208.8,
+      "text": "Um you know, I think I think this is the whole reason I worked on AI my whole life is is it's my expression of what I can contribute to science as a kind of meta contribution of building the the"
+    },
+    {
+      "index": 19,
+      "start": 208.8,
+      "end": 218.519,
+      "text": "ultimate tool to help scientific discovery and and science and medicine. And I think AI and AGI is that. Um and I think we're starting to see the beginnings of that now and more and more"
+    },
+    {
+      "index": 20,
+      "start": 218.519,
+      "end": 225.72,
+      "text": "people able to see what we saw, you know, 20 years ago. Mhm. Mhm. Well, there's an awful lot of what you just said. The choice of the word singularity, foothills of the"
+    },
+    {
+      "index": 21,
+      "start": 225.72,
+      "end": 235.96,
+      "text": "singularity is an interesting one. It is. I mean, because the reason I used that phrase is is it's not just it's it's the it's the wider milieu around the technology. So we call the"
+    },
+    {
+      "index": 22,
+      "start": 235.96,
+      "end": 246.8,
+      "text": "technology AGI, artificial general intelligence. That was co- coined by my co-founder, Shane Legg. And but but obviously that's just the technology. What what's going to happen"
+    },
+    {
+      "index": 23,
+      "start": 246.8,
+      "end": 256.12,
+      "text": "to society including science and economics and everything. I think it's going to affect everything, clearly. And I think more and more people agree with that. So it's that's it refers to"
+    },
+    {
+      "index": 24,
+      "start": 256.12,
+      "end": 268.68,
+      "text": "that era that we're about to start to live through now. I I want others to jump in, but may I just when you talk about AI actually contributing to the discovery process, for instance, there"
+    },
+    {
+      "index": 25,
+      "start": 268.68,
+      "end": 281.64,
+      "text": "were two papers published in Nature last week, one of them from Google DeepMind. Um where AI has conducted experiments and made hypotheses. You Does the the pace that you mentioned"
+    },
+    {
+      "index": 26,
+      "start": 281.64,
+      "end": 292.24,
+      "text": "of scientific discoveries filtering out into the into the general into general use and general acceptance is one of the strengths in a way of science that it takes time to assess"
+    },
+    {
+      "index": 27,
+      "start": 292.24,
+      "end": 303.88,
+      "text": "things. You need time to find out whether something is real and works. Do you feel that people have that time anymore or is are things just moving so fast that it becomes a little difficult?"
+    },
+    {
+      "index": 28,
+      "start": 303.88,
+      "end": 314.36,
+      "text": "I'd like us to have more time so that we could apply as a field that that it's up to my AI now that the scientific method more rigorously. It'd be better if we understood the systems we're building."
+    },
+    {
+      "index": 29,
+      "start": 314.36,
+      "end": 323.64,
+      "text": "They're not they're just black boxes, but understood the deep details of how they work. People are working on that, but it's lagging behind the pace of the actual progress of the performance. And"
+    },
+    {
+      "index": 30,
+      "start": 323.64,
+      "end": 336.64,
+      "text": "obviously now it's become a commercial technology with, you know, chatbots and LLMs. That's just added fuel to the fire in terms of the pace of progress of the engineering ahead of the science. So I'd"
+    },
+    {
+      "index": 31,
+      "start": 336.64,
+      "end": 346.28,
+      "text": "love to see the science catch up with the engineering. I'm both a scientist and an engineer as how I consider myself. But that's just the nature of the market forces that are currently"
+    },
+    {
+      "index": 32,
+      "start": 346.28,
+      "end": 355.96,
+      "text": "pushing that. And it's it's amazing for producing progress, but uh especially when we apply it to scientific areas, it would be better if we could be more considered and perhaps"
+    },
+    {
+      "index": 33,
+      "start": 355.96,
+      "end": 366.4,
+      "text": "more thoughtful about how it gets deployed. But having said that, you know, it's we don't have a lot of time before I think AGI arrives. I think we're only a few years out now, and"
+    },
+    {
+      "index": 34,
+      "start": 366.4,
+      "end": 375.32,
+      "text": "society's had I think had a lot of time to sort of advance warning of this in a sense. So, I think it's time for all of us to take this more seriously, not just those"
+    },
+    {
+      "index": 35,
+      "start": 375.32,
+      "end": 386.76,
+      "text": "people building the technologies. And I mean economists, social scientists, but also scientists of the of the society. AlphaFold was finished in 2020. So, it's actually"
+    },
+    {
+      "index": 36,
+      "start": 386.76,
+      "end": 396.28,
+      "text": "like ancient era of AI if you think about it. It's 10 years since AlphaGo. I just came back from Korea, you know, to meet the president and other things celebrating the 10-year anniversary of"
+    },
+    {
+      "index": 37,
+      "start": 396.28,
+      "end": 405.72,
+      "text": "the match, which really was the if you look back on it now, was sort of the marking of the beginning of the modern era of AI. And so, we've had time. So, it's not like a surprise like it those"
+    },
+    {
+      "index": 38,
+      "start": 405.72,
+      "end": 414.6,
+      "text": "are people who've been paying attention have had we've had time to I don't know if we wisely spent that five six years as a society, but there's been a sort of warning shot. And I think a lot of"
+    },
+    {
+      "index": 39,
+      "start": 414.6,
+      "end": 423.48,
+      "text": "people perhaps thought it was an anomaly or it's a outlier. And it and it was. I mean, it's a long time ahead of its time given that nothing else of that significance happened in the following"
+    },
+    {
+      "index": 40,
+      "start": 423.48,
+      "end": 433.8,
+      "text": "five years. But these general systems are getting really good now, and we should take that very seriously. Thank you. Alison, do you want to jump in and then go? Alison, please."
+    },
+    {
+      "index": 41,
+      "start": 433.8,
+      "end": 445.84,
+      "text": "All right. Now, what I was going to say is one of the challenges of trying to everyone wanting to be first is one of our problems. We do not reward people for for take a slowing down,"
+    },
+    {
+      "index": 42,
+      "start": 445.84,
+      "end": 456.88,
+      "text": "particularly in academia. You will not get a paper published, particularly if you think about if if you're not first. And I think that we do need to think about this as well,"
+    },
+    {
+      "index": 43,
+      "start": 456.88,
+      "end": 467.36,
+      "text": "about reward systems that will reward people who do go in and explore and understand these methodologies and that that is is important for going forward and we will"
+    },
+    {
+      "index": 44,
+      "start": 467.36,
+      "end": 476.08,
+      "text": "learn from that as well. That that was the point I wanted Thank you. Nice point. Thank you. Before we you come in, I should also just take a we should take a little breather, a"
+    },
+    {
+      "index": 45,
+      "start": 476.08,
+      "end": 484.4,
+      "text": "bit like the music. You two, you're both fellows of the Royal Society, you're both Nobel laureates. It seems utterly right that you're sitting here together, but you also have a long history"
+    },
+    {
+      "index": 46,
+      "start": 484.4,
+      "end": 494.76,
+      "text": "together. You've known each other a long time. We we do. We even sort of dress the same. Exactly. I was thinking as we came up, you know, he was a chess master and what we got"
+    },
+    {
+      "index": 47,
+      "start": 494.76,
+      "end": 507.4,
+      "text": "here the black piece and the white piece, but anyway, that's a Um Yes, maybe Dennis can remind me exactly, but I think we spoke first spoke when you were probably just still an"
+    },
+    {
+      "index": 48,
+      "start": 507.4,
+      "end": 518.28,
+      "text": "undergraduate Cambridge or just after. I think we talked about a PhD, but you wanted to set up a gaming company. Yeah, which she disapproved of, I think. Well, I I thought I can't have a longer plan."
+    },
+    {
+      "index": 49,
+      "start": 518.28,
+      "end": 530.28,
+      "text": "Yes. I thought I can't handle that. I can't handle it. So, this is nearly 30 years or maybe over 30 years. Yes, and Paul's basically I consider him to be my mentor in biology. We've talked"
+    },
+    {
+      "index": 50,
+      "start": 530.28,
+      "end": 539.2,
+      "text": "about things like virtual cells, which I'm sure we'll come to that in later for the 30 years now, Paul, so We have. We haven't got very far, but  it says that we"
+    },
+    {
+      "index": 51,
+      "start": 539.2,
+      "end": 553.64,
+      "text": "we will do soon. We will do soon. Yeah. Yeah, that's true. But it was clear Dennis was very interesting at the time.  You can spot them. But not that they're in the lab. For sure. Yeah."
+    },
+    {
+      "index": 52,
+      "start": 553.64,
+      "end": 569.04,
+      "text": "Okay. So, but let's continue with this discussion of of what's been happening or what is going to happen. What sort of problem um is amenable, is tractable to the approach that you are spirited"
+    },
+    {
+      "index": 53,
+      "start": 569.04,
+      "end": 580.32,
+      "text": "and I'd like everyone's input and for instance on Isomorphic Labs, which is a very ambitious project to reinvent drug discovery, you're an advisor, Paul, so um that would be good to have your"
+    },
+    {
+      "index": 54,
+      "start": 580.32,
+      "end": 588.84,
+      "text": "thoughts, too. Well, maybe I'll just explain that in the general case. So, this really was sort of dawned on me after we did AlphaGo. So, that the program that that"
+    },
+    {
+      "index": 55,
+      "start": 588.84,
+      "end": 597.2,
+      "text": "beat the world champion at at at the game of Go, much more complex than chess, and hopefully you've all you've all heard about that. So, I won't I won't explain that part. But that that"
+    },
+    {
+      "index": 56,
+      "start": 597.2,
+      "end": 608.92,
+      "text": "that what you can what that that the sorts of problems that the methods we developed are useful for, I can describe in a very general way. Basically, you have a huge combinatorial space."
+    },
+    {
+      "index": 57,
+      "start": 608.92,
+      "end": 618.76,
+      "text": "Um the number of moves in Go is more than there are atoms in the universe. So, you can't you can't solve it in a brute force way. Same with the number of confirmations of a protein. You know,"
+    },
+    {
+      "index": 58,
+      "start": 618.76,
+      "end": 628.2,
+      "text": "it's estimated 10 to the 300 or something enormous. Um and there were and so that's the first part. That's that's I like those problem spaces cuz they can't be done with some kind of"
+    },
+    {
+      "index": 59,
+      "start": 628.2,
+      "end": 637.28,
+      "text": "brute force method. Second thing is you need a clear objective function. Um you trying to win a game? You trying to find the best move? Are you trying to minimize the free energy in a system?"
+    },
+    {
+      "index": 60,
+      "start": 637.28,
+      "end": 647.08,
+      "text": "Uh so, that's that's that's the second thing. So, in order to hill climb towards that solution. And then the third thing is you need some sort of data. Um and and that can be real data,"
+    },
+    {
+      "index": 61,
+      "start": 647.08,
+      "end": 656.6,
+      "text": "or it could be an accurate simulator. Ideally, you have both. And and there's really interesting interactions between using the data you have to create a simulator to create synthetic data,"
+    },
+    {
+      "index": 62,
+      "start": 656.6,
+      "end": 665.52,
+      "text": "additional synthetic data. And actually, that's what we had to do with AlphaFold. There weren't the 150,000 proteins in the PDB were not enough on their own. We had to create an early version of"
+    },
+    {
+      "index": 63,
+      "start": 665.52,
+      "end": 675.4,
+      "text": "AlphaFold a million proteins and then select 2 300,000 extra ones that we thought were at least AlphaFold thought was it was confident was accurate, and then sort of put that back in. And you"
+    },
+    {
+      "index": 64,
+      "start": 675.4,
+      "end": 683.839,
+      "text": "have to be very careful with that, obviously, with synthetic data that it actually the distribution matches. But if you have those three things, and you or you could couch the problem in in in"
+    },
+    {
+      "index": 65,
+      "start": 683.839,
+      "end": 696.64,
+      "text": "that way, then I think the current methods we have where you use a deep learning model to learn a a of the domain, and that of guides a search process um to be able to make that intractable"
+    },
+    {
+      "index": 66,
+      "start": 696.64,
+      "end": 708.92,
+      "text": "combinatorial space tractable. Uh and that's basically what AlphaGo and AlphaFold did. Uh to find the kind of needle in the haystack that would be impossible to find otherwise. Uh and drug discovery"
+    },
+    {
+      "index": 67,
+      "start": 708.92,
+      "end": 720.04,
+      "text": "and Isomorphic I feel is a continuation of that kind of problem. There's um you know, there is a compound out there in the in the you know, laws of physics, the laws of chemistry 10 to the 50 or"
+    },
+    {
+      "index": 68,
+      "start": 720.04,
+      "end": 729.92,
+      "text": "however you want to say how many are there of the sort of mole, you know, drug compound size, and one of or more of them may fit the properties that you're looking for in terms of the"
+    },
+    {
+      "index": 69,
+      "start": 729.92,
+      "end": 740.12,
+      "text": "disease profile and so on. Then it's a question of can you find it, can you synthesize it, and so on. So, Isomorphic you can think of us developing half a dozen more AlphaFold systems that of"
+    },
+    {
+      "index": 70,
+      "start": 740.12,
+      "end": 747.08,
+      "text": "course AlphaFold's one component, the protein structure, but it's only one small component of the whole drug discovery process. And you can think of we're looking at biochemistry and"
+    },
+    {
+      "index": 71,
+      "start": 747.08,
+      "end": 760.24,
+      "text": "chemistry things to predict, you know, toxicity and admin properties, and so on. I I wanted to sort of um go back a bit. I'm a wet scientist, so to speak, and I'm now in no sense an AI um specialist"
+    },
+    {
+      "index": 72,
+      "start": 760.24,
+      "end": 770.72,
+      "text": "like my two colleagues here. So, what has it done for me, we could ask. And what it's done for my lab, we start with actually rather simple things, machine learning. We shouldn't just sort of"
+    },
+    {
+      "index": 73,
+      "start": 770.72,
+      "end": 785.68,
+      "text": "disregard this type of thing. I mean, um we now can analyze images in minutes, which used to take us days. It saves an awful lot of time to actually uh be able to do it. Um we can do a media survey in"
+    },
+    {
+      "index": 74,
+      "start": 785.68,
+      "end": 796.68,
+      "text": "a minute or two. It's pretty boring what you get back with the large language models, if I can be blunt with you, but it gets you started. So, that sort of actually um helps as well."
+    },
+    {
+      "index": 75,
+      "start": 796.68,
+      "end": 809.64,
+      "text": "Where now, and this is what Demis is referring to, I think, is how can we now implant beyond those sort of rather simple things, which I don't want to um denigrate. They're very important. And"
+    },
+    {
+      "index": 76,
+      "start": 809.64,
+      "end": 819.84,
+      "text": "by the way, I should say AlphaFold has been amazing, you know. We do experiments. We can try and imagine what mechanism there might be. We can put it through AlphaFold. We can see what might"
+    },
+    {
+      "index": 77,
+      "start": 819.84,
+      "end": 831.2,
+      "text": "touch something else. It may or may not do that, but it immediately creates ideas and hypotheses. All of that is great. So, what about the next steps? And the next steps I think people are"
+    },
+    {
+      "index": 78,
+      "start": 831.2,
+      "end": 846.76,
+      "text": "thinking about is how can we apply a sort of connected loop of of ways of working in a laboratory where AI can help at every stage as we go around. So, it's not just simply a"
+    },
+    {
+      "index": 79,
+      "start": 846.76,
+      "end": 858.6,
+      "text": "particular technique, but it's integrated in the process by which we can actually work. Now, various places in the world are thinking about this and thinking about doing it. And I mean, there's"
+    },
+    {
+      "index": 80,
+      "start": 858.6,
+      "end": 872.08,
+      "text": "difficulties in part of it. Part of it is the type of data you have to analyze. Um AlphaFold worked with extremely useful data. I mean, immense amounts of data collected in the same way, in a"
+    },
+    {
+      "index": 81,
+      "start": 872.08,
+      "end": 882.64,
+      "text": "public database, by the way. Should I mean, for those who wonder why do we do public funded science, AlphaFold would have been totally impossible without that. And we uh"
+    },
+    {
+      "index": 82,
+      "start": 882.64,
+      "end": 896.08,
+      "text": "They open-sourced it afterwards. Absolutely. And by the way, they did it very decently, if I can say that. Um but it was a consequence of that access to public data curated in exactly"
+    },
+    {
+      "index": 83,
+      "start": 896.08,
+      "end": 906.0,
+      "text": "the same sort of way. Much of the biological data, where I think this is going to be useful, isn't actually collected in that way. So, we need to get and then this may have views about"
+    },
+    {
+      "index": 84,
+      "start": 906.0,
+      "end": 920.72,
+      "text": "it, ways of analyzing it, which is of a different type. What we tend to have is, if you like, depth rather than lots of similar data like this, we have sort of wells in different places and different"
+    },
+    {
+      "index": 85,
+      "start": 920.72,
+      "end": 930.32,
+      "text": "lengths. And somehow we've got to connect all this sort of thing together. And at this moment, I think that's a bit tricky. And we need to get the methods there. But I think the idea is how we"
+    },
+    {
+      "index": 86,
+      "start": 930.32,
+      "end": 943.84,
+      "text": "can connect all the stages of data, hypothesis, hypothesis testing, generating an idea, back producing more data, and going round that cycle, and how AI can actually help us. With in my"
+    },
+    {
+      "index": 87,
+      "start": 943.84,
+      "end": 959.0,
+      "text": "view, the ultimate objective of understanding life. And we start there with the cell. How do we understand the cell? Thank you. We'll come on to building a virtual cell in a minute, but Alice, did"
+    },
+    {
+      "index": 88,
+      "start": 959.0,
+      "end": 970.16,
+      "text": "you want to chip in on this point or Well, I I guess in my space, it's very very similar. If you work If you pick up an ultrasound probe and you want to scan, we can't You can't do that with a"
+    },
+    {
+      "index": 89,
+      "start": 970.16,
+      "end": 982.8,
+      "text": "robot. You can't actually You require the human expertise. So, now people are very much thinking about having solved these individual little tasks, which is what we start with, is how can we now"
+    },
+    {
+      "index": 90,
+      "start": 982.8,
+      "end": 996.12,
+      "text": "put them together and integrate um every step. So, pick up, you move the probe, um you apply certain pressure, and how do we Some of it you can understand what to do. Some of it humans"
+    },
+    {
+      "index": 91,
+      "start": 996.12,
+      "end": 1007.44,
+      "text": "just do. And it's that It's that fine what we call fine grain information that is very difficult to be able to model at the moment. So, the ultimate would be able to get a robot to be able to"
+    },
+    {
+      "index": 92,
+      "start": 1007.44,
+      "end": 1018.88,
+      "text": "perform all these tasks and integrate them together. And that's That's what people are working. I think 5 years ago, we would say that's a dream. Now people think that that's That's possible."
+    },
+    {
+      "index": 93,
+      "start": 1018.88,
+      "end": 1030.04,
+      "text": "Things are moving so fast because now we're You're talking about AI and humans working together beautifully integrating workflows, it helping each other. But already"
+    },
+    {
+      "index": 94,
+      "start": 1030.04,
+      "end": 1042.48,
+      "text": "people are worrying about what will happen next. Young scientists coming up through the through the through on the starting out career paths, I think are uh uh increasingly asking,"
+    },
+    {
+      "index": 95,
+      "start": 1042.48,
+      "end": 1051.88,
+      "text": "\"Where will it be when I'm trying to set up my own lab? What what will the status be? And what will the role of the creative scientist be?\" And this is a whole another topic, but I'd"
+    },
+    {
+      "index": 96,
+      "start": 1051.88,
+      "end": 1064.32,
+      "text": "like to explore it. Well, the first thing to realize is doing research in a wet lab is enormously boring. I mean, it really is boring. We spend most of our time transferring little"
+    },
+    {
+      "index": 97,
+      "start": 1064.32,
+      "end": 1077.04,
+      "text": "volumes of liquid from one tube to another. And there is no way to excite anybody, let alone their intellect, okay? So, we could work on how we can get robots to do much of that. And in"
+    },
+    {
+      "index": 98,
+      "start": 1077.04,
+      "end": 1089.52,
+      "text": "the Crick Institute, where I I work, we have very good technical cores, which are not yet doing this in a way that is integrated in in what we would like. But we have the resources and the way of"
+    },
+    {
+      "index": 99,
+      "start": 1089.52,
+      "end": 1100.12,
+      "text": "thinking that would allow it. The reason I said it's boring is I think most of my colleagues in the lab wouldn't mind if they didn't have to do all of that all the time."
+    },
+    {
+      "index": 100,
+      "start": 1100.12,
+      "end": 1119.2,
+      "text": "However, what we do need to keep and to to actually develop is creative thinking. So, I think the focus here should be, \"How can we turn these tools into assist the human being to be more creative in"
+    },
+    {
+      "index": 101,
+      "start": 1119.2,
+      "end": 1129.76,
+      "text": "thought?\" Now, large language models are not creative in in thought. They might sort of push you in certain directions. But working, I think, with AI processes,"
+    },
+    {
+      "index": 102,
+      "start": 1129.76,
+      "end": 1141.0,
+      "text": "where you as your human mind is involved in different parts of this, may actually provide a way of operating in this sort of way of thinking about experiments, which is is"
+    },
+    {
+      "index": 103,
+      "start": 1141.0,
+      "end": 1151.36,
+      "text": "which could be very productive. Because what switches us on? It isn't transferring little volumes of liquid from one tube to another. It is a creative idea, most of which are wrong,"
+    },
+    {
+      "index": 104,
+      "start": 1151.36,
+      "end": 1165.48,
+      "text": "of course, and but which you can then prove um are wrong and sort of move on. So, that's what excites me, working with the machine, if I can put it this way, to generate creative thought."
+    },
+    {
+      "index": 105,
+      "start": 1165.48,
+      "end": 1175.16,
+      "text": "But, yes. Although it's true that a lot of time when you're doing pipetting and just watching the meniscus and that's a good time to be thinking about your experiment."
+    },
+    {
+      "index": 106,
+      "start": 1175.16,
+      "end": 1185.48,
+      "text": "Back in the '70s, I mean, when I could did you know, I didn't even do that. I was just looking at things and Um I had a lot of time to think. There is a problem, though. W- When we use"
+    },
+    {
+      "index": 107,
+      "start": 1185.48,
+      "end": 1195.96,
+      "text": "complex technology, you spend all your time getting the damn technology to work. I mean, you And and you stop thinking about the process, the biological process you're trying to"
+    },
+    {
+      "index": 108,
+      "start": 1195.96,
+      "end": 1206.48,
+      "text": "study. If the technology is simple, it has to be said, you do have a lot of time for thinking. But, if the robot does it, maybe we have enough time to think, too. What do you think, Dennis?"
+    },
+    {
+      "index": 109,
+      "start": 1206.48,
+      "end": 1215.56,
+      "text": "I agree with what Paul said and um it's one of the reasons you couldn't attract me into the wet lab back in the back in the day, Paul. I kind of understood that. Yes. So, I would stay in the"
+    },
+    {
+      "index": 110,
+      "start": 1215.56,
+      "end": 1226.92,
+      "text": "digital world, but look, I think um if I totally agree with you, I think that this what these technologies should should be enable, if used correctly, is give us more time back for the creative"
+    },
+    {
+      "index": 111,
+      "start": 1226.92,
+      "end": 1236.44,
+      "text": "thinking that this you know, the kind of taste that we talk about with great scientists have, setting the hypothesis or the choosing the right problem, even asking the right question. I always"
+    },
+    {
+      "index": 112,
+      "start": 1236.44,
+      "end": 1246.48,
+      "text": "think asking the right question is much harder than solve It's like, what is actually the right question? And how can you state it in a really concrete way, the controls around it? You know, all of"
+    },
+    {
+      "index": 113,
+      "start": 1246.48,
+      "end": 1256.2,
+      "text": "that is is that you know, the current AI systems have you know, no no way of doing that today. want to support that. It's asking the question, the agency of the right"
+    },
+    {
+      "index": 114,
+      "start": 1256.2,
+      "end": 1267.36,
+      "text": "question. And actually, whether you're even asking the right question, asking endless Yeah. questions, which which sometimes just come to you from over here. And I don't think the ways we"
+    },
+    {
+      "index": 115,
+      "start": 1267.36,
+      "end": 1276.36,
+      "text": "we do it can to deliver that it No, not at the moment. I mean, one day I think AI systems is I don't think it's impossible for them to do that, but certainly not in the next, you know, 5"
+    },
+    {
+      "index": 116,
+      "start": 1276.36,
+      "end": 1285.52,
+      "text": "10 years. Probably the next the next bit we can see. I think it will enable this. Um I think the other thing is it will it should enable much faster iteration. If"
+    },
+    {
+      "index": 117,
+      "start": 1285.52,
+      "end": 1296.24,
+      "text": "you think about it, right? So, through your idea space, um maybe we can again a little bit more like how engineering is today. You you you quickly prototype something and then"
+    },
+    {
+      "index": 118,
+      "start": 1296.24,
+      "end": 1304.16,
+      "text": "you move, you know, you test it and then you move on. This going to be an interesting new way of of of bringing that into more more scientific disciplines, I would say, that type of"
+    },
+    {
+      "index": 119,
+      "start": 1304.16,
+      "end": 1313.8,
+      "text": "approach. I think it will also free up PhD students and postdocs to um to do higher level work, let's say, instead of let's say you're doing an image something to do with imaging like I was"
+    },
+    {
+      "index": 120,
+      "start": 1313.8,
+      "end": 1324.44,
+      "text": "doing fMRI and neuroscience at UCL. You know, a lot of that analysis of the images will be done by the AI systems. You don't have to painstakingly write the support vector machines and other"
+    },
+    {
+      "index": 121,
+      "start": 1324.44,
+      "end": 1334.0,
+      "text": "things we used to do back 20 years ago. And then instead, we can use that time to maybe think about the experimental side of what would be a good next question or hypothesis."
+    },
+    {
+      "index": 122,
+      "start": 1334.0,
+      "end": 1344.0,
+      "text": "Um I think in terms of I think the the amount that a single student, for example, will be able to do is is going to be incredible. That's what I'd recommend in general outside of"
+    },
+    {
+      "index": 123,
+      "start": 1344.0,
+      "end": 1353.6,
+      "text": "science even for the youth of today is I think there's the the the the kind of cat is out of the bag in the sense like AI is not going back into the box. But what you can do like I did in my"
+    },
+    {
+      "index": 124,
+      "start": 1353.6,
+      "end": 1364.68,
+      "text": "generation in the '90s is growing up with computer home computers sort of in the first generation and then the internet is lean into that and get incredibly au fait with the technologies"
+    },
+    {
+      "index": 125,
+      "start": 1364.68,
+      "end": 1373.6,
+      "text": "and including understanding how they work. So, STEM subjects, all of that I still recommend to the students of today because you'll still you'll be able to use, even if you might not be coding as"
+    },
+    {
+      "index": 126,
+      "start": 1373.6,
+      "end": 1383.12,
+      "text": "much, you'll be able to use the coding tools way better if you understand it. And I think the output of what you might be able to do uh, as a PhD student in the future in a few years time, is like"
+    },
+    {
+      "index": 127,
+      "start": 1383.12,
+      "end": 1391.92,
+      "text": "what a whole lab would have needed before. So, that for the for the enterprising students, the really smart ones, the go-getting ones, the very motivated ones, that could be hugely"
+    },
+    {
+      "index": 128,
+      "start": 1391.92,
+      "end": 1403.68,
+      "text": "empowering. And of course, it might be available all around the world. You don't have to cuz these tools are basically distributed everywhere, like like phones and and apps and so, you can"
+    },
+    {
+      "index": 129,
+      "start": 1403.68,
+      "end": 1412.12,
+      "text": "maybe access some of the most advanced technology in the world from wherever, whichever country you're in. So, that could be pretty exciting from encouraging, you know, the most"
+    },
+    {
+      "index": 130,
+      "start": 1412.12,
+      "end": 1418.8,
+      "text": "talented, most motivated students from anywhere around the world could maybe do cutting-edge science, which would not be possible today. You'd have to go to one"
+    },
+    {
+      "index": 131,
+      "start": 1418.8,
+      "end": 1426.4,
+      "text": "of the, you know, relocate and find your way to one of the top centers around the world. Um, so I think there's lots of really interesting ways things are going to"
+    },
+    {
+      "index": 132,
+      "start": 1426.4,
+      "end": 1435.48,
+      "text": "change. And in terms of using the paper cutting time for thinking, um, I think we can replace that with something else, and go for a long walk in the in the country, you know, and and I but I do"
+    },
+    {
+      "index": 133,
+      "start": 1435.48,
+      "end": 1445.92,
+      "text": "think this is an important point in general. One thing I want to do with our Gemini, you know, chatbot so, LLM side of the house that I have to that I also run at Google is, um, one of my dreams"
+    },
+    {
+      "index": 134,
+      "start": 1445.92,
+      "end": 1459.24,
+      "text": "is that when those become really capable assistants, which we're maybe a couple of years away from, um, I would love it that we can then use technology less. Not more, less. Because I think today"
+    },
+    {
+      "index": 135,
+      "start": 1459.24,
+      "end": 1468.12,
+      "text": "we're just bombarded by these unintelligent systems that are trying to hack our attention, whether it's social media or whatever, just the torrent of it. And what I but we have to dip into"
+    },
+    {
+      "index": 136,
+      "start": 1468.12,
+      "end": 1476.96,
+      "text": "that torrent because we need the information, the knowledge, and whatever it is that you're looking for that's useful out of that noisy stream. But if you had an AI system that you could"
+    },
+    {
+      "index": 137,
+      "start": 1476.96,
+      "end": 1487.12,
+      "text": "effectively worked on your behalf, you could sort of delegate it to that, and just say, \"Look, I'm I'm going to do some deep thinking now between 10:00 and 6:00 p.m. And don't just don't interrupt"
+    },
+    {
+      "index": 138,
+      "start": 1487.12,
+      "end": 1494.64,
+      "text": "me. Summarize what's happening in the world, you know, these things I'm interested in at the end of the day.\" And you could really rely on it to do that. So, I think that could actually"
+    },
+    {
+      "index": 139,
+      "start": 1494.64,
+      "end": 1503.28,
+      "text": "sort of protect our mind space and attention space. That's what I dream of doing is getting getting through this period and then having technology that's actually smart and personalized and"
+    },
+    {
+      "index": 140,
+      "start": 1503.28,
+      "end": 1512.52,
+      "text": "knows what you need and you can sort of delegate that aspect, the information gathering aspect to it. So, you've got more time to think if you're a scientist or, you know, do the things that you're"
+    },
+    {
+      "index": 141,
+      "start": 1512.52,
+      "end": 1522.4,
+      "text": "interested in if as a general citizen. It's a nice I'm just trying to imagine my graduate student wanting to leave. I'm just off now to do my deep thinking. Yes, that's exactly it."
+    },
+    {
+      "index": 142,
+      "start": 1522.4,
+      "end": 1528.56,
+      "text": "There was There was a lot in what Demis said. Do you want Did you want to comment on the engineering question or was it as a professor of biological engineering?"
+    },
+    {
+      "index": 143,
+      "start": 1528.56,
+      "end": 1541.4,
+      "text": "I was going to say I think he's he's um said it well. I think for in in my own group the the what I'm already seeing is postdocs who who's computational postdocs who now it's just amazing how they can"
+    },
+    {
+      "index": 144,
+      "start": 1541.4,
+      "end": 1553.56,
+      "text": "program and get assistance with their their their software. And that that is what they say. They have more time to think. They have more time to be creative. And um come up with with um"
+    },
+    {
+      "index": 145,
+      "start": 1553.56,
+      "end": 1562.72,
+      "text": "much more advanced solutions where you would normally uh just a few years ago you would probably had a few master students as well. We need to be careful here because we do treat that all as"
+    },
+    {
+      "index": 146,
+      "start": 1562.72,
+      "end": 1574.28,
+      "text": "part of training. So, we mustn't forget that we do need to think about the education as well. But, I do think that these tools are very accessible. So, we are are just going to see as you say"
+    },
+    {
+      "index": 147,
+      "start": 1574.28,
+      "end": 1586.8,
+      "text": "more more done by a PhD student. Um and the notion of a team is although I mentioned it earlier, the the notion of who will be in a team, you you still need interdis disciplinarity in to"
+    },
+    {
+      "index": 148,
+      "start": 1586.8,
+      "end": 1598.92,
+      "text": "understand how to build the appropriate models. But, maybe they're small teams and not the large teams. So, there there were many directions we could go from you said. Uh one thing to pick up on"
+    },
+    {
+      "index": 149,
+      "start": 1598.92,
+      "end": 1609.4,
+      "text": "is perhaps that that just the deluge of information that's coming out. Now, you mentioned that they these systems should in the right hands be making people more creative. But, there is"
+    },
+    {
+      "index": 150,
+      "start": 1609.4,
+      "end": 1620.88,
+      "text": "I'd be interested in your opinions of whether in general the way that AI is rolling out at the moment in science is is leading to lots more creative science or a great mix of people doing creative"
+    },
+    {
+      "index": 151,
+      "start": 1620.88,
+      "end": 1633.08,
+      "text": "things and people doing things because you can and because grant grant awarding bodies and journals are wanting to see new ways of working.  Um and also then coming back to the"
+    },
+    {
+      "index": 152,
+      "start": 1633.08,
+      "end": 1645.36,
+      "text": "point you made earlier about about public the publication system a whole different question of how the how how we can communicate science effectively if there's just so much more going on"
+    },
+    {
+      "index": 153,
+      "start": 1645.36,
+      "end": 1656.16,
+      "text": "and resources are still stretched. So there's a lot there. Sorry. I don't Who wants to? You Oh, yeah. Say something about I think the technology has got dangerously seduced"
+    },
+    {
+      "index": 154,
+      "start": 1656.16,
+      "end": 1670.52,
+      "text": "in some ways. If I look at some of our high-profile journals now, they will invent some way of looking at a problem and accumulate a lot of data. And it's clever. It's expensive. So only"
+    },
+    {
+      "index": 155,
+      "start": 1670.52,
+      "end": 1683.92,
+      "text": "a few people can actually do it. But it doesn't actually come to very firm conclusions about anything of interest. In fact, I sense they're not even interested in coming to conclusions"
+    },
+    {
+      "index": 156,
+      "start": 1683.92,
+      "end": 1694.56,
+      "text": "of great interest cuz they're so full of themselves of having developed this technology to do something. It's actually something I'm beginning to worry me. There's a journal called Cell which used"
+    },
+    {
+      "index": 157,
+      "start": 1694.56,
+      "end": 1707.88,
+      "text": "to be a great journal. I can't bear to read it anymore because it's just full of this stuff and they just have no conclusion cuz they are not thinking about what it all means. And um I think"
+    },
+    {
+      "index": 158,
+      "start": 1707.88,
+      "end": 1721.36,
+      "text": "we've got to get thinking and asking the questions back into this because I think the seduction of the technologies is a problem and it won't be solved by the computate cuz it's actually a human"
+    },
+    {
+      "index": 159,
+      "start": 1721.36,
+      "end": 1733.88,
+      "text": "problem that they need to think. The objective of all of this is to understand and not just collect data. Yeah, I agree with that and um there's there's some areas of science"
+    },
+    {
+      "index": 160,
+      "start": 1733.88,
+      "end": 1741.88,
+      "text": "which I I wasn't going to name them, but then you named cells, so maybe I shouldn't have. I I where I think it is an exercise in let let's just get as much data as possible without really"
+    },
+    {
+      "index": 161,
+      "start": 1741.88,
+      "end": 1750.48,
+      "text": "thought about how it tells us anything about functionality and other things, you know, I think the early days of connectomics maybe was like that when I was looking at that as a postdoc in MIT."
+    },
+    {
+      "index": 162,
+      "start": 1750.48,
+      "end": 1760.76,
+      "text": "I was like, well, what is this actually going to tell us functionally about the brain? Um and but it's obviously a very seductive data gathering, you know, approach. And I think there's many areas"
+    },
+    {
+      "index": 163,
+      "start": 1760.76,
+      "end": 1771.64,
+      "text": "like that where we need to think about the the the the scientific question. Um it's sort of I see this in a different ways as AI I I we already were being deluged by this idea of big data, right?"
+    },
+    {
+      "index": 164,
+      "start": 1771.64,
+      "end": 1781.72,
+      "text": "That was the That was the buzzword if you remember in the early 2000s. It was big data. Now the buzzword is obviously AI, but I I I used to pitch what we were doing at DeepMind as big data is the"
+    },
+    {
+      "index": 165,
+      "start": 1781.72,
+      "end": 1792.8,
+      "text": "problem, AI is the solution. That's you should to That was one way I used to try and describe what we were doing to early early So So early early venture capitalists. They"
+    },
+    {
+      "index": 166,
+      "start": 1792.8,
+      "end": 1801.68,
+      "text": "were still a bit confused about about what we were trying to do, obviously, like solve intelligence. What does this mean? But I I think um you know, big data is the problem and"
+    },
+    {
+      "index": 167,
+      "start": 1801.68,
+      "end": 1811.6,
+      "text": "it's increasingly, you know, if you view it as the deluge of information we're creating as a society, obviously in science, uh we have these big machines, large hadron colliders, all these things,"
+    },
+    {
+      "index": 168,
+      "start": 1811.6,
+      "end": 1822.36,
+      "text": "uh and there's it's just producing reams of data where maybe there's some insight in it, maybe not or some structure or some pattern, but it's beyond maybe not enough scientists are actually thinking"
+    },
+    {
+      "index": 169,
+      "start": 1822.36,
+      "end": 1830.52,
+      "text": "about it. So, first of all, more we need more scientists to do that, um perhaps even before they generate that data, but certainly uh it's sort of the complexity"
+    },
+    {
+      "index": 170,
+      "start": 1830.52,
+      "end": 1843.12,
+      "text": "is beyond the level any human mind, even the smartest minds we have can probably comprehend. And they're usually in areas which um are not amenable to making into kind of"
+    },
+    {
+      "index": 171,
+      "start": 1843.12,
+      "end": 1852.0,
+      "text": "elegant mathematical equations. Right, so I That's why I always used to say that AI is the perfect description language for biology, but just like math was for physics. Because Because"
+    },
+    {
+      "index": 172,
+      "start": 1852.0,
+      "end": 1861.12,
+      "text": "biology, I think, you know, a lot of people try to I don't think we're going to get Newton's three laws of motion for a cell. It's just too emergent. It's too dynamic. Doesn't mean there aren't rules"
+    },
+    {
+      "index": 173,
+      "start": 1861.12,
+      "end": 1869.56,
+      "text": "and there aren't things to discover and understand about it, but I think it's going to be more like a simulation, which is why we're thinking about virtual cells. And And so And I think if"
+    },
+    {
+      "index": 174,
+      "start": 1869.56,
+      "end": 1880.36,
+      "text": "you think about wider than that, economics, you know, such an emergent dynamic system. Obviously, you know, with humans as the as the atomic unit, which are already unbelievably complicated."
+    },
+    {
+      "index": 175,
+      "start": 1880.36,
+      "end": 1890.2,
+      "text": "You know, how are we going to actually understand those types of systems? How does one do science on those types of systems? And I have all sorts of ideas about that, but it involves using"
+    },
+    {
+      "index": 176,
+      "start": 1890.2,
+      "end": 1900.44,
+      "text": "AI to try and make sense of data and find the structure, maybe build a simulator on top of that like we've done with weather systems. Is this definitely possible? We've shown it in many"
+    },
+    {
+      "index": 177,
+      "start": 1900.44,
+      "end": 1909.04,
+      "text": "directions. Obviously, with AlphaFold, but also more recently with predicting hurricanes and which direction they go. The Met Office is using that. You know, that's super complicated. You used to"
+    },
+    {
+      "index": 178,
+      "start": 1909.04,
+      "end": 1918.36,
+      "text": "have to have supercomputers doing fluid dynamics calculations for 2 weeks. Now, we can build a model that is, you know, as accurate, maybe more accurate, and it'll give you the result back in few"
+    },
+    {
+      "index": 179,
+      "start": 1918.36,
+      "end": 1928.6,
+      "text": "hours, which is a huge difference if you want to warn a country about the hurricane path, right? Like we did last year actually for Hurricane Melissa. And And so I think this is just we're just"
+    },
+    {
+      "index": 180,
+      "start": 1928.6,
+      "end": 1939.52,
+      "text": "scratching the surface of what really is going to be possible. And just to answer your your first question about that, I think there's going to take time for science to adapt to how to best use"
+    },
+    {
+      "index": 181,
+      "start": 1939.52,
+      "end": 1949.44,
+      "text": "these tools. I think in a lot of cases, the tools are not being used in very useful ways, or it's pretty mundane ways. Still useful. Again, not to not to cast any any"
+    },
+    {
+      "index": 182,
+      "start": 1949.44,
+      "end": 1959.0,
+      "text": "doubt on that. It's like it's very useful for dealing with, you know, paperwork that we have to do every day or just gathering, you know, interpreting images, but that's really"
+    },
+    {
+      "index": 183,
+      "start": 1959.0,
+      "end": 1967.8,
+      "text": "step one. So, we should do that right now. That's clearly useful, but it's it's it's in itself a creative process to understand how should you want to apply these tools"
+    },
+    {
+      "index": 184,
+      "start": 1967.8,
+      "end": 1976.44,
+      "text": "to the question that you have in mind. And I also I think that holds for business as well as science. Now, I get, you know, CEOs for last couple of years they've, you know, it's virtually few"
+    },
+    {
+      "index": 185,
+      "start": 1976.44,
+      "end": 1985.76,
+      "text": "years ago they went from not hearing about AI to what is that to like, oh, we need something on AI. And then they're like looking around and they're running an insurance company or whatever it is,"
+    },
+    {
+      "index": 186,
+      "start": 1985.76,
+      "end": 1993.72,
+      "text": "and it's like, oh, we've just got to apply AI to something. And and I often used to say to them, look, you don't when I looked into the problem, it's like, no, you just need to use stats for"
+    },
+    {
+      "index": 187,
+      "start": 1993.72,
+      "end": 2002.8,
+      "text": "that. It's fine. You don't you don't you don't need AI to do whatever it was you doing. And and and and so in fact, if you try to use one of the latest systems, it would actually get in the"
+    },
+    {
+      "index": 188,
+      "start": 2002.8,
+      "end": 2013.52,
+      "text": "way of that problem. It's just not the right problem for the the the proposed method. And I think it's going to that in itself is a taste question issue. Not only do you can you"
+    },
+    {
+      "index": 189,
+      "start": 2013.52,
+      "end": 2021.72,
+      "text": "come up with the right question, can you can you you can you come up with the right question that will and use the tools in the right way in service of that question. And that's again on the"
+    },
+    {
+      "index": 190,
+      "start": 2021.72,
+      "end": 2030.84,
+      "text": "part of the scientist. You know, you've got to understand your domain really well and and work and and also understand machine learning well or get students who understand it"
+    },
+    {
+      "index": 191,
+      "start": 2030.84,
+      "end": 2043.44,
+      "text": "and then shape that correctly for that for that new world. I think that's part of this going to be this new taste that is required. Thank you. I'm going to we we've mentioned the virtual cell a"
+    },
+    {
+      "index": 192,
+      "start": 2043.44,
+      "end": 2057.48,
+      "text": "few times and I think we should step up the ambition level and talk about the the simulation of the virtual cell. A dream of your that you share. Yeah. Well, I'll start. I mean, this is complicated."
+    },
+    {
+      "index": 193,
+      "start": 2057.48,
+      "end": 2072.04,
+      "text": "Um people do have a go at it. They'll they'll take a simplified cell, um bacterial cell, reduce it to 4 500 genes, so they the problem is better than 4,000. And then they'll do some in"
+    },
+    {
+      "index": 194,
+      "start": 2072.04,
+      "end": 2086.639,
+      "text": "they'll probably try and um um identify all the reactions, uh build 400 differential equations, put it all together, and predict something. Now, my comment there is if you have 400"
+    },
+    {
+      "index": 195,
+      "start": 2086.639,
+      "end": 2100.44,
+      "text": "differential equations and you can't predict whatever you like, um you're not very good at differential equations. So, I I actually think um it's a nonsense to start with. I don't want to say you"
+    },
+    {
+      "index": 196,
+      "start": 2100.44,
+      "end": 2111.4,
+      "text": "shouldn't do it cuz we should, you know, let people try it cuz I could um certainly could be wrong, but I think it's exceedingly unlikely to work, especially given that all of these"
+    },
+    {
+      "index": 197,
+      "start": 2111.4,
+      "end": 2122.0,
+      "text": "kinetics have been determined almost certainly in vitro and almost certainly won't work like that in in vivo. Now, I give that example simply to say we are nowhere near dealing with this problem."
+    },
+    {
+      "index": 198,
+      "start": 2122.0,
+      "end": 2132.08,
+      "text": "Now, um let's think what we got. We have disorder around us. Within a cell, we have order, and the physicists worry about that a little bit cuz of the second law of"
+    },
+    {
+      "index": 199,
+      "start": 2132.08,
+      "end": 2143.28,
+      "text": "thermodynamics, but as soon as it's all explained, it's isolated and you put energy in, they lose interest cuz they can see it's not uh contradicting the um second law of thermodynamics. But, it"
+    },
+    {
+      "index": 200,
+      "start": 2143.28,
+      "end": 2156.28,
+      "text": "isn't just creating order, it's creating um order with purpose. Order with purpose. Purpose to for the entity, the cell to survive and also to reproduce in a way upon which natural"
+    },
+    {
+      "index": 201,
+      "start": 2156.28,
+      "end": 2168.36,
+      "text": "selection can work. This is ferociously difficult. And I struggle with it cuz I can't quite see how to do it. The The nearest um I've got, which um I don't think it's a good idea, but it's the"
+    },
+    {
+      "index": 202,
+      "start": 2168.36,
+      "end": 2182.08,
+      "text": "best I could is to see whether we can divide up um the cell into domains, like a number of black boxes where we don't really care what's going on in the box. We just need to know what are the"
+    },
+    {
+      "index": 203,
+      "start": 2182.08,
+      "end": 2194.4,
+      "text": "critical inputs and the critical outputs and see whether that simplification might um uh produce something. Now, I've done My lab's done an experiment which is something which I just wanted to explain"
+    },
+    {
+      "index": 204,
+      "start": 2194.4,
+      "end": 2206.4,
+      "text": "because it I think it it could be telling us something. We measured the rate of protein synthesis in the cell. Now, that's simple, you know, let's not worry about how we do it. If we have one"
+    },
+    {
+      "index": 205,
+      "start": 2206.4,
+      "end": 2218.56,
+      "text": "culture and we measure it and it's the same culture here, the mean will be absolutely identical. If we look in the population, the variability is incredibly high. So, there will be a"
+    },
+    {
+      "index": 206,
+      "start": 2218.56,
+      "end": 2232.92,
+      "text": "lot of cells that will be 50% of the normal level and more 50% more, okay? Now, us biologists think everything is tightly regulated. Actually, it isn't tightly regulated."
+    },
+    {
+      "index": 207,
+      "start": 2232.92,
+      "end": 2245.84,
+      "text": "It's very floppy or very sloppy. Furthermore, if you have a bell curve and you're out here, 10 minutes later, you go back to the mean. Now, this is weird cuz you'd think"
+    },
+    {
+      "index": 208,
+      "start": 2245.84,
+      "end": 2256.24,
+      "text": "hundreds of reactions are required in protein synthesis. It'd all average itself out and it'd be all tight, but it isn't. It's very, very floppy. Now, I think this may be telling us something"
+    },
+    {
+      "index": 209,
+      "start": 2256.24,
+      "end": 2269.8,
+      "text": "in all of this because we biologists too much think everything is highly controlled. But if it's highly controlled, um if you get into a funny part of control space, you may never escape from it."
+    },
+    {
+      "index": 210,
+      "start": 2269.8,
+      "end": 2279.08,
+      "text": "Look, how often does our computer do something weird? What do we do? We switch it off and switch it back on again. We don't know why it's gone wrong. We just switch it off and switch"
+    },
+    {
+      "index": 211,
+      "start": 2279.08,
+      "end": 2292.28,
+      "text": "it on. Now, cells can't do that. But if they're floppy and sloppy, if you see what I mean, maybe they never get stuck in the wrong place. This could be all hooey, okay? But thinking like this with"
+    },
+    {
+      "index": 212,
+      "start": 2292.28,
+      "end": 2303.36,
+      "text": "assistance of uh with the sort of stuff that Demis is doing is the way I would try and approach this problem. Well, this is Sorry, I didn't This is the key. Bringing thinking like this, or"
+    },
+    {
+      "index": 213,
+      "start": 2303.36,
+      "end": 2313.68,
+      "text": "thinking like you did when you did your work that was originally awarded the Nobel that was eventually awarded the Nobel Prize, where you just scattered human genes on yeast"
+    },
+    {
+      "index": 214,
+      "start": 2313.68,
+      "end": 2326.32,
+      "text": "cells that weren't replicating, which is kind of crazy. No, I don't think any anyone thinking about it very hard would have done that, but it worked.  Well, what you're saying is you have to"
+    },
+    {
+      "index": 215,
+      "start": 2326.32,
+      "end": 2342.68,
+      "text": "be a bit crazy. And maybe you need to have you know, an input from on your models create you know, the craziness which dial up the craziness. That's just the right amount of crazy. Yeah. So, I I think"
+    },
+    {
+      "index": 216,
+      "start": 2342.68,
+      "end": 2352.2,
+      "text": "Paul's right in that when we first talked about this maybe I mean gosh, this maybe even 30 years ago. I would I would have when I was an undergrad I was I would have tried to do"
+    },
+    {
+      "index": 217,
+      "start": 2352.2,
+      "end": 2363.32,
+      "text": "it in the maybe heuristic way of like a bunch of differential equations or some other rules. That's how AI systems were built back then like chess computers like Deep Blue. But it"
+    },
+    {
+      "index": 218,
+      "start": 2363.32,
+      "end": 2370.76,
+      "text": "it was very obvious to me actually during my undergrad that this was not going to work to get to general intelligence or even understand language or any of those things. You can't you"
+    },
+    {
+      "index": 219,
+      "start": 2370.76,
+      "end": 2379.64,
+      "text": "know, we were taught at Cambridge like first order logic is basically is it's language as is first order logic rules. It's obviously wrong because half the time we don't speak I don't speak"
+    },
+    {
+      "index": 220,
+      "start": 2379.64,
+      "end": 2387.64,
+      "text": "grammatically and you know, we we still understand each other even if it doesn't obey the the logic system. So, we're obviously doing something else, you know, without at least the human brain"
+    },
+    {
+      "index": 221,
+      "start": 2387.64,
+      "end": 2398.96,
+      "text": "was. And and then I sort of realized and I completely confirmed my suspicions of that with our early work at DeepMind of learning systems. And then eventually AlphaGo. Like well, you can't program"
+    },
+    {
+      "index": 222,
+      "start": 2398.96,
+      "end": 2409.52,
+      "text": "directly heuristics for a Go a Go system that would be world champion level. It's impossible because too esoteric and it's too intuitive. It's too about patterns. There's no there's no easy things to"
+    },
+    {
+      "index": 223,
+      "start": 2409.52,
+      "end": 2419.12,
+      "text": "write heuristics about like material that that the value of material because every piece in Go is worth the same. Right? So, that all the things that worked in chess do not work in Go. And"
+    },
+    {
+      "index": 224,
+      "start": 2419.12,
+      "end": 2433.36,
+      "text": "so, it had to be learned direct from experience and direct from data. The system playing against itself figuring out its own You know, intuitive heuristics, let's say, about about about the game and"
+    },
+    {
+      "index": 225,
+      "start": 2433.36,
+      "end": 2444.8,
+      "text": "about what was useful what were useful strategies. And in fact, it did discover famously like new strategies that had never been discovered by human players even though we played Go for 2,000 plus"
+    },
+    {
+      "index": 226,
+      "start": 2444.8,
+      "end": 2454.0,
+      "text": "years now. And so, that was kind of extraordinary as well. Like, not only can it model something that was otherwise intractable, it can actually potentially you could use it to go"
+    },
+    {
+      "index": 227,
+      "start": 2454.0,
+      "end": 2464.44,
+      "text": "beyond what we currently know as humans. And that makes sense because a chess computer or something that's programmed or scientific system that's programmed directly with equations we"
+    },
+    {
+      "index": 228,
+      "start": 2464.44,
+      "end": 2474.76,
+      "text": "already know about, it's quite hard for that to go then beyond the knowledge that the creators of that system had. Right? Because obviously with the what capacity has it got to do that? So,"
+    },
+    {
+      "index": 229,
+      "start": 2474.76,
+      "end": 2482.84,
+      "text": "that's quite That's one of the very exciting things that we got very excited and obviously everyone's realizing now about these new modern systems. They're learning, they're general. So, that"
+    },
+    {
+      "index": 230,
+      "start": 2482.84,
+      "end": 2492.88,
+      "text": "means they have potentially the capacity to go beyond with the help of human experts beyond our current level of knowledge, which was never true before of any other tools we've ever built as a"
+    },
+    {
+      "index": 231,
+      "start": 2492.88,
+      "end": 2502.36,
+      "text": "species. Right? You're not going to Your car isn't suddenly going to just spontaneously fly. Right? When you've designed the car, you know, the engine of the car, it's like it's going to It"
+    },
+    {
+      "index": 232,
+      "start": 2502.36,
+      "end": 2513.44,
+      "text": "might not work in how you imagined it when the early car makers. But it's not going to suddenly do some some capability you didn't design for it. So, it's a very unusual type of machine and"
+    },
+    {
+      "index": 233,
+      "start": 2513.44,
+      "end": 2522.88,
+      "text": "system. I would say it's unique, which is why I was so fascinated by it since since I was a kid. Cuz it's obviously different. And then with simulations, I do think"
+    },
+    {
+      "index": 234,
+      "start": 2522.88,
+      "end": 2534.2,
+      "text": "the issue there and with the cell is and what we've wrestled over and over the many years about discussing is, well, what is good circumscribed system? This It comes down to two things. Can you"
+    },
+    {
+      "index": 235,
+      "start": 2534.2,
+      "end": 2543.2,
+      "text": "Unless you're going to simulate the entire planet down to quantum level, which maybe one day we will do, then you're going to have to describe some some siloed self-contained system that"
+    },
+    {
+      "index": 236,
+      "start": 2543.2,
+      "end": 2554.28,
+      "text": "you can approximate everything outside of it, right? In some way. And then the second question you have to answer is what granularity do you need to model the system in inside to for it to be"
+    },
+    {
+      "index": 237,
+      "start": 2554.28,
+      "end": 2565.04,
+      "text": "valuable for your for your predictions you're interested in. And and chemistry is a great example of that. Like it's amazing to me there's that that there's room between physics and biology for"
+    },
+    {
+      "index": 238,
+      "start": 2565.04,
+      "end": 2573.68,
+      "text": "chemistry, if you actually think about it, right? Like actually, I mean, some of my best friends are chemists from from Cambridge, and we talked about this quite a lot. It's like, how can there be"
+    },
+    {
+      "index": 239,
+      "start": 2573.68,
+      "end": 2581.32,
+      "text": "a subject, chemistry? It's like where you can sort of abstract away the physics and the quantum physics and everything, and you don't have to get as complicated as these amazing emergent"
+    },
+    {
+      "index": 240,
+      "start": 2581.32,
+      "end": 2591.8,
+      "text": "systems that life has, and it's sort of studyable on its own without And you can sort of separate it or approximate it up and down. It's kind of amazing, actually, if you stop to think about it."
+    },
+    {
+      "index": 241,
+      "start": 2591.8,
+      "end": 2601.32,
+      "text": "And maybe there are other ways to to do that with other parts of science. So, my current thinking, which we haven't had time to discuss yet, but might as well tell you now, is to maybe we can do like"
+    },
+    {
+      "index": 242,
+      "start": 2601.32,
+      "end": 2611.64,
+      "text": "cell nucleus. Perhaps that's a that's a good starting point that that Zico and I are working on, and we'll talk about that afterwards, but that maybe that's a like maybe that's a good subunit."
+    },
+    {
+      "index": 243,
+      "start": 2611.64,
+      "end": 2624.68,
+      "text": "Very complex. Yeah, probably still too complex. Yeah. So many places to go, so little time. Alison, one thing that Dennis mentioned was the potential for everybody around"
+    },
+    {
+      "index": 244,
+      "start": 2624.68,
+      "end": 2637.52,
+      "text": "the world to benefit from these technologies that can be distributed, but you also mentioned the barrier to access of compute power. Um How do But we have to be brief with the"
+    },
+    {
+      "index": 245,
+      "start": 2637.52,
+      "end": 2649.8,
+      "text": "subjects we're going to cover now, but how do we How do you ensure that the rest of the world can participate rather than just be carried along? I think the well, people are working on"
+    },
+    {
+      "index": 246,
+      "start": 2649.8,
+      "end": 2661.28,
+      "text": "this. For example, there are there are a few if the work depends on on computers that are that high performance, then how do you do computation differently so it doesn't"
+    },
+    {
+      "index": 247,
+      "start": 2661.28,
+      "end": 2675.52,
+      "text": "depend on the large the large computes? Then access providing access as well. Um and then using techniques which is still requires computation but using things like federated analysis where you can"
+    },
+    {
+      "index": 248,
+      "start": 2675.52,
+      "end": 2689.68,
+      "text": "share the the compute and then bring the results back. So, but some of this depends on the question you're looking at, um the fidelity that you need to be able to build a model. But I think there are"
+    },
+    {
+      "index": 249,
+      "start": 2689.68,
+      "end": 2704.16,
+      "text": "a variety of of ways that people are are moving forward. And that that is just evolution of tech technological solutions. Yeah, I okay, I think we've got to sort out the computing problem and and I"
+    },
+    {
+      "index": 250,
+      "start": 2704.16,
+      "end": 2713.92,
+      "text": "think it's I it's also part of it's a a energy cost problem in this country. I think we we've got to get energy basically means intelligence now in in effect, you know, via chips and data"
+    },
+    {
+      "index": 251,
+      "start": 2713.92,
+      "end": 2723.04,
+      "text": "centers. You can sort of it's going to basically be a one-to-one correlation. So, we have some of the most expensive energy in the world here which is the trickiest you know, for us to then scale"
+    },
+    {
+      "index": 252,
+      "start": 2723.04,
+      "end": 2734.12,
+      "text": "up what we need. Um having said all of that, I do think this is a creativity and imagination problem. So, yes, you need tens of billions of dollars of compute if you want to like"
+    },
+    {
+      "index": 253,
+      "start": 2734.12,
+      "end": 2743.24,
+      "text": "build the latest frontier model. But just like if you're in academia or like or an institute, there's no way you should be thinking about doing that. This is pointless. Just And there's"
+    },
+    {
+      "index": 254,
+      "start": 2743.24,
+      "end": 2749.84,
+      "text": "there's you can't you won't be able to keep up with that and all the people that you need. And also it's not the thing to be doing. There's enough companies doing that, right? There's"
+    },
+    {
+      "index": 255,
+      "start": 2749.84,
+      "end": 2759.32,
+      "text": "like five in the US, there's three in China. Like what it is is like that we've been talking about black boxes and other things. If I I've I've said this to many departments and with varying"
+    },
+    {
+      "index": 256,
+      "start": 2759.32,
+      "end": 2768.76,
+      "text": "degrees of of success. But like they always ask me like well, what should we work on here as professors of computer science at wherever, whichever top university?\" And if I was in academia, I"
+    },
+    {
+      "index": 257,
+      "start": 2768.76,
+      "end": 2778.88,
+      "text": "would be looking at the analysis, the understanding of the black boxes, the the the the stress testing of what they can do, the limits of that, what God, how can we actually put um uh uh"
+    },
+    {
+      "index": 258,
+      "start": 2778.88,
+      "end": 2788.0,
+      "text": "uh monitoring tools? There's so many things that need to be done, benchmarks for that that don't require a lot of compute. Um because of what I would do is there's open-source models like we"
+    },
+    {
+      "index": 259,
+      "start": 2788.0,
+      "end": 2797.68,
+      "text": "have Gemma 4, there's Chinese models models, very good ones. They're only like 6 months off to a year off the frontier. Literally, like this time last year, they would have been frontier"
+    },
+    {
+      "index": 260,
+      "start": 2797.68,
+      "end": 2806.52,
+      "text": "capability. They're tiny in size, so our model Gemma 4, for example, is built to run on a single laptop, even, right? Let alone a small university cluster. Easily"
+    },
+    {
+      "index": 261,
+      "start": 2806.52,
+      "end": 2816.2,
+      "text": "can run many instances of these things. Same with the China the smaller Chinese models. And you could do plenty of great science of on AI and also use it for plenty of great science, you know,"
+    },
+    {
+      "index": 262,
+      "start": 2816.2,
+      "end": 2825.56,
+      "text": "applying that kind of AI to another field. I mean, you literally wouldn't have had that a year ago. So, it's just a bit of sort of miss FOMO of missing out on there's something exciting over"
+    },
+    {
+      "index": 263,
+      "start": 2825.56,
+      "end": 2834.0,
+      "text": "here. But, you but the best scientists, in my opinion, if you believe in what you're doing, you block out the noise. Just like we did back in 2010, when no one was working on AI. Literally,"
+    },
+    {
+      "index": 264,
+      "start": 2834.0,
+      "end": 2842.32,
+      "text": "nobody. And everyone thought we were mad and and like you know, even in academia, it was considered to be a kind of like a dead end. Like, we don't we know it? You know what I mean? We tried AI in the"
+    },
+    {
+      "index": 265,
+      "start": 2842.32,
+      "end": 2852.68,
+      "text": "'90s, it doesn't work. Um and but if you really believe in what you're doing and you're passionate about it, you should be able to block out that noise and just uh go in your lane where"
+    },
+    {
+      "index": 266,
+      "start": 2852.68,
+      "end": 2862.0,
+      "text": "you think you have unique advantages to contribute. And I think multidisciplinary is one of those areas. And I actually believe that's one of the great things of um the new era. It's"
+    },
+    {
+      "index": 267,
+      "start": 2862.0,
+      "end": 2871.56,
+      "text": "it's never going to be an easier time to do multi-discipline proper multi-disciplinary work because we can use these tools. You could use them to get up to reasonable speed on a number"
+    },
+    {
+      "index": 268,
+      "start": 2871.56,
+      "end": 2882.48,
+      "text": "of other areas that are not your domain, far faster than you ever could before. And so, I I think there's plenty there to be done inter disciplinary, but also the the science of AI as well."
+    },
+    {
+      "index": 269,
+      "start": 2882.48,
+      "end": 2895.2,
+      "text": "Um I just think is there's so there's just a kind of lack of creative imagination, I would say. Thank you. I will turn to some of these questions. Um the there were a lot of people interested in"
+    },
+    {
+      "index": 270,
+      "start": 2895.2,
+      "end": 2910.6,
+      "text": "AGI and whether um systems will become conscious and what that means and it's a very complicated thing to talk about. I Could I I mean, I know that you're you set out to create AGI and to use AGI to"
+    },
+    {
+      "index": 271,
+      "start": 2910.6,
+      "end": 2923.04,
+      "text": "solve world problems. That was your sort of that's your sort of direction. Let's that that maybe that could be talked about in another time, but now do you see is there anything that worries you about"
+    },
+    {
+      "index": 272,
+      "start": 2923.04,
+      "end": 2930.52,
+      "text": "any of this? We've talked about small worries like but what worries you? Well, there's huge worries. So, obviously we talked about the opportunity obviously the reason I spent"
+    },
+    {
+      "index": 273,
+      "start": 2930.52,
+      "end": 2939.84,
+      "text": "my whole career building this is I want to advance science and especially medicine actually with AI. So, that's clear with the work I've directly used these tools for myself, right? With"
+    },
+    {
+      "index": 274,
+      "start": 2939.84,
+      "end": 2948.24,
+      "text": "AlphaFold and AlphaFold Isomorphic. Um but there are a couple of worries and I can happy to touch on the conscious question as well, but the two main worries are kind of you can think of"
+    },
+    {
+      "index": 275,
+      "start": 2948.24,
+      "end": 2958.92,
+      "text": "like this. Bad actors repurposing general purpose technologies for harmful ends. And those bad actors could be individual rogue people, uh but you know, bioterrorists, this type"
+    },
+    {
+      "index": 276,
+      "start": 2958.92,
+      "end": 2970.32,
+      "text": "of thing to rogue states. Um so, that's one. Second one is the technical about AGI risk. So, as the system become more autonomous and um obviously that'll be more useful. That's why we're all moving"
+    },
+    {
+      "index": 277,
+      "start": 2970.32,
+      "end": 2980.04,
+      "text": "towards a genetic era. This is the first step of that, but they'll become more autonomous, more powerful. Um will uh can we make sure the guardrails we set them uh are strong"
+    },
+    {
+      "index": 278,
+      "start": 2980.04,
+      "end": 2990.76,
+      "text": "enough to to to constrain the behavior of those systems to what we originally intended. And that's a super hard problem, too. Um so, there's that's two problems. Then"
+    },
+    {
+      "index": 279,
+      "start": 2990.76,
+      "end": 3000.6,
+      "text": "either that I kind of classify those as technical problems. Um and then beyond that, even if we solve that, there's the economics problem of how do we share the benefits as widely as possible to as"
+    },
+    {
+      "index": 280,
+      "start": 3000.6,
+      "end": 3009.2,
+      "text": "many people to benefit as many people and countries as possible. And then finally, there'll be the If we solve that, there'll be the philosophical question about meaning and purpose. So,"
+    },
+    {
+      "index": 281,
+      "start": 3009.2,
+      "end": 3018.88,
+      "text": "not to So, there's just a lot of things to solve. I I I have I'm still very optimistic because I'm a huge believer in human ingenuity, and if we put our minds to it, especially in acute times"
+    },
+    {
+      "index": 282,
+      "start": 3018.88,
+      "end": 3028.4,
+      "text": "of stress, I think humanity has always stepped up to the plate. But, it's going to be I think first of all, we need to recognize what the challenges are, and I'm surprised, for example, there aren't"
+    },
+    {
+      "index": 283,
+      "start": 3028.4,
+      "end": 3038.76,
+      "text": "more of my economist friends working, taking this seriously, and working on what would be a post-AGI uh economic system that would work, for example. Do you think we can ever build a system"
+    },
+    {
+      "index": 284,
+      "start": 3038.76,
+      "end": 3048.08,
+      "text": "where the guardrails just cannot be will be simply removed? Do you think it is possible? That's the big question. So, you know, assuming a system gets more intelligent"
+    },
+    {
+      "index": 285,
+      "start": 3048.08,
+      "end": 3058.36,
+      "text": "than than us, or which is, you know, or AGI would be, how would How does keep guardrails on something like that? That's an an extremely hard, but also very interesting research problem. And as one"
+    },
+    {
+      "index": 286,
+      "start": 3058.36,
+      "end": 3066.96,
+      "text": "example of, I think, the sort of research that could be being done in academia or civil society. In fact, might be better to be done there rather than the big tech companies sort of"
+    },
+    {
+      "index": 287,
+      "start": 3066.96,
+      "end": 3078.08,
+      "text": "marking their own homework. Uh is is is that exact question. I I I suspect, just from looking at how steerable our current systems is, I'm sort of um optimistic about that. But,"
+    },
+    {
+      "index": 288,
+      "start": 3078.08,
+      "end": 3087.24,
+      "text": "it's it's an unsolved problem. It's called the alignment problem. And it's uh it's it's for for sure not solved. And anyone thinks it's like simple as like, \"Where's the off switch?\" You just"
+    },
+    {
+      "index": 289,
+      "start": 3087.24,
+      "end": 3095.64,
+      "text": "have Just do some reading around it. There's just There isn't this It's going to get around that if This is what Asimov wrote and warned about with all his robot stories. The The whole point"
+    },
+    {
+      "index": 290,
+      "start": 3095.64,
+      "end": 3107.84,
+      "text": "about that was a warning, like the three laws of robotics don't work. And adding a zero flaw also doesn't work cuz it gets misinterpreted uh in certain contexts. But, it is there the bandwidth for"
+    },
+    {
+      "index": 291,
+      "start": 3107.84,
+      "end": 3118.92,
+      "text": "people to actually do this work while everything's developing so fast? Does it is a slow down needed? And if there was a slow down needed, what would it look like? This this isn't the the the way I"
+    },
+    {
+      "index": 292,
+      "start": 3118.92,
+      "end": 3127.28,
+      "text": "imagined it 20 years ago in terms of like the technologies where it's at, but it what I what I what what I always hoped it would do in things like AlphaFold and and and and trying to"
+    },
+    {
+      "index": 293,
+      "start": 3127.28,
+      "end": 3137.32,
+      "text": "advance medicine. But, it would be much better in my opinion if we'd been doing the basic research in a more scientific way like a CERN like international collaboration like that. And then you"
+    },
+    {
+      "index": 294,
+      "start": 3137.32,
+      "end": 3145.16,
+      "text": "could still move very fast with the applications. So, things like AlphaFold or you could try and kill cancer for that before AGI arrived. But, we wouldn't have to deal with the"
+    },
+    {
+      "index": 295,
+      "start": 3145.16,
+      "end": 3154.72,
+      "text": "existential question until we were ready as a society. It just the technology hasn't gone like that because the language what changed all that was the language bots, the chatbots becoming"
+    },
+    {
+      "index": 296,
+      "start": 3154.72,
+      "end": 3165.88,
+      "text": "possible and also very commercial. So, that's not going back in the box now. So, we have to think of some other ways of how can we get international collaboration around maybe standards or"
+    },
+    {
+      "index": 297,
+      "start": 3165.88,
+      "end": 3174.72,
+      "text": "certification processes. And it has to be international, which is really hard right now with the geopolitics and the fragmentation of our international institutes. So, it's a"
+    },
+    {
+      "index": 298,
+      "start": 3174.72,
+      "end": 3185.12,
+      "text": "sort of bad confluence of just at the moment we need strong international institutions and collaboration, we're sort of in the nadir of that phase. So, I have some ideas. I don't think I think"
+    },
+    {
+      "index": 299,
+      "start": 3185.12,
+      "end": 3196.04,
+      "text": "but it's going to be it's a tricky you know needle to thread here. So, sorry Dennis, I don't want to keep coming coming to you, but since you mentioned you talk about consciousness"
+    },
+    {
+      "index": 300,
+      "start": 3196.04,
+      "end": 3204.52,
+      "text": "and people do like to hear about it. Just very quickly, do you think that everything that the human brain can do is computable? Well, my all-time hero is Turing. So, I"
+    },
+    {
+      "index": 301,
+      "start": 3204.52,
+      "end": 3214.44,
+      "text": "I would say and I loved, you know, his Turing machines and studying all of that at college. And I think the evidence I mean, I've talked a lot with people like Roger Penrose and obviously he would"
+    },
+    {
+      "index": 302,
+      "start": 3214.44,
+      "end": 3222.08,
+      "text": "disagree and he thinks there's something quantum in the brain and Stuart Hameroff. I don't think there's any evidence of that so far. I feel like it's sort of here's two strange things"
+    },
+    {
+      "index": 303,
+      "start": 3222.08,
+      "end": 3230.0,
+      "text": "we don't fully understand. Let's put them together. But anyway, I I don't want I don't want to I don't want to, you know, we shouldn't Rogers is an amazing guy, so he maybe"
+    },
+    {
+      "index": 304,
+      "start": 3230.0,
+      "end": 3240.0,
+      "text": "he's right. But I think my I haven't seen any evidence in all my neuroscience work. So my assumption would be that most things in the brain are everything is computable in the limit. That doesn't"
+    },
+    {
+      "index": 305,
+      "start": 3240.0,
+      "end": 3250.04,
+      "text": "mean that but I think this this adventure we're on, uh one of the reasons I wanted to build AI was to help use it to as a tool to help neuroscience, but also maybe as a"
+    },
+    {
+      "index": 306,
+      "start": 3250.04,
+      "end": 3258.68,
+      "text": "comparator to help us as a control really to see what was special about the mind, if anything. And so we'll we'll come to that. Sorry, one problem here is that we don't"
+    },
+    {
+      "index": 307,
+      "start": 3258.68,
+      "end": 3269.28,
+      "text": "really know what consciousness is. I mean, so we don't even know quite what we're what we're It's not a well-defined problem. Yeah. And but I think but we have some aspects of"
+    },
+    {
+      "index": 308,
+      "start": 3269.28,
+      "end": 3279.28,
+      "text": "it that are probably required, but you know, you know, necessary but not not sufficient, right? Like self-awareness, a sense of identity, these types of things. And my view is and has always"
+    },
+    {
+      "index": 309,
+      "start": 3279.28,
+      "end": 3290.28,
+      "text": "been AGI. The reason we coined the term AGI rather than use the old term strong AI. So it used to be called strong and weak AI. And I didn't like strong AI because it implied consciousness. So it"
+    },
+    {
+      "index": 310,
+      "start": 3290.28,
+      "end": 3299.12,
+      "text": "was conflated. Intelligent like a sort of general intelligence with consciousness. I think those are dissociable properties, would be my guess. In fact, if you look also"
+    },
+    {
+      "index": 311,
+      "start": 3299.12,
+      "end": 3308.04,
+      "text": "animals, you know, our pet dogs and cats, they feel There's a lot of things about them that feel pretty conscious, but they're not as smart as humans. So it feels like there's a gradation and it"
+    },
+    {
+      "index": 312,
+      "start": 3308.04,
+      "end": 3317.4,
+      "text": "could my view could be separable. And and I don't feel like at least the tools we're building are in any way conscious yet, by whatever we mean by that definition. I don't feel they have a"
+    },
+    {
+      "index": 313,
+      "start": 3317.4,
+      "end": 3329.0,
+      "text": "semblance of that, but I think they could. And and so my recommendation, if I could wave a magic wand, is let's cross one Rubicon first, which is the, you know, AGI and these really smart and"
+    },
+    {
+      "index": 314,
+      "start": 3329.0,
+      "end": 3340.92,
+      "text": "precision super capable tools. Um and then use that give ourselves time as as a society and use those tools as well to maybe better pose this question of what is"
+    },
+    {
+      "index": 315,
+      "start": 3340.92,
+      "end": 3349.2,
+      "text": "consciousness, do some neuroscience with that. I think given 10 years with those kind of tools we would be able to. And then maybe that'll be the next question for societies, do we want to cross the"
+    },
+    {
+      "index": 316,
+      "start": 3349.2,
+      "end": 3358.64,
+      "text": "second Rubicon of actually trying to create, you know, conscious entities. And in my view, I don't think we want to those are big enough challenges in themselves. Do we really want to"
+    },
+    {
+      "index": 317,
+      "start": 3358.64,
+      "end": 3369.84,
+      "text": "conflate that and cross both of them at the same time? Allison, I guess that all scientists get involved in these conversations about consciousness sometime. Do you Do you want to chip in here?"
+    },
+    {
+      "index": 318,
+      "start": 3369.84,
+      "end": 3381.16,
+      "text": "Um well, I I guess my work I try and steer away from that actually from it but being what working in the applied area but yes, of course it it it it comes up in the in the conversation and"
+    },
+    {
+      "index": 319,
+      "start": 3381.16,
+      "end": 3393.72,
+      "text": "also how how would you use that capability going back in the context of science is how how would that actually help you as well? I think it's a full circle one as well. Um"
+    },
+    {
+      "index": 320,
+      "start": 3393.72,
+      "end": 3401.32,
+      "text": "Yes, yes, indeed. Yes, indeed. One of the advantages of getting questions from the audience is they take you in places where that you wouldn't necessarily have gone. And you mentioned philosophy"
+    },
+    {
+      "index": 321,
+      "start": 3401.32,
+      "end": 3410.96,
+      "text": "already but a nice question is what is the role of philosophy of science in the future of science? And a lot of conversations between scientists about where science is going"
+    },
+    {
+      "index": 322,
+      "start": 3410.96,
+      "end": 3423.52,
+      "text": "happen without philosophers being involved. So, does anyone want to Well, I think philosophy is quite important in thinking about science, I have to say. And and what knowledge is"
+    },
+    {
+      "index": 323,
+      "start": 3423.52,
+      "end": 3436.24,
+      "text": "and what you can test and what you can't test. So, I I find as I've already said Popper useful here in the sense that you don't really prove something's right, you only prove that it's wrong. And"
+    },
+    {
+      "index": 324,
+      "start": 3436.24,
+      "end": 3447.24,
+      "text": "after a while you sort of accept that it might be right because of the the the problem of, you know, what is deduction versus induction and so on. So, I think you do end up in"
+    },
+    {
+      "index": 325,
+      "start": 3447.24,
+      "end": 3460.76,
+      "text": "a bit of a tangle. But what we don't teach properly is um the is thinking about science and thinking how you do science, which does have a philosophical basis. Now, the"
+    },
+    {
+      "index": 326,
+      "start": 3460.76,
+      "end": 3473.2,
+      "text": "philosophers get a bit, you know, tangled up with things. I mean, I think we should read them, but not actually, you know, be totally driven by them. But, we don't act It's"
+    },
+    {
+      "index": 327,
+      "start": 3473.2,
+      "end": 3483.16,
+      "text": "difficult to quite say we don't know what the scientific method is. I mean, you know, we can say general things, you know, that we should collect data, it should be reliable, it should be"
+    },
+    {
+      "index": 328,
+      "start": 3483.16,
+      "end": 3496.28,
+      "text": "reproduceable, we should challenge our own ideas. We can do a list of attributes. I mean, for sure. But, I think that and I think actually we need to teach that because it it it"
+    },
+    {
+      "index": 329,
+      "start": 3496.28,
+      "end": 3507.88,
+      "text": "helps us in in doing it. But, I really do push back in that there is some sort of gold standard scientific method of doing things because it differs from area to area. How you do science in"
+    },
+    {
+      "index": 330,
+      "start": 3507.88,
+      "end": 3518.64,
+      "text": "physics is different from how you do it in biology or climatology. Some of the greatest physicists in the world were hopeless in thinking about climate because they simply thought"
+    },
+    {
+      "index": 331,
+      "start": 3518.64,
+      "end": 3529.0,
+      "text": "about they had to have complete understanding from A to Z about something. And so, they criticize it because you weren't producing that. But, that is because they tried to translate"
+    },
+    {
+      "index": 332,
+      "start": 3529.0,
+      "end": 3540.88,
+      "text": "how they did their science and that's what Roger does into some extent to how people do science in other areas. So, it's it's a complicated thing. It It is something that we can deal with. We just"
+    },
+    {
+      "index": 333,
+      "start": 3540.88,
+      "end": 3550.48,
+      "text": "have to recognize it and describe it. I Let's keep Yeah, I I just want to say on that I think the philosophers philosophy's time has come. I would I would say if I was philosopher"
+    },
+    {
+      "index": 334,
+      "start": 3550.48,
+      "end": 3558.88,
+      "text": "right now, this would be the most exciting time ever cuz you not only do you need a new philosophy of science or updated one because we touched on all the things that need updating. Like, how"
+    },
+    {
+      "index": 335,
+      "start": 3558.88,
+      "end": 3568.52,
+      "text": "were we supposed to use simulations, you know, or or black boxes, reverse engineering them, you know, that needs to be included as part of the scientific method. Yes, and what is understanding"
+    },
+    {
+      "index": 336,
+      "start": 3568.52,
+      "end": 3578.76,
+      "text": "now? Because also these black boxes can be I I think potentially backed out into mathematical equations if that's what we wanted to do. Um so maybe it's a it's a it's a two-step process. Um so I think"
+    },
+    {
+      "index": 337,
+      "start": 3578.76,
+      "end": 3589.96,
+      "text": "there's a new philosophy there. And then more broadly, I think uh we need some the time is now for some great new philosophers like a Kant or Wittgenstein or Spinoza, some of the my favorites"
+    },
+    {
+      "index": 338,
+      "start": 3589.96,
+      "end": 3599.32,
+      "text": "from old the the ancient times of like, well, okay, so what is going to be new ethical philosophy and virtue and purpose and all these things that we just discussed. If we get all the other"
+    },
+    {
+      "index": 339,
+      "start": 3599.32,
+      "end": 3609.28,
+      "text": "technical things right, those are going to be the most important questions. And um I think we're going to need a a some new philosophies of the human condition. If it's Wittgenstein, we'll just be"
+    },
+    {
+      "index": 340,
+      "start": 3609.28,
+      "end": 3622.32,
+      "text": "silent all the time. Okay, two last things. One more question from here, and this one is for Alison and Paul. Um possibly from a young scientist, is there a possibility that AI will help us"
+    },
+    {
+      "index": 341,
+      "start": 3622.32,
+      "end": 3632.8,
+      "text": "improve research culture and especially the kind of harassment of young scientists? What do you mean by research culture? I mean the culture of research that happens in laboratories around the"
+    },
+    {
+      "index": 342,
+      "start": 3632.8,
+      "end": 3645.76,
+      "text": "world. And and can you could you could you see a way that AI can just make it make it nicer to be a young researcher? You know, it's not so horrible as people make it out."
+    },
+    {
+      "index": 343,
+      "start": 3645.76,
+      "end": 3655.0,
+      "text": "We've talked We've talked about it all in glowing terms for our and a half, and I just feel you do hear Well, look, you know, scientists are bad just like everybody else. So sometimes"
+    },
+    {
+      "index": 344,
+      "start": 3655.0,
+      "end": 3664.28,
+      "text": "they misbehave and so on. I just don't think we should sort of get so tangled up with it that we'll absolutely I do think the media love making thing, you know, that they're all making stuff up"
+    },
+    {
+      "index": 345,
+      "start": 3664.28,
+      "end": 3676.2,
+      "text": "and so on. It's rare. It's rare. And so our culture isn't too bad. It's always improvable. I don't want to sound as if Of course it is, but let's not beat ourselves up too much over it, I would say."
+    },
+    {
+      "index": 346,
+      "start": 3676.2,
+      "end": 3689.92,
+      "text": "Alice? Well, if if they mean um in terms of there seems to be lots of pressure. Um and being and to produce results now and they're worrying because on archive their work might have been published."
+    },
+    {
+      "index": 347,
+      "start": 3689.92,
+      "end": 3701.76,
+      "text": "You can see that there's a lot of stress on the current um young young scientists. But I think we've also talked talked about this to um now, you know, they they should maybe"
+    },
+    {
+      "index": 348,
+      "start": 3701.76,
+      "end": 3714.4,
+      "text": "pause and reflect and think about what what a being a scientist is and what scientists should be doing. But that is that's attention that if publications matter and what's on their"
+    },
+    {
+      "index": 349,
+      "start": 3714.4,
+      "end": 3725.92,
+      "text": "CV all the time, then it's up to more senior people to stand up and say, \"No, I want you to be the best scientist regardless of the number of publications.\" And and to come out with"
+    },
+    {
+      "index": 350,
+      "start": 3725.92,
+      "end": 3739.12,
+      "text": "a few outstanding papers rather than think about um the volume of of work. Volume doesn't matter at all. Exactly. What matters is quality of what you produce all the time. Not not quantity."
+    },
+    {
+      "index": 351,
+      "start": 3739.12,
+      "end": 3748.24,
+      "text": "And it it uh uh so obvious. It just is astonishing that people don't don't realize it, really. Thank you very much indeed. I'd like to reiterate that the questions that you"
+    },
+    {
+      "index": 352,
+      "start": 3748.24,
+      "end": 3758.48,
+      "text": "submitted have really helped inform this discussion. And so I hope I've represented at least some of your thinking in in in this conversation. Uh just to finish, um"
+    },
+    {
+      "index": 353,
+      "start": 3758.48,
+      "end": 3771.96,
+      "text": "Demis, when when AlphaGo beat Lee Sedol in 2016, he retired from the game saying, \"It's not the same game anymore.\" And I just wanted to And then he  Well, it's been more comfortable. Exactly."
+    },
+    {
+      "index": 354,
+      "start": 3771.96,
+      "end": 3788.12,
+      "text": "Um but um I Okay, maybe a uh constructed premise for a last question. But the is science the same game with AI attached? Has something changed? And I'd like you all to just talk about that."
+    },
+    {
+      "index": 355,
+      "start": 3788.12,
+      "end": 3796.0,
+      "text": "Yeah, I think something will change. Look, I saw Lee Sedol recently when I went out to Korea. It was really nice to catch up with him. He's He's doing great. He's you you he's talking about"
+    },
+    {
+      "index": 356,
+      "start": 3796.0,
+      "end": 3804.88,
+      "text": "he I mean, in a way he has visceral experience of what it's like for AI to encroach on his area and I think the whole world can probably learn from that now. He was near the end of his career"
+    },
+    {
+      "index": 357,
+      "start": 3804.88,
+      "end": 3812.6,
+      "text": "anyway, that's just something to I mean, he was I used to describe him as the Roger Federer of of Go, which is what he was. He was, you know, 18-time world champion, but he was the strongest"
+    },
+    {
+      "index": 358,
+      "start": 3812.6,
+      "end": 3821.6,
+      "text": "person of the, you know, player of the pre of the previous 10 years. Still at top of his game, but he was getting towards the end of his career. Um so, those things got a little bit"
+    },
+    {
+      "index": 359,
+      "start": 3821.6,
+      "end": 3830.52,
+      "text": "conflated. But there is was some bittersweetness and sadness for me even with the AlphaGo match, especially as a as a games player myself, you know, I used to play chess very professionally"
+    },
+    {
+      "index": 360,
+      "start": 3830.52,
+      "end": 3839.52,
+      "text": "when I was young and we we had a chat actually on the eve of the match where we both joked and he likes technology and computers. We could have been, but for some different events in our lives,"
+    },
+    {
+      "index": 361,
+      "start": 3839.52,
+      "end": 3849.92,
+      "text": "maybe we could have been on the opposite sides of the of the board, right? Cuz I at one point I was going to be a professional, you know, chess player. Um but uh so, I I this I really respect"
+    },
+    {
+      "index": 362,
+      "start": 3849.92,
+      "end": 3862.08,
+      "text": "that art and it is art and that that skill and that mastery. And there's no doubt that when a AI system comes along, it changes that, like it did with chess and it changes the relationship. But"
+    },
+    {
+      "index": 363,
+      "start": 3862.08,
+      "end": 3870.28,
+      "text": "having said that, chess is more popular than ever now, you know, to watch and people don't care about watching chess computers play each other, just like we don't care about, you know, we we still"
+    },
+    {
+      "index": 364,
+      "start": 3870.28,
+      "end": 3880.44,
+      "text": "care about 100 m uh sprinter Usain Bolt, even though we have cars and things that can go faster than a human can, but who you know, we don't care about that. We want to see what what our fellow human"
+    },
+    {
+      "index": 365,
+      "start": 3880.44,
+      "end": 3890.12,
+      "text": "beings can do. So, there's I think in those areas there's there's part of that. The only other thing I would say, which is probably relevant to science, is Go players used to describe I mean,"
+    },
+    {
+      "index": 366,
+      "start": 3890.12,
+      "end": 3901.16,
+      "text": "they still I think describe it and Go is regarded as more than just a game in Asia. It's a sort of mystical art and um some of the mysteries of the universe are thought to be embodied in the game"
+    },
+    {
+      "index": 367,
+      "start": 3901.16,
+      "end": 3910.4,
+      "text": "cuz it's it's just such a beautiful kind of yin-yang game. And um and and and of course, they the best Go players used to tell me and I have a lot of friends who are"
+    },
+    {
+      "index": 368,
+      "start": 3910.4,
+      "end": 3921.92,
+      "text": "professional gamers in various sports go as well, that they want to know the mystery of the game. But do they really? Is the question, right? So, and I think that's the same"
+    },
+    {
+      "index": 369,
+      "start": 3921.92,
+      "end": 3930.84,
+      "text": "with science. I have an insatiable curiosity, that's what's driven me. It's maybe pathological. It's like driven me my whole life and AI is and most of us in the room who are scientists have"
+    },
+    {
+      "index": 370,
+      "start": 3930.84,
+      "end": 3942.0,
+      "text": "that, otherwise we wouldn't be scientists. And so we we're striving I think to understand the laws of nature and the laws of the universe and in my my opinion like my my personal nature of reality,"
+    },
+    {
+      "index": 371,
+      "start": 3942.0,
+      "end": 3951.76,
+      "text": "um these big questions, we would love to understand those answers. Um and AI will definitely help with that. But it will come at a cost. Awesome. Thank you very much, Dennis. Awesome."
+    },
+    {
+      "index": 372,
+      "start": 3951.76,
+      "end": 3966.56,
+      "text": "I was going to say something similar in the sense AI is definitely a tool that can help you will be helping you do science in different ways. But that's a positive, it's not a negative."
+    },
+    {
+      "index": 373,
+      "start": 3966.56,
+      "end": 3980.08,
+      "text": "The driver in science I think for um the you know, a scientist is to understand something that we didn't understand before. Our motivation is curiosity about the unknown."
+    },
+    {
+      "index": 374,
+      "start": 3980.08,
+      "end": 3993.36,
+      "text": "Frankly, the tools we use to really back up what's just been said are important, but I don't think they change the character of that fundamental aspect of science, it's understanding the world."
+    },
+    {
+      "index": 375,
+      "start": 3993.36,
+      "end": 4003.8,
+      "text": "Maybe I could just finish on a optimistic note. I mean, I I am for sure very sure about in the next 10 years we are going to be entering what I feel like is a new renaissance. It'll be a"
+    },
+    {
+      "index": 376,
+      "start": 4003.8,
+      "end": 4012.84,
+      "text": "new golden age of scientific discovery. I don't know what happened beyond that, maybe something else will happen, there'll be a new sort of era. But I think at least we're going to I think"
+    },
+    {
+      "index": 377,
+      "start": 4012.84,
+      "end": 4022.8,
+      "text": "we're going to sort of live through a kind of golden age the next 10 20 years and hopefully when we look back AlphaFold will just be one example of the things that we were able to crack"
+    },
+    {
+      "index": 378,
+      "start": 4022.8,
+      "end": 4031.52,
+      "text": "with the help of AI. Thank you very much indeed. Thank you all of you. It's been an enormous pleasure listening to you and it's been a pleasure being here with this"
+    },
+    {
+      "index": 379,
+      "start": 4031.52,
+      "end": 4036.08,
+      "text": "audience. I'd just like to say thank you all very much indeed."
+    }
+  ]
+}

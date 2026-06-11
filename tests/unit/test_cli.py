@@ -500,3 +500,137 @@ class TestMissingInputFileErrors:
             ],
         )
         assert result.exit_code != 0
+
+
+class TestEvalCommand:
+    """M5.1 eval 命令测试。"""
+
+    def test_eval_help(self) -> None:
+        """eval --help 应输出帮助且退出码为 0。"""
+        result = runner.invoke(app, ["eval", "--help"])
+        assert result.exit_code == 0
+        assert "judge" in result.stdout.lower() or "评分" in result.stdout
+
+    def test_eval_missing_file_exits_1(self, tmp_path: Path) -> None:
+        """不存在的稿件路径 → 退出码 1，错误信息含路径。"""
+        missing = tmp_path / "missing.md"
+        output = tmp_path / "report.json"
+        result = runner.invoke(app, ["eval", str(missing), "-o", str(output)])
+        assert result.exit_code != 0
+
+    def test_eval_writes_report_json(self, tmp_path: Path) -> None:
+        """mock evaluate_script，验证报告文件包含 judge/lint 两个键。"""
+        import json
+
+        from podlator.steps.models import (
+            DimensionScore,
+            JudgeReport,
+            LintStats,
+        )
+
+        script_path = tmp_path / "test_script.md"
+        script_path.write_text("测试稿件内容。", encoding="utf-8")
+        output = tmp_path / "report.json"
+
+        # 构造 mock 报告
+        mock_report = JudgeReport(
+            rubric_version="v3",
+            total_score=80.0,
+            dimensions=[
+                DimensionScore(
+                    dimension="信息覆盖度",
+                    score=18.0,
+                    max_score=20.0,
+                    evidence=["测试"],
+                    issues=[],
+                ),
+                DimensionScore(
+                    dimension="信息忠实度",
+                    score=9.0,
+                    max_score=10.0,
+                    evidence=[],
+                    issues=[],
+                ),
+                DimensionScore(
+                    dimension="外部知识质量",
+                    score=12.0,
+                    max_score=15.0,
+                    evidence=[],
+                    issues=[],
+                ),
+                DimensionScore(
+                    dimension="钩子开场",
+                    score=8.0,
+                    max_score=10.0,
+                    evidence=[],
+                    issues=[],
+                ),
+                DimensionScore(
+                    dimension="结构与递进",
+                    score=10.0,
+                    max_score=12.0,
+                    evidence=[],
+                    issues=[],
+                ),
+                DimensionScore(
+                    dimension="人物与现场感",
+                    score=6.0,
+                    max_score=8.0,
+                    evidence=[],
+                    issues=[],
+                ),
+                DimensionScore(
+                    dimension="口语自然度",
+                    score=8.0,
+                    max_score=10.0,
+                    evidence=[],
+                    issues=[],
+                ),
+                DimensionScore(
+                    dimension="节奏与听感",
+                    score=7.0,
+                    max_score=8.0,
+                    evidence=[],
+                    issues=[],
+                ),
+                DimensionScore(
+                    dimension="术语白话化与数字可感",
+                    score=6.0,
+                    max_score=7.0,
+                    evidence=[],
+                    issues=[],
+                ),
+            ],
+            revision_directives=[],
+            verdict="pass",
+        )
+        mock_lint = LintStats(
+            char_count=6,
+            sentence_count=1,
+            long_sentence_ratio=0.0,
+            short_sentence_ratio=0.0,
+            interaction_density=0.0,
+            markdown_heading_count=0,
+            meta_text_detected=False,
+            speaker_label_count=0,
+            truncation_suspected=False,
+            word_count_target=None,
+            word_count_ok=None,
+        )
+
+        async_mock = AsyncMock(return_value=(mock_report, mock_lint))
+        with patch(
+            "podlator.steps.evaluate_script.evaluate_script", side_effect=async_mock
+        ):
+            result = runner.invoke(
+                app,
+                ["eval", str(script_path), "-o", str(output)],
+            )
+
+        assert result.exit_code == 0
+
+        # 验证报告文件存在且含 judge/lint 两个顶级键
+        assert output.exists()
+        data = json.loads(output.read_text(encoding="utf-8"))
+        assert "judge" in data
+        assert "lint" in data

@@ -6,6 +6,8 @@
 
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 # -- Transcript 相关模型 --
@@ -75,3 +77,50 @@ class ChapterDocument(BaseModel):
         default=None, description="来源 Transcript JSON 文件路径"
     )
     chapters: list[ChapterModel] = Field(default_factory=list, description="章节列表")
+
+
+# -- Eval / Judge 相关模型（M5.1）--
+
+
+class DimensionScore(BaseModel):
+    """单一维度的评分结果。"""
+
+    dimension: str
+    score: float  # 信息覆盖度缺参照时为 -1（不计分标记）
+    max_score: float
+    evidence: list[str] = Field(default_factory=list)
+    issues: list[str] = Field(default_factory=list)
+
+
+class RevisionDirective(BaseModel):
+    """给写手的定点修订指令（M5.4 的修订循环将直接消费它）。"""
+
+    target: str  # 定位描述，如「第二条 GPU 时间幻觉」一节
+    problem: str
+    instruction: str
+
+
+class JudgeReport(BaseModel):
+    """LLM judge 的完整评分报告。"""
+
+    rubric_version: str
+    total_score: float
+    dimensions: list[DimensionScore]
+    revision_directives: list[RevisionDirective] = Field(default_factory=list)
+    verdict: Literal["pass", "needs_revision"]
+
+
+class LintStats(BaseModel):
+    """程序化文本统计（零 LLM 成本）。"""
+
+    char_count: int  # 中文字数
+    sentence_count: int
+    long_sentence_ratio: float  # >40 字句子占比
+    short_sentence_ratio: float  # <15 字句子占比
+    interaction_density: float  # 互动词次数 / (字数/300)，即"每 300 字互动次数"
+    markdown_heading_count: int  # ^#{1,6}\s 行数
+    meta_text_detected: bool  # 开头是否命中 meta 模式
+    speaker_label_count: int  # "Speaker A/B" / "说话人A" 残留次数
+    truncation_suspected: bool  # 非空稿件结尾未落在终止符（。！？…」"）→ 疑似被截断
+    word_count_target: int | None  # 目标字数（未知时 None）
+    word_count_ok: bool | None  # 实际在目标 ±10% 内？（无目标时 None）

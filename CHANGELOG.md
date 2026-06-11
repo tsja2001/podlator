@@ -4,7 +4,29 @@
 
 ## [Unreleased]
 
-### Added
+### Added (M5.1)
+- **自动化评分体系（Eval System v3）**：新增 `podlator eval` 命令，组合程序 lint + LLM judge
+  对中文口播稿自动打分。
+  - 评分标准 `rubric_v3.md`：九维评分体系（内容组/叙事组/语言组，满分 100）。
+  - 程序 lint (`lint_script.py`)：零 LLM 成本的硬伤检测——Markdown 标题残留、meta 引导语、
+    Speaker 标签残留、字数偏差、截断探针。
+  - LLM judge (`evaluate_script.py`)：调用 judge 模型逐维评分，代码复核 verdict/total_score，
+    合并 lint 硬伤指令。
+  - 新增配置 `llm_provider_judge`（默认 `deepseek`）。
+  - 新增数据模型：`DimensionScore`、`RevisionDirective`、`JudgeReport`、`LintStats`。
+
+### Changed (M5.0)
+- **截断加固（Truncation Hardening）**：
+  - `LLMResult` 新增 `finish_reason` 字段；DeepSeek/Claude provider 检测到
+    `finish_reason == "length"` 时 `log.warning("llm_output_truncated", ...)`，
+    消灭静默截断。
+  - `assign_speakers` 分片 80→50；截断时正则抢救已完成的 JSON 对象
+    （73 条完整就救回 73 条），不再整片丢弃。
+  - CLI tool provider（Claude 路径）尽力透传 `stop_reason`，`max_tokens` 即告警。
+  - `deepseek_max_tokens` 8192→32768，`claude_max_tokens` 4096→8192。
+  - `.env.example` 增补上下文窗口 vs max_tokens 区分说明。
+
+### Added (M5.0)
 - **CLI Tool Provider**：新增 `CLIToolProvider(LLMProvider)`，通过本机 `claude -p` / `codex exec`
   调用官方强模型（会员 OAuth 认证，不走第三方 API）。支持 cwd 隔离（临时空目录运行，防止
   CLAUDE.md 污染 prompt）、超时保护、失败降级。

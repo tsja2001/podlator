@@ -24,6 +24,10 @@ build/
 data/
 project/**/*.mp3
 project/**/*.mp4
+project/**/*.aiff
+project/**/*.wav
+project/**/*.m4a
+project/**/*.mov
 
 # OS
 .DS_Store

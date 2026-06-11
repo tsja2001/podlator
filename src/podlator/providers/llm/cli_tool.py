@@ -174,8 +174,7 @@ class CLIToolProvider(LLMProvider):
             )
             raise ProviderError(
                 "claude_cli",
-                f"claude 非 0 exit ({process.returncode}): "
-                f"{stderr_text[:300]}",
+                f"claude 非 0 exit ({process.returncode}): {stderr_text[:300]}",
                 retryable=True,
             )
 
@@ -218,6 +217,19 @@ class CLIToolProvider(LLMProvider):
         tokens_out = usage.get("output_tokens", 0)
         cost_usd = result_json.get("total_cost_usd", 0.0)
 
+        # 尽力透传 stop_reason（缺失时为 None，不因缺字段报错）
+        stop_reason = result_json.get("stop_reason")
+
+        if stop_reason == "max_tokens":
+            log.warning(
+                "llm_output_truncated",
+                provider="claude_cli",
+                model=self._model,
+                finish_reason=stop_reason,
+                tokens_out=tokens_out,
+                hint="增大 max_tokens（claude CLI --max-tokens），或减小输入/分片",
+            )
+
         log.info(
             "llm_completed",
             provider="claude_cli",
@@ -226,6 +238,7 @@ class CLIToolProvider(LLMProvider):
             tokens_out=tokens_out,
             cost_usd=cost_usd,
             duration_ms=duration_ms,
+            finish_reason=stop_reason,
         )
 
         return LLMResult(
@@ -236,6 +249,7 @@ class CLIToolProvider(LLMProvider):
             tokens_out=tokens_out,
             duration_ms=duration_ms,
             cost_usd=cost_usd,
+            finish_reason=stop_reason,
         )
 
     # ------------------------------------------------------------------
@@ -325,8 +339,7 @@ class CLIToolProvider(LLMProvider):
                 )
                 raise ProviderError(
                     "codex_cli",
-                    f"codex 非 0 exit ({process.returncode}): "
-                    f"{stderr_text[:300]}",
+                    f"codex 非 0 exit ({process.returncode}): {stderr_text[:300]}",
                     retryable=True,
                 )
 

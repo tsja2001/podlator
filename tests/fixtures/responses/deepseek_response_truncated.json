@@ -1,0 +1,20 @@
+{
+  "id": "chatcmpl-truncated",
+  "object": "chat.completion",
+  "model": "deepseek-v4-flash",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "[{\"index\":0,\"speaker\":\"HOST\"},{\"index\":1,\"speaker\":\"GUEST\"},{\"index\":2,\"speaker\":\"HOST\"},{\"index\":3,\"speaker\":\"GUE"
+      },
+      "finish_reason": "length"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 500,
+    "completion_tokens": 8192,
+    "total_tokens": 8692
+  }
+}

@@ -27,3 +27,13 @@ def test_settings_claude_model_env_override(monkeypatch) -> None:
     monkeypatch.setenv("CLAUDE_MODEL", "claude-opus-custom")
     s = Settings()
     assert s.claude_model == "claude-opus-custom"
+
+
+def test_deepseek_max_tokens_default_is_32768() -> None:
+    """DeepSeek max_tokens 类默认值应为 32768（M5.0 从 8192 上调）。"""
+    assert Settings.model_fields["deepseek_max_tokens"].default == 32768
+
+
+def test_claude_max_tokens_default_is_8192() -> None:
+    """Claude max_tokens 类默认值应为 8192（M5.0 从 4096 上调）。"""
+    assert Settings.model_fields["claude_max_tokens"].default == 8192

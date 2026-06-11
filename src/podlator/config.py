@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     stt_provider: str = "deepgram"
     llm_provider_summarize: str = "deepseek"
     llm_provider_polish: str = "claude"
+    llm_provider_judge: str = "deepseek"  # eval/审稿用的 judge 模型，便宜优先
 
     # ── 路径 ──
     data_dir: Path = Field(default=Path("data"))
@@ -47,12 +48,13 @@ class Settings(BaseSettings):
     # ── DeepSeek（OpenAI 兼容 API）──
     deepseek_base_url: str = "https://api.deepseek.com"
     deepseek_model: str = "deepseek-v4-flash"
-    deepseek_max_tokens: int = 8192
+    # 从 8192 提到 32K：覆盖 6000 字定稿(≈12K token)+余量
+    deepseek_max_tokens: int = 32768
 
     # ── Claude（第三方平台，OpenAI 兼容 API）──
     claude_base_url: str = "https://api.b.ai/v1"
     claude_model: str = "claude-opus-4.7"
-    claude_max_tokens: int = 4096
+    claude_max_tokens: int = 8192  # 从 4096 提到 8192：4096 连一篇定稿都装不下
 
     # ── Deepgram ──
     deepgram_model: str = "nova-3"

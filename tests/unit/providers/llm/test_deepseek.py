@@ -134,3 +134,77 @@ async def test_complete_server_error(
         await provider.complete("test")
 
     assert exc_info.value.retryable is True
+
+
+@pytest.fixture
+def mock_response_truncated() -> dict:
+    fixture_path = (
+        Path(__file__).parent.parent.parent.parent
+        / "fixtures"
+        / "responses"
+        / "deepseek_response_truncated.json"
+    )
+    return json.loads(fixture_path.read_text())
+
+
+@pytest.mark.asyncio
+async def test_complete_surfaces_finish_reason_stop(
+    provider: DeepSeekProvider,
+    mock_response: dict,
+    httpx_mock: HTTPXMock,
+) -> None:
+    """正常返回的 finish_reason 应为 stop。"""
+    httpx_mock.add_response(
+        url="https://api.deepseek.com/chat/completions",
+        method="POST",
+        json=mock_response,
+        status_code=200,
+    )
+
+    result = await provider.complete("test")
+    assert result.finish_reason == "stop"
+
+
+@pytest.mark.asyncio
+async def test_complete_surfaces_finish_reason_length(
+    provider: DeepSeekProvider,
+    mock_response_truncated: dict,
+    httpx_mock: HTTPXMock,
+) -> None:
+    """截断返回的 finish_reason 应为 length。"""
+    httpx_mock.add_response(
+        url="https://api.deepseek.com/chat/completions",
+        method="POST",
+        json=mock_response_truncated,
+        status_code=200,
+    )
+
+    result = await provider.complete("test")
+    assert result.finish_reason == "length"
+
+
+@pytest.mark.asyncio
+async def test_complete_warns_on_length_truncation(
+    provider: DeepSeekProvider,
+    mock_response_truncated: dict,
+    httpx_mock: HTTPXMock,
+) -> None:
+    """截断时应有 llm_output_truncated 警告日志。"""
+    import structlog
+
+    httpx_mock.add_response(
+        url="https://api.deepseek.com/chat/completions",
+        method="POST",
+        json=mock_response_truncated,
+        status_code=200,
+    )
+
+    cap = structlog.testing.capture_logs()
+    with cap as captured:
+        await provider.complete("test")
+
+    truncation_events = [
+        e for e in captured if e.get("event") == "llm_output_truncated"
+    ]
+    assert len(truncation_events) == 1
+    assert truncation_events[0]["finish_reason"] == "length"

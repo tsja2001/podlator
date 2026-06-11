@@ -853,3 +853,120 @@ async def _pipeline_douyin_cmd(
     typer.echo("\n✅ 流水线完成!")
     typer.echo(f"  输出: {output}")
     typer.echo(f"  字数: {len(script)}")
+
+
+# ── eval（M5.1：自动化评分）──
+
+
+@app.command()
+def eval(
+    script_path: Annotated[
+        Path,
+        typer.Argument(
+            help="待评口播稿 Markdown 文件路径",
+            exists=True,
+        ),
+    ],
+    output: Annotated[
+        Path | None,
+        typer.Option(
+            "-o", "--output", help="报告输出路径（默认 <稿件名>.review.json）"
+        ),
+    ] = None,
+    reference: Annotated[
+        Path | None,
+        typer.Option("--reference", help="参照论点清单文件（可选）"),
+    ] = None,
+    rubric_version: Annotated[
+        str,
+        typer.Option("--rubric", help="评分标准版本"),
+    ] = "v3",
+    target_words: Annotated[
+        int | None,
+        typer.Option("--target-words", help="目标字数（可选）"),
+    ] = None,
+    provider: Annotated[
+        str | None,
+        typer.Option("--provider", help="judge LLM provider（默认读配置）"),
+    ] = None,
+) -> None:
+    """对口播稿运行 lint + LLM judge 评分，产出 JSON 报告。
+
+    退出码：pass → 0，needs_revision → 0（评分是信息不是失败），
+    文件不存在/解析失败 → 1。
+    """
+    asyncio.run(
+        _eval_cmd(
+            script_path, output, reference, rubric_version, target_words, provider
+        )
+    )
+
+
+async def _eval_cmd(
+    script_path: Path,
+    output: Path | None,
+    reference: Path | None,
+    rubric_version: str,
+    target_words: int | None,
+    provider: str | None,
+) -> None:
+    import json
+
+    from podlator.config import Settings
+    from podlator.logging import setup_logging
+    from podlator.steps.evaluate_script import evaluate_script
+
+    settings = Settings()
+    setup_logging(settings.log_level, settings.log_json_enabled)
+
+    script_text = script_path.read_text(encoding="utf-8")
+    reference_text = reference.read_text(encoding="utf-8") if reference else None
+
+    typer.echo(f"稿件: {script_path}")
+    typer.echo(f"字数: {len(script_text)}")
+    typer.echo(f"Judge: {provider or settings.llm_provider_judge}")
+
+    try:
+        report, lint_stats = await evaluate_script(
+            script_text,
+            settings=settings,
+            provider_name=provider,
+            rubric_version=rubric_version,
+            reference_points=reference_text,
+            target_words=target_words,
+        )
+    except Exception as e:
+        typer.echo(f"\n评分失败: {e}", err=True)
+        raise typer.Exit(code=1) from e
+
+    # 输出路径
+    if output is None:
+        output = script_path.with_suffix(".review.json")
+
+    # 落盘合并 JSON
+    result = {
+        "judge": report.model_dump(),
+        "lint": lint_stats.model_dump(),
+    }
+    json_text = json.dumps(result, ensure_ascii=False, indent=2)
+    output.write_text(json_text, encoding="utf-8")
+
+    # 终端输出
+    typer.echo(f"\n{'─' * 50}")
+    typer.echo(f"评分标准: rubric {report.rubric_version}")
+    typer.echo(f"总分: {report.total_score} / 100")
+    typer.echo(f"判定: {report.verdict}")
+
+    typer.echo(f"\n{'维度':　<20} {'得分':>6} {'满分':>6}")
+    typer.echo("-" * 36)
+    for d in report.dimensions:
+        score_str = f"{d.score:.0f}" if d.score >= 0 else "N/A"
+        typer.echo(f"{d.dimension:　<18} {score_str:>6} {d.max_score:>6.0f}")
+
+    if report.revision_directives:
+        typer.echo(f"\n修订指令 ({len(report.revision_directives)} 条):")
+        for i, dr in enumerate(report.revision_directives, 1):
+            typer.echo(f"  {i}. [{dr.target}] {dr.problem}")
+            typer.echo(f"     → {dr.instruction}")
+
+    typer.echo(f"\n报告已落盘: {output}")
